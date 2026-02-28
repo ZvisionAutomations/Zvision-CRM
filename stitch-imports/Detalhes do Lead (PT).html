@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zvision Cyber-Core - Lead Intel Overlay</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#A2E635", // Cyber Lime
+              "primary-dim": "rgba(162, 230, 53, 0.1)",
+              "background-light": "#f7f8f6",
+              "background-dark": "#050505", // Deep void black
+              "surface-glass": "rgba(20, 20, 20, 0.8)",
+              "border-tactical": "rgba(162, 230, 53, 0.3)",
+              "text-main": "#E5E5E5",
+              "text-muted": "#6B7280",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"],
+            },
+            boxShadow: {
+                "neon": "0 0 15px rgba(162, 230, 53, 0.25)",
+                "neon-sm": "0 0 5px rgba(162, 230, 53, 0.4)",
+            },
+            backgroundImage: {
+                "scanlines": "linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))",
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for tactical look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A2E635;
+        }
+
+        /* Typewriter cursor blinking animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .animate-blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Scanline effect class */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-text-main font-display overflow-hidden antialiased selection:bg-primary selection:text-black">
+<!-- App Container (Simulated Background Content for Context) -->
+<div class="relative flex h-screen w-full overflow-hidden">
+<!-- SIDEBAR (Blurred out in background) -->
+<aside class="flex w-16 flex-col items-center border-r border-white/5 bg-[#0a0a0a] py-6 z-0 blur-sm brightness-50">
+<div class="mb-8 size-8 rounded-full bg-cover bg-center" data-alt="User Avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAP06UYZlsvW0ad5cJtEvqGjzC0t2j00MYTpv9TjZ4yu-wDL2t53YrC3tjIorOsHoA_Ihi3WVSiOTeijjd8Pi0hPGmvasYT0TUp-J060YyicU5f2MmyigRkqik36hS0nH3ZOmUlvz8WrhU70BPQxDHt2ZqVaon4Z5kRzb7WMLo5OzXEnUEIHDLsrGBT75QiCrYH2sDUxgqhdDGOD5Dp1XtOqh_tqFx_Vxq7JXdqfB-57J83VYlHgUJNf5zE_8sFQxKRw4lzAFYFGiu0');"></div>
+<div class="flex flex-col gap-6">
+<span class="material-symbols-outlined text-gray-500">grid_view</span>
+<span class="material-symbols-outlined text-primary shadow-neon rounded bg-primary/10 p-1">view_kanban</span>
+<span class="material-symbols-outlined text-gray-500">upload_file</span>
+<span class="material-symbols-outlined text-gray-500">settings</span>
+</div>
+</aside>
+<!-- MAIN CONTENT (Blurred out in background) -->
+<main class="flex-1 flex flex-col blur-sm brightness-50 z-0 relative">
+<header class="flex items-center justify-between border-b border-white/5 px-8 py-4 bg-black/40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">hub</span>
+<h1 class="text-xl font-bold tracking-tight text-white">SALES PIPELINE</h1>
+</div>
+</header>
+<div class="flex-1 p-8 grid grid-cols-5 gap-4 opacity-50">
+<!-- Placeholder Columns -->
+<div class="border-t-2 border-primary/50 bg-white/5 h-full rounded-sm"></div>
+<div class="border-t-2 border-white/10 bg-white/5 h-full rounded-sm"></div>
+<div class="border-t-2 border-white/10 bg-white/5 h-full rounded-sm"></div>
+<div class="border-t-2 border-white/10 bg-white/5 h-full rounded-sm"></div>
+<div class="border-t-2 border-white/10 bg-white/5 h-full rounded-sm"></div>
+</div>
+</main>
+<!-- LEAD INTEL OVERLAY (The Core Task) -->
+<!-- Overlay Backdrop -->
+<div class="absolute inset-0 z-40 bg-black/60 backdrop-blur-[4px]"></div>
+<!-- Slide-over Panel -->
+<aside class="absolute right-0 top-0 z-50 flex h-full w-[600px] flex-col border-l border-primary shadow-[0_0_50px_rgba(162,230,53,0.15)] bg-[#050505]/95 backdrop-blur-xl transition-transform duration-300 ease-out">
+<!-- 1. Header Module -->
+<header class="flex items-center justify-between border-b border-white/10 bg-[#0A0A0A]/80 px-8 py-6 sticky top-0 z-10 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<div class="relative flex size-14 items-center justify-center overflow-hidden rounded-sm border border-white/10 bg-white/5">
+<img alt="Company Logo" class="h-full w-full object-cover opacity-80" data-alt="Company Logo Placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCALD_5IlzeGJunsvYJ396n8Fovt1zT7eXDFvfZfJ__UKiR54COOwK227E5ZsutwsPkNBkYza-VRNM7t8n4Y7kA-e2V_28Qkdf0CP8F858UY04JmVD5nTM5L6YbXuqxzix5O2QKIgBMokjy_tuxgD6mIEpq3yCn3hWZsFSddeebdJ1yd0f0_NxcrwO7O3jIz0U5CAPVf0i5o8SeJ_Dqh7rOPtFeZ6Ydk4eQIZXXNDwgBV5ozljBU9HyO92bPkFLfFyj9IwQ43S6cr_c"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-black/50 to-transparent"></div>
+</div>
+<div class="flex flex-col">
+<h2 class="font-display text-2xl font-bold tracking-tight text-white">SISTEMAS NEURAIS</h2>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-sm bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/20">CORPORATIVO</span>
+<span class="text-xs text-text-muted font-mono">ID: #ZX-9921</span>
+</div>
+</div>
+</div>
+<button class="group flex size-10 items-center justify-center rounded-sm border border-transparent text-text-muted transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:shadow-neon-sm">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto overflow-x-hidden p-8">
+<!-- 2. AI Briefing Console -->
+<section class="mb-8 relative group">
+<div class="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-transparent opacity-20 blur rounded-sm group-hover:opacity-40 transition duration-500"></div>
+<div class="relative overflow-hidden rounded-sm border border-primary/30 bg-[#080808] p-5 shadow-inner">
+<!-- Decorative corners -->
+<div class="absolute left-0 top-0 h-2 w-2 border-l border-t border-primary"></div>
+<div class="absolute right-0 top-0 h-2 w-2 border-r border-t border-primary"></div>
+<div class="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-primary"></div>
+<div class="absolute bottom-0 right-0 h-2 w-2 border-b border-r border-primary"></div>
+<!-- Scanline Overlay -->
+<div class="pointer-events-none absolute inset-0 z-10 opacity-10 scanlines"></div>
+<div class="mb-3 flex items-center justify-between border-b border-primary/20 pb-2">
+<h3 class="font-mono text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2"><span class="material-symbols-outlined text-[16px] animate-pulse">terminal</span> // ANÁLISE TÁTICA</h3>
+<span class="font-mono text-[10px] text-primary/60">CONFIANÇA_IA: 98.4%</span>
+</div>
+<div class="font-mono text-sm leading-relaxed text-gray-300"><p class="mb-2">Alvo mostra <span class="text-white font-bold bg-white/10 px-1">alta intenção</span> baseado em downloads recentes de documentação de API. Stakeholder técnico engajado no Portal do Desenvolvedor às 09:00 horas.</p><p class="mb-2 text-primary/80">&gt; Sugerir acompanhamento imediato nas capacidades de integração.</p><p class="opacity-70">Análise da concorrência indica insatisfação com o fornecedor atual devido a problemas de latência. Janela de oportunidade aberta pelas próximas 48h.<span class="inline-block h-4 w-2 translate-y-0.5 bg-primary animate-blink"></span></p></div>
+</div>
+</section>
+<!-- 3. Telemetry Grid (Stats) -->
+<section class="mb-8 grid grid-cols-2 gap-4">
+<!-- Stat Card 1 -->
+<div class="relative overflow-hidden rounded-sm border border-white/10 bg-surface-glass p-4 backdrop-blur-md transition-all hover:border-primary/40 hover:bg-white/5 group">
+<div class="mb-1 flex items-center justify-between">
+<span class="font-mono text-[10px] uppercase tracking-wider text-text-muted">PROBABILIDADE DE VITÓRIA</span>
+<span class="material-symbols-outlined text-[16px] text-primary opacity-50 group-hover:opacity-100">monitoring</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display text-3xl font-bold text-white">87</span>
+<span class="text-lg text-primary">%</span>
+</div>
+<div class="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+<div class="h-full w-[87%] bg-primary shadow-neon-sm"></div>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="relative overflow-hidden rounded-sm border border-white/10 bg-surface-glass p-4 backdrop-blur-md transition-all hover:border-primary/40 hover:bg-white/5">
+<div class="mb-1 flex items-center justify-between">
+<span class="font-mono text-[10px] uppercase tracking-wider text-text-muted">VALOR EST.</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">attach_money</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-lg text-primary">$</span>
+<span class="font-display text-3xl font-bold text-white">124k</span>
+</div>
+<div class="mt-2 text-[10px] font-mono text-primary flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">trending_up</span> +12% vs média do negócio</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="relative overflow-hidden rounded-sm border border-white/10 bg-surface-glass p-4 backdrop-blur-md transition-all hover:border-primary/40 hover:bg-white/5">
+<div class="mb-2 flex items-center justify-between">
+<span class="font-mono text-[10px] uppercase tracking-wider text-text-muted">TOMADOR DE DECISÃO</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">badge</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="size-8 rounded bg-gray-700 bg-cover bg-center grayscale" data-alt="Decision Maker Avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvkUzO3ulX6g6D6E-wX3Q4Rog1Od0SDvWv4j3eM5uf71m6qiu0_xwH8NIiFQiY1oGcVuIv3ynOyL-HoyNhdambjVEYZ_wGC4YmEL11R6C6friLYPm2NPUZ5fy3Y6vIM7vZ1NuZmThNDzLfgmw_rByg3LxCmnO4DikF3yFfOpG1AQpW72OYtdpRT6gCLB7Z6NklE6ZFlPspi_ujE1Okc7ZEJ82aJYb7HlAMKT7mndC6G8nNXr01-KV7-MtvZV4lXvAain6mp33UElry');"></div>
+<div>
+<div class="font-display text-sm font-bold text-white leading-none mb-1">Sarah Connor</div>
+<div class="font-mono text-xs text-primary/80">CTO</div>
+</div>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="relative overflow-hidden rounded-sm border border-white/10 bg-surface-glass p-4 backdrop-blur-md transition-all hover:border-primary/40 hover:bg-white/5">
+<div class="mb-1 flex items-center justify-between">
+<span class="font-mono text-[10px] uppercase tracking-wider text-text-muted">via Portal do Desenvolvedor</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">schedule</span>
+</div>
+<div class="font-display text-2xl font-bold text-white mt-1">2h atrás</div>
+<div class="text-[10px] font-mono text-text-muted mt-1">via Portal do Desenvolvedor</div>
+</div>
+</section>
+<!-- 4. Activity Timeline -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-display text-sm font-bold uppercase tracking-widest text-text-main border-l-2 border-primary pl-3">LOG DE ATIVIDADES</h3>
+<button class="text-[10px] font-mono text-primary border border-primary/30 px-2 py-1 rounded-sm hover:bg-primary/10 transition">FILTRAR: TUDO</button>
+</div>
+<div class="relative pl-2 ml-2 border-l border-dashed border-white/10 space-y-8">
+<!-- Log Item 1 -->
+<div class="relative pl-8 group">
+<!-- Node -->
+<div class="absolute -left-[5px] top-1 size-2.5 rounded-full border border-primary bg-black shadow-[0_0_8px_rgba(162,230,53,0.8)] z-10"></div>
+<div class="absolute -left-[5px] top-1 size-2.5 rounded-full bg-primary animate-ping opacity-20"></div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-white group-hover:text-primary transition-colors">Sistema detectou sinal de intenção</span>
+<span class="font-mono text-xs text-text-muted">10:42 AM</span>
+</div>
+<p class="text-xs text-text-muted">Gatilho: Tempo de permanência na página de preços &gt; 5m.</p>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="relative pl-8 group">
+<!-- Node -->
+<div class="absolute -left-[5px] top-1 size-2.5 rounded-full border border-white/30 bg-black group-hover:border-primary/50 transition-colors z-10"></div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Proposta Enviada (v2.pdf)</span>
+<span class="font-mono text-xs text-text-muted">Ontem</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<div class="flex items-center gap-1 rounded bg-white/5 border border-white/10 px-2 py-1 text-[10px] text-gray-400">
+<span class="material-symbols-outlined text-[12px]">attachment</span>
+                                        Cyber_Core_Contract_v2.pdf
+                                    </div>
+</div>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="relative pl-8 group">
+<!-- Node -->
+<div class="absolute -left-[5px] top-1 size-2.5 rounded-full border border-white/30 bg-black group-hover:border-primary/50 transition-colors z-10"></div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Reunião: Imersão Técnica</span>
+<span class="font-mono text-xs text-text-muted">2 dias atrás</span>
+</div>
+<p class="text-xs text-text-muted">Participantes: Sarah Connor (CTO), Kyle Reese (DevOps)</p>
+</div>
+</div>
+<!-- Log Item 4 -->
+<div class="relative pl-8 group opacity-60">
+<!-- Node -->
+<div class="absolute -left-[5px] top-1 size-2.5 rounded-full border border-white/20 bg-black z-10"></div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-gray-400">Lead Ingerido</span>
+<span class="font-mono text-xs text-text-muted">Oct 24</span>
+</div>
+<p class="text-xs text-text-muted">Fonte: Importação em Lote (Q3_Prospects.csv)</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions Footer -->
+<div class="mt-8 pt-6 border-t border-white/10 flex gap-3">
+<button class="flex-1 flex items-center justify-center gap-2 bg-primary text-black font-display font-bold text-sm py-3 px-4 rounded-sm hover:bg-white transition-colors shadow-neon"><span class="material-symbols-outlined text-[18px]">send</span> INICIAR SEQUÊNCIA</button>
+<button class="flex items-center justify-center size-11 border border-white/20 rounded-sm hover:border-primary/50 hover:text-primary transition-colors bg-white/5">
+<span class="material-symbols-outlined">edit_note</span>
+</button>
+<button class="flex items-center justify-center size-11 border border-white/20 rounded-sm hover:border-red-500/50 hover:text-red-500 transition-colors bg-white/5">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

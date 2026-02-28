@@ -1,0 +1,225 @@
+# Zvision Cyber-Core
+
+## Product Overview
+
+**The Pitch:** A high-velocity CRM for data-driven sales teams who operate in the shadows of the market. We trade corporate beige for a tactical command center, leveraging AI to slice through noise and visualize deal flow with military precision.
+
+**For:** Technical sales engineers, growth hackers, and deal closers who treat sales as an engineering problem. They care about speed, data density, and signal-over-noise.
+
+**Device:** Desktop (Primary), Ultrawide monitor optimized
+
+**Design Direction:** **Tactical Futurism.** A pitch-black void illuminated by data. It feels less like a webpage and more like the HUD of a stealth fighter or a Netrunner's deck.
+
+**Inspired by:** Linear (density), Bloomberg Terminal (data focus), Cyberpunk 2077 UI (visuals).
+
+---
+
+## Screens
+
+- **[Main Dashboard]:** Mission control center visualizing revenue streams and system health.
+- **[Sales Pipeline]:** Kanban board tracking deal velocity across five distinct stages.
+- **[Lead Intel Overlay]:** Slide-out dossier containing AI-synthesized intelligence on specific targets.
+- **[Data Ingestion]:** Terminal-style file upload interface for bulk lead processing.
+- **[System Config]:** Management console for user identity and API credentials.
+
+---
+
+## Key Flows
+
+**[Deal Reconnaissance]:** Rapidly assessing lead viability.
+
+1. User is on **Sales Pipeline** -> scans for 'Novo Lead' column.
+2. User clicks a **Lead Card** with a high "Sentiment" score.
+3. **Lead Intel Overlay** slides in from right -> User reads "AI Briefing" and reviews "Activity Log".
+4. User drags Lead Card to 'Qualificação'.
+
+**[Bulk Extraction]:** Importing raw market data.
+
+1. User navigates to **Data Ingestion**.
+2. User drops CSV file onto the "Drop Zone".
+3. UI shifts to "Processing Mode" -> Terminal logs scroll rapidly as AI parses rows.
+4. Success state triggers neon pulse -> Redirects to **Sales Pipeline**.
+
+---
+
+<details>
+<summary>Design System</summary>
+
+## Color Palette
+
+- **Primary:** `#A2E635` - Cyber Lime (CTAs, Active States, Key Metrics)
+- **Background:** `#000000` - Void Black (Main Canvas)
+- **Surface:** `rgba(20, 20, 20, 0.6)` - Glass Panels (Backdrop filter: blur 12px)
+- **Border:** `rgba(162, 230, 53, 0.3)` - Panel edges
+- **Text:** `#E5E5E5` - Primary Readability
+- **Muted:** `#6B7280` - Labels, Inactive Data
+- **Sentiment High:** `#A2E635` (Lime)
+- **Sentiment Low:** `#EF4444` (Crimson)
+- **Sentiment Mid:** `#F59E0B` (Amber)
+
+## Typography
+
+- **Headings:** 'Space Grotesk', 700, All Caps tracking-wide.
+  - H1: 32px
+  - H2: 24px
+  - H3: 18px
+- **Data/Technical:** 'JetBrains Mono', 400.
+  - Value: 14px
+  - Label: 12px (Uppercase)
+- **Body:** 'Space Grotesk', 400, 15px.
+
+**Style notes:**
+- **Glassmorphism:** `backdrop-filter: blur(16px)`, `border: 1px solid rgba(162, 230, 53, 0.2)`
+- **Glow:** `box-shadow: 0 0 20px rgba(162, 230, 53, 0.15)` on active elements.
+- **Scanlines:** Subtle CRT overlay pattern on charts.
+- **Corners:** Sharp (0px) or Micro-rounded (4px) only.
+
+## Design Tokens
+
+```css
+:root {
+  --color-primary: #A2E635;
+  --color-bg: #000000;
+  --color-glass: rgba(22, 22, 22, 0.7);
+  --border-glow: 1px solid rgba(162, 230, 53, 0.3);
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --shadow-neon: 0 0 15px rgba(162, 230, 53, 0.25);
+  --backdrop: blur(16px);
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary>Screen Specifications</summary>
+
+### [Main Dashboard]
+
+**Purpose:** Executive overview of revenue velocity and system health.
+
+**Layout:**
+- **Left:** Slim, vertical icon-only nav rail (fixed).
+- **Top:** 3-column grid of "ROI-Meter" cards.
+- **Middle:** Split view. 66% width "Internal Zvision Flows" (Area chart), 33% "Active Targets" list.
+- **Bottom:** "Client Flows" (Multi-line chart) showing external traffic.
+
+**Key Elements:**
+- **Sidebar:** 64px width, glass background. Icons: Grid (Dash), Kanban (Pipeline), Upload (Data), Cog (Settings). Active state: Lime left-border + glow.
+- **ROI-Meters:** Glass cards.
+  - **Label:** `TOTAL REVENUE` (Mono, 12px, Muted)
+  - **Value:** `$1,240,500` (Space Grotesk, 32px, White)
+  - **Trend:** `+12.5%` (Mono, 14px, Lime) with Up-Arrow icon.
+- **Internal Zvision Flows Chart:**
+  - Background: faint grid lines (`#333`).
+  - Line: 2px Lime stroke.
+  - Fill: Linear gradient (Lime to transparent).
+  - Tooltip: Reticle cursor with crosshairs.
+
+**States:**
+- **Loading:** Charts show a "scanning" horizontal laser animation.
+
+**Interactions:**
+- **Hover Chart:** Crosshair follows cursor, displaying exact X/Y values in a floating tooltip.
+- **Click ROI Card:** Navigates to filtered Pipeline view.
+
+### [Sales Pipeline]
+
+**Purpose:** Kanban board for drag-and-drop deal management.
+
+**Layout:** Full width, horizontal scroll. 5 Columns.
+
+**Key Elements:**
+- **Columns:** "Novo Lead", "Qualificação", "Reunião Briefing", "Reunião Proposta", "Fechamento".
+  - **Header:** Sticky top, glass background, bottom lime border.
+  - **Counter:** `[04]` (Mono, Lime) next to column name.
+- **Lead Card:**
+  - **Background:** `rgba(30,30,30, 0.8)`
+  - **Title:** Company Name (Space Grotesk, Bold, White).
+  - **Value:** `$12k` (Mono, Lime).
+  - **Sentiment Chip:** Small dot + Label (`HIGH`, `MED`, `LOW`).
+  - **Owner:** Avatar circle (grayscale) with lime border.
+
+**Interactions:**
+- **Drag Card:** Card opacity 50%, ghost follows cursor. Drop zones highlight with dashed lime border.
+- **Click Card:** Triggers **Lead Intel Overlay**.
+
+### [Lead Intel Overlay]
+
+**Purpose:** Detailed dossier for a specific prospect.
+
+**Layout:** Slide-over panel (Right side, 600px width), 100% height. Heavy backdrop blur over the rest of the app.
+
+**Key Elements:**
+- **Header:** Company Logo (placeholder square), Name, "CLOSE" button (X icon).
+- **AI Briefing Section:**
+  - **Title:** `// TACTICAL ANALYSIS` (Mono, Lime).
+  - **Content:** Typewriter-effect text block summarizing the deal.
+- **Stats Grid:** 2x2 grid. `Win Probability`, `Est. Value`, `Last Contact`, `Decision Maker`.
+- **Activity Log:** Vertical timeline.
+  - **Node:** Small lime dot.
+  - **Line:** Dotted vertical line.
+  - **Entry:** `Email Sent` (White) - `2h ago` (Mono, Muted).
+
+**States:**
+- **Generating:** "AI Briefing" shows blinking cursor `_` and loading text "SYNTHESIZING DATA...".
+
+### [Data Ingestion]
+
+**Purpose:** Upload CSV/Excel files to populate the pipeline.
+
+**Layout:** Centered single-column container, max-width 800px.
+
+**Key Elements:**
+- **Drop Zone:** Large dashed-border rectangle.
+  - **Text:** "INITIATE DATA TRANSFER" (Space Grotesk).
+  - **Subtext:** "Drop CSV/XLSX encrypted payloads here" (Mono).
+- **Status Terminal:** Black box, monospace green text.
+  - **Log:** `> Parsing row 1... OK`
+  - **Log:** `> Validating emails... OK`
+- **Progress Bar:** Slim lime bar, fills from left to right. Glitch effect on completion.
+
+**States:**
+- **Idle:** Clean drop zone.
+- **Processing:** Terminal active, progress bar animating.
+- **Complete:** "UPLOAD SUCCESSFUL" in large text, button to "VIEW PIPELINE".
+
+### [System Config]
+
+**Purpose:** Manage user identity and API keys.
+
+**Layout:** Two-column grid. Left: Navigation list. Right: Content panel.
+
+**Key Elements:**
+- **Profile Section:**
+  - Input fields with transparent backgrounds and bottom borders only.
+  - Label: `CODENAME` (Name), `COMM CHANNEL` (Email).
+- **API Keys Section:**
+  - **List Item:** `OpenAI Key` | `sk-....45a` (Masked).
+  - **Action:** Copy icon, Regenerate icon.
+- **Danger Zone:** Red border section. "PURGE ACCOUNT".
+
+</details>
+
+---
+
+<details>
+<summary>Build Guide</summary>
+
+**Stack:** HTML + Tailwind CSS v3
+
+**Dependencies:**
+- `chart.js` or `recharts` for neon graphs.
+- `framer-motion` for slide-overs and drag interactions.
+- `lucide-react` for technical iconography.
+
+**Build Order:**
+1. **App Shell & Dashboard:** Define the `layout.tsx` (sidebar + main content area), implement the Cyber Lime/Black theme in Tailwind config, and build the Glassmorphism utility classes.
+2. **Components:** Build the "Card", "Button", and "Badge" primitives with the glowing borders.
+3. **Sales Pipeline:** Implement the Kanban logic (drag and drop) using the Card component.
+4. **Lead Overlay:** Build the slide-over mechanism and AI text styling.
+5. **Data Ingestion:** Create the file upload state machine and terminal animations.
+
+</details>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zvision Cyber-Core - System Config</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#A2E635", // Cyber Lime
+                        "primary-dim": "rgba(162, 230, 53, 0.1)",
+                        "primary-glow": "rgba(162, 230, 53, 0.4)",
+                        "background-light": "#f7f8f6",
+                        "background-dark": "#000000", // Void Black
+                        "surface-dark": "rgba(20, 20, 20, 0.6)",
+                        "border-dark": "rgba(162, 230, 53, 0.3)",
+                        "text-main": "#E5E5E5",
+                        "text-muted": "#6B7280",
+                        "danger": "#EF4444",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px", 
+                        "sm": "2px",
+                        "md": "4px",
+                        "lg": "4px", // Micro-rounded
+                    },
+                    boxShadow: {
+                        "neon": "0 0 15px rgba(162, 230, 53, 0.25)",
+                        "neon-active": "0 0 20px rgba(162, 230, 53, 0.4)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for Webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A2E635; 
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(162, 230, 53, 0.2);
+        }
+
+        .input-tactical {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: #E5E5E5;
+            transition: all 0.3s ease;
+        }
+        
+        .input-tactical:focus {
+            outline: none;
+            border-bottom-color: #A2E635;
+            box-shadow: 0 4px 10px -4px rgba(162, 230, 53, 0.2);
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 50;
+            opacity: 0.15;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main font-display overflow-hidden h-screen flex">
+<!-- Sidebar Navigation -->
+<aside class="w-64 h-full border-r border-border-dark bg-[#151811]/90 flex flex-col justify-between shrink-0 z-20">
+<div class="flex flex-col gap-8 p-4">
+<!-- Brand -->
+<div class="flex gap-3 items-center">
+<div class="relative bg-center bg-no-repeat bg-cover rounded-sm size-10 border border-primary/30" data-alt="Abstract neon cyber grid pattern" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBcn37aLGmD19obBb_ljOVsfkMR5ud_i-kdn1seDxghEpfF3TnxfyQbaXm8ojAq1zd9zVbKcgEai4s8VZLoGYKWRKJy3r76_mYdV--hFMA8u-UNFsWqOLHkIS6tUQNejKZo9wJZvbBbLnTCZZQc8DVSkZzET4eBqdQJB4nUOO7v3xlrnqSYdyEYLwzxvniv41ETIB3knNWk-6xhpO1A1t6lbMrs8Z05PdptNZ02rNVjalj_-2P6dOMM804nPy407gXpJpDL58QNw1e-");'>
+<div class="absolute inset-0 bg-primary/20"></div>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold tracking-wider leading-none">ZVISION</h1>
+<p class="text-primary text-xs font-mono mt-1 opacity-80">CYBER-CORE v1.0</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:text-white hover:bg-white/5 transition-colors group rounded-sm" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Painel de Controle</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:text-white hover:bg-white/5 transition-colors group rounded-sm" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">view_kanban</span>
+<span class="text-sm font-medium">Fluxo de Trabalho</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:text-white hover:bg-white/5 transition-colors group rounded-sm" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">cloud_upload</span>
+<span class="text-sm font-medium">Ingestão de Dados</span>
+</a>
+<!-- Active Link -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 border-l-2 border-primary text-white rounded-r-sm shadow-[inset_10px_0px_20px_-10px_rgba(162,230,53,0.1)]" href="#">
+<span class="material-symbols-outlined text-xl text-primary fill-1">settings</span>
+<span class="text-sm font-medium text-primary">Config. do Sistema</span>
+</a>
+</nav>
+</div>
+<!-- Bottom User Info -->
+<div class="p-4 border-t border-white/5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-mono text-primary">
+                    JS
+                </div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-white tracking-wide">J. SILVERHAND</span>
+<span class="text-[10px] text-text-muted font-mono">OPERADOR Nív. 4</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 relative flex flex-col h-full overflow-hidden">
+<!-- CRT Overlay -->
+<div class="scanlines pointer-events-none"></div>
+<!-- Header -->
+<header class="h-16 border-b border-border-dark flex items-center px-8 bg-background-dark/50 backdrop-blur-sm z-10 shrink-0">
+<div class="flex flex-col">
+<h2 class="text-2xl font-black tracking-[-0.033em] text-white flex items-center gap-2"><span class="text-primary animate-pulse">//</span> CONFIGURAÇÃO_DO_SISTEMA</h2>
+<p class="text-text-muted text-xs font-mono uppercase tracking-widest opacity-70">GERENCIAR IDENTIDADE DO OPERADOR E CREDENCIAIS DE API</p>
+</div>
+<div class="ml-auto flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-sm border border-white/10">
+<div class="size-2 rounded-full bg-primary shadow-[0_0_8px_#A2E635]"></div>
+<span class="text-xs font-mono text-primary">SISTEMA ONLINE</span>
+</div>
+</div>
+</header>
+<!-- Content Grid -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-6xl mx-auto h-full grid grid-cols-12 gap-8">
+<!-- Left Nav Column -->
+<div class="col-span-12 md:col-span-3">
+<div class="sticky top-0 flex flex-col gap-1">
+<p class="text-[10px] font-mono text-text-muted mb-2 px-2 uppercase tracking-widest">Directory</p>
+<button class="flex items-center justify-between w-full px-4 py-3 text-left bg-primary/20 text-primary border border-primary/40 shadow-neon rounded-sm group transition-all">
+<span class="text-sm font-bold tracking-wide group-hover:translate-x-1 transition-transform">&gt; IDENTITY_ACCESS</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+<button class="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-white/5 text-text-muted hover:text-white border border-transparent hover:border-white/10 rounded-sm group transition-all">
+<span class="text-sm font-medium tracking-wide group-hover:translate-x-1 transition-transform">BILLING_CYCLES</span>
+</button>
+<button class="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-white/5 text-text-muted hover:text-white border border-transparent hover:border-white/10 rounded-sm group transition-all">
+<span class="text-sm font-medium tracking-wide group-hover:translate-x-1 transition-transform">AUDIT_LOGS</span>
+</button>
+<div class="h-px bg-white/10 my-2"></div>
+<button class="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-red-900/10 text-text-muted hover:text-red-400 border border-transparent hover:border-red-900/30 rounded-sm group transition-all">
+<span class="text-sm font-medium tracking-wide group-hover:translate-x-1 transition-transform">TERMINATE_SESSION</span>
+<span class="material-symbols-outlined text-sm">logout</span>
+</button>
+</div>
+</div>
+<!-- Right Content Column -->
+<div class="col-span-12 md:col-span-9 flex flex-col gap-8 pb-12">
+<!-- Profile Section -->
+<section class="glass-panel p-8 rounded-sm animate-[fadeIn_0.5s_ease-out]">
+<div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+<h3 class="text-lg font-bold text-white uppercase tracking-widest flex items-center gap-2"><span class="material-symbols-outlined text-primary">badge</span> IDENTIDADE DO OPERADOR</h3>
+<span class="text-[10px] font-mono text-primary border border-primary/30 px-2 py-0.5 rounded-sm bg-primary/5">ACESSO_LEITURA_ESCRITA</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Avatar Field -->
+<div class="col-span-1 md:col-span-2 flex items-center gap-6">
+<div class="relative group cursor-pointer">
+<div class="size-20 rounded-sm bg-zinc-800 border border-white/20 overflow-hidden">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity filter grayscale group-hover:grayscale-0" data-alt="User avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArhDdBwDY0Dx6dJwe-xfR0x0Hfxzkj03ShjY2LY9mpK1MUbBE_KkZkicFlqAddtC2--bK69Zs6585jHXHlH0qPevOfSydpnepDB8Nwh1Sv-ZfN2bnwRzDGozgZtMT5CZH_RL4g6hV4tl3ApnbBQI9iBiOhV-UYG7I5t4lw8YBcy__b4CzALYwoS7jh1pXnmqhrd1N3rqZY6ZYObQTXLvTa9HVrQ1d9o9pTQTDvU9bdt4rKLOM7JcRVPfEvsh9l-ZuLpjHVtWC9sjNC"/>
+</div>
+<div class="absolute inset-0 border border-primary opacity-0 group-hover:opacity-100 transition-opacity rounded-sm shadow-neon"></div>
+<div class="absolute -bottom-2 -right-2 bg-black border border-primary text-primary text-[10px] p-1 rounded-sm">EDIT</div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-mono text-text-muted uppercase">NÍVEL DE ACESSO</span>
+<span class="text-white text-lg font-bold">LEVEL 5 [SYSADMIN]</span>
+<p class="text-xs text-text-muted mt-1">Acesso total aos protocolos de extração e configurações de pipeline.</p>
+</div>
+</div>
+<!-- Input 1 -->
+<div class="flex flex-col gap-2 group">
+<label class="text-[10px] font-mono text-primary uppercase tracking-widest group-focus-within:text-white transition-colors">CODINOME</label>
+<input class="input-tactical pb-2 w-full font-mono text-sm bg-transparent" type="text" value="J. SILVERHAND"/>
+</div>
+<!-- Input 2 -->
+<div class="flex flex-col gap-2 group">
+<label class="text-[10px] font-mono text-primary uppercase tracking-widest group-focus-within:text-white transition-colors">DESIGNAÇÃO DE CARGO</label>
+<input class="input-tactical pb-2 w-full font-mono text-sm bg-transparent" type="text" value="Lead Engineer"/>
+</div>
+<!-- Input 3 -->
+<div class="flex flex-col gap-2 group md:col-span-2">
+<label class="text-[10px] font-mono text-primary uppercase tracking-widest group-focus-within:text-white transition-colors">CANAL DE COM. [Email]</label>
+<input class="input-tactical pb-2 w-full font-mono text-sm bg-transparent" type="email" value="john@zvision.ai"/>
+</div>
+</div>
+<div class="mt-8 flex justify-end">
+<button class="px-6 py-2 bg-primary text-black font-bold text-sm uppercase tracking-wide hover:bg-[#b5f055] hover:shadow-neon transition-all rounded-sm flex items-center gap-2"><span class="material-symbols-outlined text-lg">save</span> ATUALIZAR IDENTIDADE</button>
+</div>
+</section>
+<!-- API Keys Section -->
+<section class="glass-panel p-8 rounded-sm animate-[fadeIn_0.6s_ease-out]">
+<div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+<h3 class="text-lg font-bold text-white uppercase tracking-widest flex items-center gap-2"><span class="material-symbols-outlined text-primary">key</span> PORTAIS DE API</h3>
+<button class="text-xs font-mono text-primary hover:text-white border border-primary/30 hover:bg-primary/10 px-3 py-1.5 rounded-sm transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">add</span> GERAR NOVA CHAVE</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- API Key Item 1 -->
+<div class="flex flex-col md:flex-row md:items-center justify-between bg-black/40 border border-white/5 p-4 rounded-sm hover:border-primary/30 transition-colors group">
+<div class="flex flex-col gap-1 mb-3 md:mb-0">
+<span class="text-xs font-bold text-white uppercase tracking-wide">OpenAI Production</span>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-[10px] font-mono text-text-muted">ÚLTIMO USO: 2M ATRÁS</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<code class="font-mono text-sm text-text-muted bg-white/5 px-3 py-1 rounded-sm border border-white/5">sk-••••••••••••••••4X92</code>
+<div class="flex items-center gap-1">
+<button class="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-sm transition-colors" title="Copy Key">
+<span class="material-symbols-outlined text-lg">content_copy</span>
+</button>
+<button class="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-sm transition-colors" title="Regenerate">
+<span class="material-symbols-outlined text-lg">refresh</span>
+</button>
+<button class="p-2 text-text-muted hover:text-red-400 hover:bg-red-400/10 rounded-sm transition-colors" title="Revoke">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- API Key Item 2 -->
+<div class="flex flex-col md:flex-row md:items-center justify-between bg-black/40 border border-white/5 p-4 rounded-sm hover:border-primary/30 transition-colors group">
+<div class="flex flex-col gap-1 mb-3 md:mb-0">
+<span class="text-xs font-bold text-white uppercase tracking-wide">Data Extraction V2</span>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-yellow-500 rounded-full"></span>
+<span class="text-[10px] font-mono text-text-muted">OCIOSO</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<code class="font-mono text-sm text-text-muted bg-white/5 px-3 py-1 rounded-sm border border-white/5">zv_live_••••••••••••99A1</code>
+<div class="flex items-center gap-1">
+<button class="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-sm transition-colors" title="Copy Key">
+<span class="material-symbols-outlined text-lg">content_copy</span>
+</button>
+<button class="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-sm transition-colors" title="Regenerate">
+<span class="material-symbols-outlined text-lg">refresh</span>
+</button>
+<button class="p-2 text-text-muted hover:text-red-400 hover:bg-red-400/10 rounded-sm transition-colors" title="Revoke">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="border border-danger/30 bg-danger/5 p-8 rounded-sm mt-4 animate-[fadeIn_0.7s_ease-out]">
+<div class="flex items-center justify-between">
+<div class="flex flex-col gap-2">
+<h3 class="text-lg font-bold text-danger uppercase tracking-widest flex items-center gap-2"><span class="material-symbols-outlined">warning</span> ZONA: FIM DA LINHA</h3>
+<p class="text-xs text-text-muted font-mono max-w-lg">A execução de um expurgo apagará irreversivelmente todos os bancos de dados locais, modelos de IA treinados e dossiês de leads em cache. Esta ação não pode ser desfeita por administradores do sistema.</p>
+</div>
+<button class="border border-danger text-danger bg-danger/10 px-6 py-3 rounded-sm font-bold text-xs uppercase tracking-widest hover:bg-danger hover:text-white hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all flex items-center gap-2 whitespace-nowrap"><span class="material-symbols-outlined text-lg">skull</span> Expurgar Dados da Conta</button>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+</body></html>

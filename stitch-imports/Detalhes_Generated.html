@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lead Intel: Nexus Quantum Core Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a1e633",
+                        "background-light": "#f7f8f6",
+                        "background-dark": "#050505",
+                        "void-black": "#050505",
+                        "tactical-gray": "#1b2111",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-image: 
+                linear-gradient(rgba(161, 230, 51, 0.05) 1px, transparent 1px),
+                linear-gradient(90px, rgba(161, 230, 51, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-color: #050505;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(161, 230, 51, 0.1);
+        }
+        .cyber-glow {
+            box-shadow: 0 0 15px rgba(161, 230, 51, 0.3);
+        }
+    </style>
+</head>
+<body class="font-display text-slate-100 min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-primary/10 bg-background-dark/80 sticky top-0 z-50 px-6 lg:px-20 py-4 backdrop-blur-md">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<span class="material-symbols-outlined text-3xl">deployed_code</span>
+</div>
+<h1 class="text-xl font-bold leading-tight tracking-tight uppercase">LEAD INTEL: NEXUS QUANTUM CORE</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-medium transition-colors" href="#">Leads</a>
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Opportunities</a>
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-[10px] font-bold text-primary tracking-widest uppercase">Live Core Status</span>
+</div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-6 bg-primary text-background-dark text-sm font-bold transition-transform hover:scale-105 cyber-glow">
+<span>Voltar</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-primary/30" data-alt="User profile avatar of a tech executive" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDlD0PM53hGfErS5jqYvklBxvO3Tby1aB9s6-PT7kYGEX3DW4WhVxu8mNoKLhAjj_uxxFOpKzRTUy_m63F4ENd7XmzDwpVCPgQyyyUuNGwqqiYdkZtK3h2z73z5bTEsCm9n6gVTh9sVtJBFzQkZ538vobV5xsaFaXBsCqZ7cUsectsw1jArikGylOsFn7pkW3wdojL73PIAy0vugSrZsHWYYM9hNBnc2QiuCzVWioky2O-b2M_Cc7kj-YpWjVASdvwFJC6J6pmMtwhB");'></div>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto w-full px-6 lg:px-20 py-8 space-y-8">
+<!-- Metrics Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-panel flex flex-col gap-2 rounded-xl p-8 transition-all hover:bg-white/5">
+<p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Deal Value</p>
+<p class="text-primary text-4xl font-bold font-mono">R$ 145.000</p>
+<div class="flex items-center gap-1 text-primary text-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12% relative to Q2</span>
+</div>
+</div>
+<div class="glass-panel flex flex-col gap-2 rounded-xl p-8 transition-all hover:bg-white/5">
+<p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Probability of Close</p>
+<p class="text-slate-100 text-4xl font-bold font-mono">65%</p>
+<div class="flex items-center gap-1 text-primary text-sm">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span>High engagement detected</span>
+</div>
+</div>
+<div class="glass-panel flex flex-col gap-2 rounded-xl p-8 transition-all hover:bg-white/5">
+<p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Target Tech Stack</p>
+<p class="text-slate-100 text-2xl font-bold">Zvision Cyber-Core</p>
+<div class="flex items-center gap-1 text-slate-500 text-sm font-mono">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span>Deployment Q3 Ready</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Company Metadata -->
+<div class="lg:col-span-5 space-y-6">
+<div class="glass-panel rounded-xl p-8">
+<h2 class="text-primary text-xl font-bold mb-6 flex items-center gap-2 uppercase tracking-tight">
+<span class="material-symbols-outlined">info</span> Intelligence Brief
+                        </h2>
+<div class="space-y-6">
+<div class="grid grid-cols-2 gap-4 py-4 border-b border-white/5">
+<div>
+<p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mb-1">Sector</p>
+<p class="text-slate-200 font-mono text-sm">Cybersecurity B2B</p>
+</div>
+<div>
+<p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mb-1">Website</p>
+<p class="text-primary font-mono text-sm truncate">nexus-quantum.tech</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 py-4 border-b border-white/5">
+<div>
+<p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mb-1">Address</p>
+<p class="text-slate-200 font-mono text-sm">São Paulo, BR</p>
+</div>
+<div>
+<p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mb-1">CEO</p>
+<p class="text-slate-200 font-mono text-sm">Erik Magnusson</p>
+</div>
+</div>
+<div class="pt-4">
+<p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mb-2">Analysis</p>
+<p class="text-slate-300 text-base leading-relaxed">
+                                    Strategic lead showing high engagement with core infrastructure modules. Budget approved for Q3 deployment. Competitor presence is minimal in the quantum-encryption space.
+                                </p>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-8">
+<div class="aspect-video rounded-lg overflow-hidden relative">
+<div class="absolute inset-0 bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl animate-pulse">location_on</span>
+</div>
+<img class="w-full h-full object-cover opacity-40 grayscale" data-alt="Monochrome satellite view map of Sao Paulo city center" data-location="São Paulo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoGdzgFtv_JbbE1TAMI9HO3q0Br0JTbr5pNqdQKpzaaNAbzObVNJB-m0ykL6MHfCL2UHB2gZVs-dsn6llMqP4Sjw9AAheuEl-dWhrFQceIddp9apxBi6gTrv17qli5xt4FdkBhJkaNiPFBqMVYdCXTaQAVAPfrzmSsA1_7OMh-DbhnQ0T176ImlYYyjOQhaRk3Ri0FENSdm0rX5oyu73tNhUlI3VMrLc0JXH2iFptwBwDYqJwD5vJ0GBes7eLVwhW0bNz4ScpTS5fY"/>
+</div>
+</div>
+</div>
+<!-- Right Column: Activity Timeline -->
+<div class="lg:col-span-7 space-y-6">
+<div class="glass-panel rounded-xl p-8 h-full">
+<h2 class="text-primary text-xl font-bold mb-8 flex items-center gap-2 uppercase tracking-tight">
+<span class="material-symbols-outlined">history</span> Activity Timeline
+                        </h2>
+<div class="relative space-y-8 before:content-[''] before:absolute before:left-4 before:top-2 before:bottom-2 before:w-[1px] before:bg-primary/20">
+<!-- Timeline Item -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-background-dark border border-primary/50 flex items-center justify-center text-primary z-10">
+<span class="material-symbols-outlined text-lg">mail</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-slate-100 font-bold">Proposal Sent</h3>
+<p class="text-slate-400 text-sm mt-1">Version 2.4 focused on Quantum Core integration sent to CTO.</p>
+</div>
+<span class="text-slate-500 font-mono text-xs uppercase">2 hours ago</span>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-background-dark border border-primary/50 flex items-center justify-center text-primary z-10">
+<span class="material-symbols-outlined text-lg">groups</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-slate-100 font-bold">Tech Discovery Meeting</h3>
+<p class="text-slate-400 text-sm mt-1">Deep dive into current infrastructure limitations with engineering team.</p>
+</div>
+<span class="text-slate-500 font-mono text-xs uppercase">Yesterday</span>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-12 opacity-60">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-background-dark border border-white/20 flex items-center justify-center text-slate-400 z-10">
+<span class="material-symbols-outlined text-lg">description</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-slate-300 font-bold">NDA Signed</h3>
+<p class="text-slate-500 text-sm mt-1">Legal clearance completed for data sharing phase.</p>
+</div>
+<span class="text-slate-500 font-mono text-xs uppercase">3 days ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Actions -->
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
+<button class="flex-1 flex items-center justify-center gap-3 rounded-xl h-14 bg-primary text-background-dark font-bold text-lg hover:scale-[1.02] transition-transform cyber-glow">
+<span class="material-symbols-outlined">calendar_today</span>
+                    Agendar Reunião
+                </button>
+<button class="flex-1 flex items-center justify-center gap-3 rounded-xl h-14 bg-white/5 border border-primary/30 text-primary font-bold text-lg hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">contract</span>
+                    Enviar Contrato
+                </button>
+</div>
+</main>
+<footer class="mt-auto py-8 px-6 lg:px-20 border-t border-primary/10 bg-background-dark/50">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-slate-500 text-xs font-mono">SYSTEM_ID: NX-9000 // CORE_V: 1.0.4</p>
+<p class="text-slate-500 text-xs font-mono uppercase tracking-widest">© 2024 Zvision Cyber-Core Intelligence</p>
+</div>
+</footer>
+</div>
+</body></html>

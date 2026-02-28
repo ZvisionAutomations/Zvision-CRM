@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zvision Cyber-Core - Data Ingestion</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a1e633",
+                        "primary-dim": "rgba(161, 230, 51, 0.1)",
+                        "background-light": "#f7f8f6",
+                        "background-dark": "#050505", // Deep void black
+                        "surface-glass": "rgba(20, 20, 20, 0.6)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)",
+                        'scanlines': "linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))",
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glitch': 'glitch 1s linear infinite',
+                    },
+                    keyframes: {
+                        glitch: {
+                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                            '62%': { transform: 'translate(0,0) skew(5deg)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for terminal */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* CRT Scanline Effect */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Glitch text effect class */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(82px, 9999px, 12px, 0); }
+            40% { clip: rect(13px, 9999px, 66px, 0); }
+            60% { clip: rect(55px, 9999px, 88px, 0); }
+            80% { clip: rect(38px, 9999px, 6px, 0); }
+            100% { clip: rect(74px, 9999px, 2px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(11px, 9999px, 24px, 0); }
+            20% { clip: rect(72px, 9999px, 2px, 0); }
+            40% { clip: rect(33px, 9999px, 46px, 0); }
+            60% { clip: rect(5px, 9999px, 18px, 0); }
+            80% { clip: rect(18px, 9999px, 36px, 0); }
+            100% { clip: rect(94px, 9999px, 12px, 0); }
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-slate-100 font-display min-h-screen overflow-hidden selection:bg-primary selection:text-black">
+<div class="flex h-screen w-full relative">
+<!-- Background Ambient Effects -->
+<div class="absolute inset-0 bg-grid-pattern bg-[length:40px_40px] opacity-[0.05] pointer-events-none"></div>
+<div class="absolute inset-0 bg-scanlines opacity-[0.1] pointer-events-none z-50"></div>
+<!-- Sidebar Navigation -->
+<div class="relative z-20 flex-shrink-0 w-20 border-r border-white/10 bg-[#0a0a0a] flex flex-col items-center py-6 gap-8">
+<!-- Logo -->
+<div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center border border-white/10">
+<div class="w-6 h-6 bg-primary rotate-45"></div>
+</div>
+<!-- Nav Icons -->
+<div class="flex flex-col gap-6 w-full">
+<div class="group flex justify-center relative w-full cursor-pointer py-2">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-2xl">grid_view</span>
+</div>
+<div class="group flex justify-center relative w-full cursor-pointer py-2">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-2xl">view_kanban</span>
+</div>
+<div class="group flex justify-center relative w-full cursor-pointer py-2 bg-white/5 border-l-2 border-primary">
+<!-- Glow effect for active state -->
+<div class="absolute inset-0 bg-primary/10 blur-md"></div>
+<span class="material-symbols-outlined text-primary relative z-10 text-2xl">upload_file</span>
+</div>
+<div class="group flex justify-center relative w-full cursor-pointer py-2">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-2xl">settings</span>
+</div>
+</div>
+<!-- Bottom Avatar -->
+<div class="mt-auto mb-4">
+<div class="w-10 h-10 rounded-full bg-gray-800 border border-gray-700 bg-cover bg-center" data-alt="User Avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBVNL5-w3Bz4fU_N97MyNOrnT9rQcy8Ivaaqf6aI5r-oWSG9zd4jlsqfMZxnxWHRo_o15KMBY9ME5-ahZGuooE9i11ja-s3nDQKu4937_h8Wcetnp9QUXcJ6C2V8tsm7XpiG3VFBbP2VCNjcO-1xJK5pdkSORRb092mn17UvYYn9JaG1JMqtIMCppK3HN2YxK3BAfDvqsFt3ERtmBzYuwc1HC6FvXuFFUSsXG0Vw69MSkcqYzSNN3Dt3qjp9SE8JQedzIDeQGGZQM_2');"></div>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col relative z-10 overflow-hidden">
+<!-- Header -->
+<header class="h-16 border-b border-white/10 flex items-center justify-between px-8 bg-[#050505]/80 backdrop-blur-sm">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">terminal</span>
+<h2 class="text-xl font-bold tracking-widest text-white">INGESTÃO DE DADOS <span class="text-primary">//</span> UPLINK</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded text-xs font-mono text-primary"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> SISTEMA ONLINE</div>
+</div>
+</header>
+<!-- Main Stage -->
+<main class="flex-1 flex items-center justify-center p-8 relative">
+<!-- Abstract tech decorations in background -->
+<div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Glassmorphic Container -->
+<div class="w-full max-w-4xl bg-surface-glass backdrop-blur-md border border-white/10 rounded-lg p-1 shadow-2xl relative overflow-hidden group">
+<!-- Corner Accents -->
+<div class="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-primary z-20"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-primary z-20"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-primary z-20"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-primary z-20"></div>
+<div class="bg-[#080808] border border-white/5 rounded p-12 min-h-[500px] flex flex-col relative">
+<!-- STATE 1: IDLE / DROP ZONE -->
+<!-- Toggle 'hidden' class to switch states manually for demo, or implement logic -->
+<div class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-white/20 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 rounded-lg group/zone cursor-pointer relative" id="drop-zone">
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTYxLDIzMCw1MywwLjEpIi8+PC9zdmc+')] opacity-20 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col items-center gap-6">
+<div class="w-24 h-24 rounded-full bg-[#111] border border-white/10 flex items-center justify-center group-hover/zone:border-primary group-hover/zone:shadow-[0_0_30px_rgba(161,230,51,0.2)] transition-all duration-500">
+<span class="material-symbols-outlined text-5xl text-gray-500 group-hover/zone:text-primary transition-colors">cloud_upload</span>
+</div>
+<div class="text-center space-y-2">
+<h3 class="text-2xl font-bold tracking-widest text-white group-hover/zone:text-primary transition-colors">INICIAR TRANSFERÊNCIA DE DADOS</h3>
+<p class="font-mono text-sm text-gray-400">Solte cargas criptografadas CSV/XLSX aqui</p>
+</div>
+<div class="flex gap-4 mt-4">
+<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-500 tracking-wider">MAX: 50MB</span>
+<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-500 tracking-wider">SECURE: AES-256</span>
+</div>
+</div>
+<!-- Decoration Lines -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-px bg-primary/30"></div>
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-px bg-primary/30"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-4 bg-primary/30"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-4 bg-primary/30"></div>
+</div>
+<!-- STATE 2: PROCESSING (Hidden by default for demo structure, imagine logic swaps this) -->
+<div class="hidden absolute inset-0 bg-[#050505] p-8 flex flex-col font-mono z-30" id="processing-terminal">
+<div class="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
+<span class="text-xs text-primary">root@zvision:~/ingest $ ./process_payload.sh</span>
+<span class="text-xs text-gray-500">PID: 49201</span>
+</div>
+<div class="flex-1 overflow-hidden relative">
+<div class="absolute inset-0 bg-scanlines opacity-20 pointer-events-none"></div>
+<div class="space-y-1 text-sm text-gray-300">
+<p>&gt; [INIT] Uplink established.</p>
+<p>&gt; [SCAN] Verifying file integrity...</p>
+<p class="text-primary">&gt; [OK] Hash match: sha256:e3b0c442...</p>
+<p>&gt; [DECRYPT] Unlocking payload...</p>
+<p>&gt; [PARSE] Reading rows 1-50...</p>
+<p class="text-yellow-500">&gt; [WARN] Row 42: Missing phone field (skipped)</p>
+<p>&gt; [PARSE] Reading rows 51-100...</p>
+<p class="animate-pulse">&gt; [WAIT] Injecting into neural core...</p>
+</div>
+</div>
+<div class="mt-4">
+<div class="flex justify-between text-xs mb-1 text-primary font-bold">
+<span>UPLINK STATUS</span>
+<span>78%</span>
+</div>
+<div class="w-full h-2 bg-gray-900 rounded-full overflow-hidden border border-white/10">
+<div class="h-full bg-primary w-[78%] relative overflow-hidden">
+<!-- Animated stripes on progress bar -->
+<div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.3)_25%,rgba(0,0,0,0.3)_50%,transparent_50%,transparent_75%,rgba(0,0,0,0.3)_75%,rgba(0,0,0,0.3))] bg-[length:10px_10px] animate-[pulse_1s_linear_infinite]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- STATE 3: SUCCESS (Currently Hidden) -->
+<div class="hidden absolute inset-0 bg-[#080808]/95 backdrop-blur-xl flex flex-col items-center justify-center z-40" id="success-state">
+<div class="w-20 h-20 rounded-full border-2 border-primary flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(161,230,51,0.4)]">
+<span class="material-symbols-outlined text-4xl text-primary">check_circle</span>
+</div>
+<h2 class="text-3xl font-bold text-white tracking-widest mb-2 glitch-text" data-text="UPLOAD SUCCESSFUL">UPLOAD SUCCESSFUL</h2>
+<p class="font-mono text-primary mb-8 text-sm">&gt; 420 Leads injected into pipeline.</p>
+<button class="group relative px-8 py-3 bg-primary/10 border border-primary text-primary font-bold tracking-wider hover:bg-primary hover:text-black transition-all duration-300 overflow-hidden">
+<span class="relative z-10 flex items-center gap-2">
+                                    ACCESS PIPELINE 
+                                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</span>
+<div class="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
+</button>
+</div>
+</div>
+<!-- Bottom Status Bar -->
+<div class="h-10 bg-[#0a0a0a] border-t border-white/10 flex items-center justify-between px-4 font-mono text-[10px] text-gray-500">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                API: CONNECTED
+                            </span>
+<span class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                DB: WRITABLE
+                            </span>
+</div>
+<div><span>VER 2.0.4 // CRIPTOGRAFADO</span></div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- Script to simulate the flow for demonstration -->
+<script>
+        const dropZone = document.getElementById('drop-zone');
+        const processingTerminal = document.getElementById('processing-terminal');
+        const successState = document.getElementById('success-state');
+
+        dropZone.addEventListener('click', () => {
+            // 1. Hide Drop Zone, Show Terminal
+            dropZone.classList.add('hidden');
+            processingTerminal.classList.remove('hidden');
+
+            // 2. Simulate processing time
+            setTimeout(() => {
+                // 3. Hide Terminal, Show Success
+                processingTerminal.classList.add('hidden');
+                successState.classList.remove('hidden');
+            }, 3500); // 3.5 seconds processing simulation
+        });
+    </script>
+</body></html>
