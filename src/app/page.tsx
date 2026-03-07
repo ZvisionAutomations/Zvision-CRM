@@ -1,258 +1,188 @@
-"use client";
+"use client"
 
-import { Bell, DollarSign, Filter, Target, TrendingUp, TrendingDown, Grid, ListTodo, UploadCloud, Settings } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from "recharts";
+import { useEffect, useState, Suspense } from "react"
+import { motion, useAnimation } from "framer-motion"
+import { useRouter } from "next/navigation"
+import dynamic from "next/dynamic"
 
-const revenueData = [
-  { time: '00:00', revenue: 120 },
-  { time: '04:00', revenue: 190 },
-  { time: '08:00', revenue: 150 },
-  { time: '12:00', revenue: 250 },
-  { time: '16:00', revenue: 220 },
-  { time: '20:00', revenue: 300 },
-  { time: '24:00', revenue: 280 },
-];
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+    ssr: false,
+    loading: () => <SplineFallback />
+})
 
-const clientData = [
-  { day: 'Mon', inbound: 45, outbound: 28 },
-  { day: 'Tue', inbound: 59, outbound: 48 },
-  { day: 'Wed', inbound: 80, outbound: 40 },
-  { day: 'Thu', inbound: 81, outbound: 19 },
-  { day: 'Fri', inbound: 56, outbound: 86 },
-  { day: 'Sat', inbound: 55, outbound: 27 },
-  { day: 'Sun', inbound: 40, outbound: 90 },
-];
-
-const activeTargets = [
-  { initials: 'AC', name: 'Arasaka Corp', desc: 'Cyber-Sec Infrastructure', value: '$240k', risk: 'ALTO', color: 'bg-primary', hoverColor: 'group-hover:text-primary' },
-  { initials: 'MT', name: 'Militech Intl', desc: 'Defense Contracts', value: '$850k', risk: 'MÉDIO', color: 'bg-yellow-500', hoverColor: 'group-hover:text-primary' },
-  { initials: 'BT', name: 'Biotechnica', desc: 'Organic Processors', value: '$120k', risk: 'ALTO', color: 'bg-primary', hoverColor: 'group-hover:text-primary' },
-  { initials: 'KV', name: 'Kang Tao', desc: 'Smart Weaponry', value: '$440k', risk: 'BAIXO', color: 'bg-red-500', hoverColor: 'group-hover:text-primary' },
-  { initials: 'NE', name: 'Night Corp', desc: 'Urban Planning', value: '$900k', risk: 'ALTO', color: 'bg-primary', hoverColor: 'group-hover:text-primary' },
-];
-
-export default function Dashboard() {
-  return (
-    <div className="flex h-screen w-full bg-[#050505] text-[#E5E5E5] font-sans antialiased overflow-hidden relative">
-      {/* Scanline Overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-50 opacity-40 mix-blend-overlay"
-        style={{
-          background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
-          backgroundSize: '100% 2px, 3px 100%'
-        }}
-      ></div>
-
-      {/* Sidebar Navigation */}
-      <aside className="w-16 h-full glass-panel border-l-0 border-t-0 border-b-0 rounded-none flex flex-col items-center py-6 gap-8 z-40 border-r border-[#A2E635]/30 relative bg-[#141414]/60">
-        <div className="w-10 h-10 rounded bg-[#A2E635]/20 flex items-center justify-center border border-[#A2E635]/40 shadow-[0_0_5px_rgba(162,230,53,0.3)] mb-4">
-          <Target className="text-[#A2E635]" size={24} />
+function SplineFallback() {
+    return (
+        <div className="w-[200px] h-[200px] flex items-center justify-center relative">
+            <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                className="w-full h-full"
+            >
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_10px_rgba(162,230,53,0.5)]">
+                    <polygon points="50,10 90,90 10,90" fill="none" stroke="#A2E635" strokeWidth="1.5" opacity="0.6" />
+                    <circle cx="50" cy="50" r="20" fill="none" stroke="#A2E635" strokeWidth="1" opacity="0.4" />
+                </svg>
+            </motion.div>
         </div>
+    )
+}
 
-        <nav className="flex flex-col gap-6 w-full">
-          <button className="group relative w-full h-12 flex items-center justify-center text-[#A2E635] bg-[#A2E635]/10 border-l-2 border-[#A2E635] transition-all duration-300 shadow-[0_0_5px_rgba(162,230,53,0.3)]">
-            <Grid className="group-hover:scale-110 transition-transform" />
-            <div className="absolute left-14 bg-black border border-[#A2E635] text-[#A2E635] px-2 py-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">DASHBOARD</div>
-          </button>
+// Terminal Logs state
+const logs = [
+    { text: "Estabelecendo conexão segura com nó_delta_09...", delay: 0.2 },
+    { text: "Desacoplando chaves de API do cofre_quântico_7...", delay: 0.8 },
+    { text: "Carregando matriz do pipeline [||||||||||||] 84%", delay: 1.5 },
+    { text: "Verificando integridade do núcleo tático... Sucesso", delay: 2.2 },
+]
 
-          <button className="group relative w-full h-12 flex items-center justify-center text-[#6B7280] hover:text-[#A2E635] transition-colors">
-            <ListTodo className="group-hover:scale-110 transition-transform" />
-            <div className="absolute left-14 bg-black border border-[#A2E635] text-[#A2E635] px-2 py-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">PIPELINE</div>
-          </button>
+export default function BootSequence() {
+    const router = useRouter()
+    const controls = useAnimation()
 
-          <button className="group relative w-full h-12 flex items-center justify-center text-[#6B7280] hover:text-[#A2E635] transition-colors">
-            <UploadCloud className="group-hover:scale-110 transition-transform" />
-            <div className="absolute left-14 bg-black border border-[#A2E635] text-[#A2E635] px-2 py-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">DADOS</div>
-          </button>
-        </nav>
+    const [visibleLogs, setVisibleLogs] = useState<number[]>([])
+    const [splineLoaded, setSplineLoaded] = useState(false)
+    const [showFallback, setShowFallback] = useState(false)
 
-        <div className="mt-auto flex flex-col gap-6 w-full items-center">
-          <button className="group relative w-full h-12 flex items-center justify-center text-[#6B7280] hover:text-[#A2E635] transition-colors">
-            <Settings className="group-hover:rotate-90 transition-transform" />
-            <div className="absolute left-14 bg-black border border-[#A2E635] text-[#A2E635] px-2 py-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">AJUSTES</div>
-          </button>
-          <div className="w-8 h-8 rounded-full bg-cover border border-[#6B7280] opacity-60 hover:opacity-100 hover:border-[#A2E635] transition-all cursor-pointer bg-gray-600"></div>
-        </div>
-      </aside>
+    useEffect(() => {
+        // Enforce 3s max load time for Spline
+        const splineTimeout = setTimeout(() => {
+            if (!splineLoaded) {
+                setShowFallback(true)
+            }
+        }, 3000)
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative"
-        style={{
-          backgroundSize: '40px 40px',
-          backgroundImage: 'linear-gradient(to right, rgba(162, 230, 53, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(162, 230, 53, 0.05) 1px, transparent 1px)'
-        }}>
+        // Reveal logs over time
+        logs.forEach((log, index) => {
+            setTimeout(() => {
+                setVisibleLogs(prev => [...prev, index])
+            }, log.delay * 1000)
+        })
 
-        {/* Header */}
-        <header className="h-16 flex items-center justify-between px-8 border-b border-white/10 glass-panel border-l-0 border-t-0 rounded-none z-30 shrink-0 bg-[#141414]/60">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold tracking-widest text-white uppercase">PAINEL DE CONTROLE</h1>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#A2E635]/20 text-[#A2E635] border border-[#A2E635]/30 animate-pulse">LIVE FEED ACTIVE</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-mono text-[#6B7280]">SYS_STATUS</span>
-              <span className="text-xs font-mono text-[#A2E635]">OPTIMAL</span>
-            </div>
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-mono text-[#6B7280]">NET_VERSION</span>
-              <span className="text-xs font-mono text-white">v.2.0.77</span>
-            </div>
-            <button className="p-2 text-[#6B7280] hover:text-white transition-colors">
-              <Bell size={20} />
-            </button>
-          </div>
-        </header>
+        // Start main animation sequence
+        controls.start("visible")
+        return () => clearTimeout(splineTimeout)
+    }, [controls, splineLoaded])
 
-        {/* Dashboard Grid */}
-        <div className="flex-1 p-6 overflow-y-auto grid grid-cols-12 gap-6 pb-20">
+    return (
+        <div className="relative min-h-screen w-full flex flex-col items-center justify-center tactical-grid bg-background select-none overflow-hidden">
+            {/* UI Frame */}
+            <div className="absolute top-0 left-0 w-full h-full border-[12px] border-primary/5 pointer-events-none z-20"></div>
 
-          {/* ROI Cards Row */}
-          <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <div className="glass-panel p-5 rounded-sm relative group hover:border-[#A2E635]/50 transition-colors bg-[#141414]/60">
-              <div className="absolute top-0 right-0 p-2 opacity-50">
-                <DollarSign className="text-[#A2E635]" size={30} />
-              </div>
-              <p className="text-xs font-mono text-[#6B7280] mb-1">RECEITA TOTAL</p>
-              <div className="flex items-end gap-3">
-                <h2 className="text-3xl font-bold text-white tracking-tight">$1,240,500</h2>
-                <span className="text-sm font-mono text-[#A2E635] flex items-center mb-1">
-                  <TrendingUp size={16} className="mr-1" />+12.5%
-                </span>
-              </div>
-              <div className="w-full bg-gray-800 h-0.5 mt-4 overflow-hidden">
-                <div className="bg-[#A2E635] h-full w-[75%] shadow-[0_0_10px_#A2E635]"></div>
-              </div>
+            <div className="absolute top-4 left-4 flex gap-4 text-primary/40">
+                <span className="material-symbols-outlined text-sm">security</span>
+                <span className="font-mono text-[10px] tracking-widest uppercase">Criptografia: AES-256-GCM</span>
             </div>
 
-            <div className="glass-panel p-5 rounded-sm relative group hover:border-[#A2E635]/50 transition-colors bg-[#141414]/60">
-              <div className="absolute top-0 right-0 p-2 opacity-50">
-                <Filter className="text-[#A2E635]" size={30} />
-              </div>
-              <p className="text-xs font-mono text-[#6B7280] mb-1">PIPELINE ATIVO</p>
-              <div className="flex items-end gap-3">
-                <h2 className="text-3xl font-bold text-white tracking-tight">42 NEGÓCIOS</h2>
-                <span className="text-sm font-mono text-[#A2E635] flex items-center mb-1">
-                  <TrendingUp size={16} className="mr-1" />+8.0%
-                </span>
-              </div>
-              <div className="w-full bg-gray-800 h-0.5 mt-4 overflow-hidden">
-                <div className="bg-[#A2E635] h-full w-[45%] shadow-[0_0_10px_#A2E635]"></div>
-              </div>
+            <div className="absolute top-4 right-4 flex gap-4 text-primary/40">
+                <span className="font-mono text-[10px] tracking-widest uppercase">Sistema: V4.0.2 // ESTÁVEL</span>
+                <span className="material-symbols-outlined text-sm">radar</span>
             </div>
 
-            <div className="glass-panel p-5 rounded-sm relative group hover:border-[#A2E635]/50 transition-colors bg-[#141414]/60">
-              <div className="absolute top-0 right-0 p-2 opacity-50">
-                <Target className="text-red-500" size={30} />
-              </div>
-              <p className="text-xs font-mono text-[#6B7280] mb-1">TAXA DE CONVERSÃO</p>
-              <div className="flex items-end gap-3">
-                <h2 className="text-3xl font-bold text-white tracking-tight">68%</h2>
-                <span className="text-sm font-mono text-red-500 flex items-center mb-1">
-                  <TrendingDown size={16} className="mr-1" />-2.1%
-                </span>
-              </div>
-              <div className="w-full bg-gray-800 h-0.5 mt-4 overflow-hidden">
-                <div className="bg-red-500 h-full w-[68%] shadow-[0_0_10px_#EF4444]"></div>
-              </div>
+            <div className="absolute bottom-4 left-4 text-primary/40">
+                <span className="font-mono text-[10px] tracking-widest uppercase">LAT: 37.7749 // LONG: -122.4194</span>
             </div>
 
-          </div>
-
-          {/* Chart Section */}
-          <div className="col-span-12 lg:col-span-8 glass-panel rounded-sm flex flex-col relative overflow-hidden group bg-[#141414]/60">
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#A2E635]"></div>
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#A2E635]"></div>
-            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#A2E635]"></div>
-            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#A2E635]"></div>
-
-            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
-              <h3 className="text-sm font-mono text-[#A2E635] tracking-wider uppercase flex items-center gap-2">
-                <span className="w-2 h-2 bg-[#A2E635] rounded-full animate-pulse"></span> FLUXOS INTERNOS ZVISION
-              </h3>
-              <div className="flex gap-2">
-                <button className="text-[10px] font-mono px-2 py-1 bg-[#A2E635]/20 text-[#A2E635] border border-[#A2E635]/30 rounded hover:bg-[#A2E635]/30">1H</button>
-                <button className="text-[10px] font-mono px-2 py-1 bg-white/5 text-[#6B7280] border border-white/10 rounded hover:bg-white/10">24H</button>
-                <button className="text-[10px] font-mono px-2 py-1 bg-white/5 text-[#6B7280] border border-white/10 rounded hover:bg-white/10">7D</button>
-              </div>
-            </div>
-
-            <div className="relative flex-1 p-4 min-h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#A2E635" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#A2E635" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="time" stroke="rgba(255,255,255,0.2)" tick={{ fill: '#6B7280', fontSize: 12 }} />
-                  <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fill: '#6B7280', fontSize: 12 }} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: 'rgba(0,0,0,0.9)', borderColor: '#A2E635', color: '#fff' }}
-                    itemStyle={{ color: '#A2E635' }}
-                  />
-                  <Area type="monotone" dataKey="revenue" stroke="#A2E635" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Active Targets List */}
-          <div className="col-span-12 lg:col-span-4 glass-panel rounded-sm flex flex-col bg-[#141414]/60">
-            <div className="p-4 border-b border-white/5 bg-black/20">
-              <h3 className="text-sm font-mono text-white tracking-wider uppercase">ALVOS ATIVOS</h3>
-            </div>
-            <div className="flex-1 overflow-y-auto p-2 space-y-2">
-              {activeTargets.map((target, idx) => (
-                <div key={idx} className="group flex items-center justify-between p-3 rounded hover:bg-white/5 border border-transparent hover:border-[#A2E635]/30 transition-all cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center text-xs font-bold text-white">{target.initials}</div>
-                    <div>
-                      <h4 className={`text-sm font-bold text-white transition-colors ${target.hoverColor}`}>{target.name}</h4>
-                      <p className="text-[10px] font-mono text-[#6B7280]">{target.desc}</p>
+            {/* Main Content Container */}
+            <div className="flex flex-col items-center max-w-xl w-full px-8 relative z-30">
+                {/* Logo Section */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="mb-12 flex flex-col items-center"
+                >
+                    <div className="relative mb-0 flex items-center justify-center h-[200px] w-[200px]">
+                        {showFallback ? (
+                            <SplineFallback />
+                        ) : (
+                            <Suspense fallback={<SplineFallback />}>
+                                <div className="absolute inset-0 z-10 scale-[0.6] flex items-center justify-center pointer-events-none">
+                                    <Spline
+                                        scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"
+                                        onLoad={() => setSplineLoaded(true)}
+                                    />
+                                </div>
+                            </Suspense>
+                        )}
+                        <div className="absolute inset-x-0 bottom-4 bg-primary/20 blur-2xl rounded-full h-8 w-24 mx-auto"></div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-mono text-[#A2E635]">{target.value}</p>
-                    <div className="flex items-center justify-end gap-1 mt-1">
-                      <span className={`w-1.5 h-1.5 rounded-full ${target.color}`}></span>
-                      <span className="text-[10px] font-mono text-[#6B7280] uppercase">{target.risk}</span>
+                    <h1 className="text-7xl font-bold tracking-[0.2em] text-slate-100 dark:text-white uppercase font-display relative z-20 -mt-8">ZVISION</h1>
+                    <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: "6rem" }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                        className="h-px bg-primary/50 mt-4 mx-auto"
+                    />
+                </motion.div>
+
+                {/* Terminal Diagnostics */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                    className="w-full bg-slate-900/50 dark:bg-primary/5 border border-primary/10 rounded-lg p-6 font-mono mb-12"
+                >
+                    <div className="flex items-center gap-2 mb-4 border-b border-primary/10 pb-2">
+                        <motion.div
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{ repeat: Infinity, duration: 2 }}
+                            className="w-2 h-2 rounded-full bg-primary/80"
+                        />
+                        <span className="text-[10px] text-primary/60 uppercase tracking-tighter">Matriz de Diagnóstico Iniciada</span>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Bottom Chart */}
-          <div className="col-span-12 glass-panel rounded-sm flex flex-col h-64 relative group bg-[#141414]/60">
-            <div className="absolute bottom-0 right-0 p-2 z-10">
-              <span className="text-[10px] font-mono text-[#6B7280]">DATA_DENSITY: 98%</span>
-            </div>
-            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
-              <h3 className="text-sm font-mono text-white tracking-wider uppercase">FLUXO DE CLIENTES [TRÁFEGO]</h3>
-            </div>
-            <div className="relative flex-1 p-4 w-full h-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={clientData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="day" stroke="rgba(255,255,255,0.2)" tick={{ fill: '#6B7280', fontSize: 12 }} />
-                  <YAxis stroke="transparent" tick={false} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: 'rgba(0,0,0,0.9)', borderColor: '#A2E635', color: '#fff' }}
-                  />
-                  <Legend iconType="circle" wrapperStyle={{ top: -10 }} />
-                  <Line type="monotone" dataKey="inbound" stroke="#A2E635" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#A2E635' }} />
-                  <Line type="monotone" dataKey="outbound" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#3b82f6' }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+                    <div className="space-y-2">
+                        {logs.map((log, index) => (
+                            visibleLogs.includes(index) && (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className="flex items-start gap-3"
+                                >
+                                    <span className="text-primary/40 text-[10px] pt-1">0{index + 1}</span>
+                                    <p className="text-slate-400 dark:text-slate-400 text-xs leading-relaxed uppercase tracking-wide" dangerouslySetInnerHTML={{ __html: log.text.replace(/([^ ]+\.\.\.|\[\|.*?\|\] \d+%|Sucesso)/, '<span class="text-primary/80">$1</span>') }}>
+                                    </p>
+                                </motion.div>
+                            )
+                        ))}
+                    </div>
+                </motion.div>
 
+                {/* Progress Bar Section */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                    className="w-full max-w-md"
+                >
+                    <div className="flex justify-between items-end mb-2">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-mono text-primary/60 uppercase tracking-widest">Sequência de Inicialização</span>
+                            <span className="text-xs font-bold text-slate-100 dark:text-white uppercase tracking-tighter font-display">CRM TÁTICO CYBER-CORE</span>
+                        </div>
+                    </div>
+                    <div className="relative h-1 w-full bg-primary/20 rounded-full overflow-hidden">
+                        <motion.div
+                            initial={{ width: "0%" }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: 3, ease: "easeInOut" }}
+                            onAnimationComplete={() => {
+                                // Redirect user to dashboard exactly after progress bar finishes
+                                router.push("/dashboard")
+                            }}
+                            className="absolute top-0 left-0 h-full bg-primary rounded-full"
+                        />
+                    </div>
+                    <div className="flex justify-between mt-2">
+                        <span className="text-[8px] font-mono text-primary/40 uppercase">Setor 7-G</span>
+                        <span className="text-[8px] font-mono text-primary/40 uppercase">Sincronização do Kernel Ativa</span>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Screen Overlay Texture */}
+            <div className="absolute inset-0 pointer-events-none z-50 bg-gradient-to-b from-transparent via-primary/5 to-transparent opacity-20"></div>
         </div>
-      </main>
-    </div>
-  );
+    )
 }
