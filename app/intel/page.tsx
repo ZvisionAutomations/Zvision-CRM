@@ -1,281 +1,220 @@
 "use client"
 
+import { useEffect, useState, useCallback } from "react"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { Users, UserPlus, Target, TrendingUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
 import LeadIntelPanel from "@/components/LeadIntelPanel"
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { getLeads } from "@/lib/actions/leads"
+import type { Lead, PipelineStage, SignalStrength } from "@/types/database"
+import { Target, Search, Filter, Zap, SlidersHorizontal } from "lucide-react"
+import { cn } from "@/lib/utils"
 
-// Demographics data
-const ageData = [
-  { name: "18-24", value: 15, color: "#CCFF00" },
-  { name: "25-34", value: 35, color: "#00ffcc" },
-  { name: "35-44", value: 28, color: "#00ccff" },
-  { name: "45-54", value: 15, color: "#ff00cc" },
-  { name: "55+", value: 7, color: "#ffcc00" },
+const STAGE_LABELS: Record<PipelineStage, string> = {
+  NOVO_LEAD:         "NOVO ALVO",
+  QUALIFICACAO:      "QUALIFICACAO",
+  REUNIAO_BRIEFING:  "BRIEFING",
+  REUNIAO_PROPOSTA:  "PROPOSTA",
+  FECHAMENTO:        "FECHAMENTO",
+  KIA:               "KIA",
+}
+
+const SIGNAL_COLORS: Record<SignalStrength, string> = {
+  ALTO:  "bg-lime text-background",
+  MEDIO: "bg-amber-500 text-background",
+  BAIXO: "bg-red-500 text-white",
+}
+
+const STAGE_FILTER_OPTIONS: Array<{ value: PipelineStage | "ALL"; label: string }> = [
+  { value: "ALL",               label: "TODOS" },
+  { value: "NOVO_LEAD",         label: "NOVO ALVO" },
+  { value: "QUALIFICACAO",      label: "QUALIFICACAO" },
+  { value: "REUNIAO_BRIEFING",  label: "BRIEFING" },
+  { value: "REUNIAO_PROPOSTA",  label: "PROPOSTA" },
+  { value: "FECHAMENTO",        label: "FECHAMENTO" },
 ]
 
-const genderData = [
-  { name: "Female", value: 58 },
-  { name: "Male", value: 38 },
-  { name: "Other", value: 4 },
-]
-
-const locationData = [
-  { location: "United States", users: 45000 },
-  { location: "United Kingdom", users: 12000 },
-  { location: "Canada", users: 8500 },
-  { location: "Germany", users: 6200 },
-  { location: "Australia", users: 5800 },
-  { location: "France", users: 4300 },
-]
-
-const audienceSegments = [
-  { name: "High-Value Customers", size: 12500, ltv: "$450", engagement: "High" },
-  { name: "Active Browsers", size: 45000, ltv: "$120", engagement: "Medium" },
-  { name: "Cart Abandoners", size: 8200, ltv: "$85", engagement: "Low" },
-  { name: "New Visitors", size: 67000, ltv: "$45", engagement: "Medium" },
-  { name: "Loyal Repeat Buyers", size: 5600, ltv: "$680", engagement: "High" },
-]
-
-export default function AudienceIntel() {
+export default function IntelPage() {
+  const [leads, setLeads] = useState<Lead[]>([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
+  const [stageFilter, setStageFilter] = useState<PipelineStage | "ALL">("ALL")
   const [selectedLead, setSelectedLead] = useState<{ id: string; name: string } | null>(null)
+
+  const fetchLeads = useCallback(async () => {
+    setLoading(true)
+    try {
+      const result = await getLeads({
+        search: search || undefined,
+        stage: stageFilter !== "ALL" ? stageFilter : undefined,
+        limit: 50,
+      })
+      setLeads(result.leads)
+      setTotal(result.total)
+    } catch {
+      // silently fail — middleware already handles unauth
+    } finally {
+      setLoading(false)
+    }
+  }, [search, stageFilter])
+
+  useEffect(() => {
+    const t = setTimeout(fetchLeads, 300)
+    return () => clearTimeout(t)
+  }, [fetchLeads])
 
   return (
     <DashboardLayout>
       <div className="p-4 md:p-6 lg:p-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 md:mb-8">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Users className="w-4 h-4 text-lime" />
-              <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                Audience Intelligence
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <Target className="w-4 h-4 text-lime" />
+            <span className="text-xs font-mono text-muted-foreground uppercase tracking-[2px]">
+              Base de Alvos
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[3px]">Intel de Alvos</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {total} alvos no radar
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          {/* Busca */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Buscar por nome ou empresa..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full h-9 pl-9 pr-3 bg-card border border-border text-sm font-mono focus:outline-none focus:border-lime/50 placeholder:text-muted-foreground"
+            />
+          </div>
+
+          {/* Filtro de stage */}
+          <div className="flex items-center gap-1 overflow-x-auto">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-muted-foreground shrink-0 mr-1" />
+            {STAGE_FILTER_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setStageFilter(opt.value as PipelineStage | "ALL")}
+                className={cn(
+                  "px-2 py-1 text-xs font-mono whitespace-nowrap transition-colors",
+                  stageFilter === opt.value
+                    ? "bg-lime text-background"
+                    : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-lime/30"
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tabela de leads */}
+        <div className="bg-card border border-border">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Filter className="w-3.5 h-3.5 text-lime" />
+              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">
+                Alvos Identificados
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Audience Intel</h1>
-            <p className="text-muted-foreground mt-1">
-              Deep insights into your audience demographics and behavior
-            </p>
+            <span className="text-xs font-mono text-muted-foreground">{leads.length} exibidos</span>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-              <Target className="w-4 h-4" />
-              <span className="hidden sm:inline">Segments</span>
-            </Button>
-            <Button size="sm" className="gap-2 bg-lime text-background hover:bg-lime/90">
-              <UserPlus className="w-4 h-4" />
-              <span className="hidden sm:inline">Create</span>
-            </Button>
-          </div>
-        </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="w-4 h-4 border border-lime border-t-transparent animate-spin" />
+              <span className="ml-3 text-xs font-mono text-muted-foreground">ESCANEANDO RADAR...</span>
+            </div>
+          ) : leads.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Target className="w-8 h-8 text-muted-foreground mb-3 opacity-40" />
+              <p className="text-sm text-muted-foreground font-mono">// SEM RESULTADOS</p>
+              <p className="text-xs text-muted-foreground mt-1">Nenhum alvo encontrado com os filtros atuais</p>
+            </div>
+          ) : (
+            <>
+              {/* Header da tabela */}
+              <div className="hidden md:grid grid-cols-[auto_1fr_1fr_auto_auto_auto] gap-4 px-4 py-2 border-b border-border">
+                <span className="text-xs font-mono text-muted-foreground w-6" />
+                <span className="text-xs font-mono text-muted-foreground uppercase">Contato</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase">Empresa</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase">Stage</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase">Valor</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase w-6" />
+              </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
-          <div className="bg-card border border-border p-4">
-            <p className="text-xs text-muted-foreground mb-1">Total Reach</p>
-            <p className="text-2xl font-mono font-semibold">138.6K</p>
-            <p className="text-xs text-lime mt-1">+12.4% this month</p>
-          </div>
-          <div className="bg-card border border-border p-4">
-            <p className="text-xs text-muted-foreground mb-1">Active Users</p>
-            <p className="text-2xl font-mono font-semibold">52.3K</p>
-            <p className="text-xs text-lime mt-1">+8.7% this month</p>
-          </div>
-          <div className="bg-card border border-border p-4">
-            <p className="text-xs text-muted-foreground mb-1">Avg. Session</p>
-            <p className="text-2xl font-mono font-semibold">4:32</p>
-            <p className="text-xs text-lime mt-1">+15s vs last month</p>
-          </div>
-          <div className="bg-card border border-border p-4">
-            <p className="text-xs text-muted-foreground mb-1">Retention Rate</p>
-            <p className="text-2xl font-mono font-semibold">67.8%</p>
-            <p className="text-xs text-destructive mt-1">-2.1% this month</p>
-          </div>
-        </div>
-
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-          {/* Age Distribution */}
-          <div className="bg-card border border-border p-6">
-            <h2 className="text-sm font-medium mb-4">Age Distribution</h2>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={ageData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
+              <div className="divide-y divide-border">
+                {leads.map((lead) => (
+                  <button
+                    key={lead.id}
+                    onClick={() => setSelectedLead({ id: lead.id, name: lead.name })}
+                    className="w-full grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_auto_auto_auto] gap-2 md:gap-4 px-4 py-3 hover:bg-surface-hover transition-colors text-left group items-center"
                   >
-                    {ageData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: 0,
-                      fontFamily: "var(--font-mono)",
-                      fontSize: 12,
-                      color: "var(--foreground)",
-                    }}
-                    formatter={(value: number) => [`${value}%`, "Share"]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              {ageData.map((item) => (
-                <div key={item.name} className="flex items-center gap-2">
-                  <div className="w-2 h-2" style={{ backgroundColor: item.color }} />
-                  <span className="text-xs text-muted-foreground">{item.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+                    {/* Sinal */}
+                    <span className={cn(
+                      "hidden md:inline-flex items-center justify-center w-5 h-5 text-[9px] font-mono font-bold",
+                      SIGNAL_COLORS[lead.signal_strength]
+                    )}>
+                      {lead.signal_strength[0]}
+                    </span>
 
-          {/* Gender Split */}
-          <div className="bg-card border border-border p-6">
-            <h2 className="text-sm font-medium mb-4">Gender Distribution</h2>
-            <div className="space-y-4 mt-8">
-              {genderData.map((item) => (
-                <div key={item.name}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm">{item.name}</span>
-                    <span className="text-sm font-mono">{item.value}%</span>
-                  </div>
-                  <div className="h-2 bg-muted overflow-hidden">
-                    <div
-                      className="h-full bg-lime"
-                      style={{ width: `${item.value}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Top Locations */}
-          <div className="bg-card border border-border p-6">
-            <h2 className="text-sm font-medium mb-4">Top Locations</h2>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={locationData} layout="vertical">
-                  <XAxis
-                    type="number"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "var(--font-mono)" }}
-                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
-                  />
-                  <YAxis
-                    type="category"
-                    dataKey="location"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                    width={100}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: 0,
-                      fontFamily: "var(--font-mono)",
-                      fontSize: 12,
-                      color: "var(--foreground)",
-                    }}
-                    formatter={(value: number) => [value.toLocaleString(), "Users"]}
-                  />
-                  <Bar dataKey="users" fill="var(--lime)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        {/* Audience Segments */}
-        <div className="bg-card border border-border">
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <h2 className="text-sm font-medium">Audience Segments</h2>
-            <Button variant="outline" size="sm">
-              Manage Segments
-            </Button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left text-xs font-medium text-muted-foreground p-4">Segment</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground p-4">Size</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground p-4">Avg. LTV</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground p-4">Engagement</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground p-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {audienceSegments.map((segment) => (
-                  <tr key={segment.name} className="hover:bg-surface-hover transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-lime/10 flex items-center justify-center">
-                          <Users className="w-4 h-4 text-lime" />
+                    {/* Nome */}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="md:hidden w-1.5 h-1.5 shrink-0 bg-lime" />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-medium truncate">{lead.name}</span>
+                          {lead.ai_briefing && (
+                            <Zap className="w-3 h-3 text-accent-ai shrink-0" aria-label="Briefing IA" />
+                          )}
                         </div>
-                        <span className="text-sm font-medium">{segment.name}</span>
+                        {lead.email && (
+                          <span className="text-xs text-muted-foreground truncate block">{lead.email}</span>
+                        )}
                       </div>
-                    </td>
-                    <td className="p-4 text-right">
-                      <span className="text-sm font-mono">{segment.size.toLocaleString()}</span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <span className="text-sm font-mono">{segment.ltv}</span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <span className={`text-sm px-2 py-1 ${segment.engagement === "High"
-                          ? "bg-lime/20 text-lime"
-                          : segment.engagement === "Medium"
-                            ? "bg-yellow-500/20 text-yellow-400"
-                            : "bg-muted text-muted-foreground"
-                        }`}>
-                        {segment.engagement}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedLead({ id: `SEG-${segment.size}`, name: segment.name })}
-                      >
-                        <TrendingUp className="w-3.5 h-3.5 mr-1" />
-                        Target
-                      </Button>
-                    </td>
-                  </tr>
+                    </div>
+
+                    {/* Empresa */}
+                    <div className="hidden md:block min-w-0">
+                      <span className="text-sm truncate block">{lead.company_name}</span>
+                      {lead.company_website && (
+                        <span className="text-xs text-muted-foreground truncate block">{lead.company_website}</span>
+                      )}
+                    </div>
+
+                    {/* Stage */}
+                    <span className="hidden md:inline text-xs font-mono text-muted-foreground whitespace-nowrap">
+                      {STAGE_LABELS[lead.pipeline_stage]}
+                    </span>
+
+                    {/* Valor */}
+                    <span className="hidden md:inline text-xs font-mono text-lime whitespace-nowrap">
+                      {lead.estimated_value
+                        ? "R$ " + lead.estimated_value.toLocaleString("pt-BR")
+                        : "—"}
+                    </span>
+
+                    {/* Seta */}
+                    <span className="hidden md:inline text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity text-xs">
+                      →
+                    </span>
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Lead Intel Panel Modal */}
       {selectedLead && (
         <LeadIntelPanel
           isOpen={!!selectedLead}

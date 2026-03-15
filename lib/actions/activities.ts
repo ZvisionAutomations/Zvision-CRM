@@ -1,14 +1,32 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import type { Activity, ActivityType } from '@/src/types/database'
+import type { Activity, ActivityType } from '@/types/database'
+
+import { createServerClient } from '@supabase/ssr'
+
+async function getAdminClient() {
+    return createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+            cookies: {
+                getAll() { return [] },
+                setAll() { },
+            },
+        }
+    )
+}
 
 async function getAuthContext() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Não autorizado')
-    const { data: profile } = await supabase
+
+    const supabaseAdmin = await getAdminClient()
+    const { data: profile } = await supabaseAdmin
         .from('users').select('company_id').eq('id', user.id).single()
+
     if (!profile) throw new Error('Perfil não encontrado')
     return { supabase, user, company_id: profile.company_id }
 }

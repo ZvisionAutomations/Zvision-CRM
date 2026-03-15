@@ -1,14 +1,11 @@
 "use client"
 
-import React, { useState } from "react"
-
+import React from "react"
 import { Sidebar } from "./sidebar"
 import { CommandSearch, useCommandSearch } from "./command-search"
 import { NotificationToast } from "./notification-toast"
 import { DashboardProvider } from "@/context/dashboard-context"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, Search } from "lucide-react"
-import Link from "next/link"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -16,47 +13,19 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { open, setOpen } = useCommandSearch()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
     <DashboardProvider>
-      <div className="min-h-screen bg-background noise-overlay">
-        {/* Mobile Header */}
-        <header className="fixed top-0 left-0 right-0 h-14 bg-background/80 backdrop-blur-xl border-b border-border z-30 lg:hidden">
-          <div className="flex items-center justify-between h-full px-4">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="p-2 hover:bg-surface-hover transition-colors"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-lime flex items-center justify-center">
-                  <span className="text-background font-mono text-xs font-bold">Z</span>
-                </div>
-                <span className="font-semibold">ZVISION</span>
-              </Link>
-            </div>
-            <button
-              onClick={() => setOpen(true)}
-              className="p-2 hover:bg-surface-hover transition-colors"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-          </div>
-        </header>
-
-        <Sidebar
-          onOpenCommand={() => setOpen(true)}
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
+      <div className="min-h-screen bg-background">
+        {/* Rail lateral fixo 56px */}
+        <Sidebar />
         <CommandSearch open={open} onOpenChange={setOpen} />
 
-        <main className="lg:pl-64 pt-14 lg:pt-0">
+        {/* Conteudo principal deslocado 56px (w-14) da sidebar */}
+        <main className="pl-14 min-h-screen">
           <AnimatePresence mode="wait">
             <motion.div
+              key={typeof window !== "undefined" ? window.location.pathname : ""}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}

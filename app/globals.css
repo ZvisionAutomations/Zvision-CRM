@@ -5,50 +5,53 @@
 
 :root {
   /* ZVISION Light Theme */
-  --background: #fafafa;
-  --foreground: #050505;
-  --card: #ffffff;
-  --card-foreground: #050505;
-  --popover: #ffffff;
-  --popover-foreground: #050505;
-  --primary: #050505;
-  --primary-foreground: #ffffff;
-  --secondary: #f0f0f0;
-  --secondary-foreground: #050505;
-  --muted: #f0f0f0;
-  --muted-foreground: #737373;
-  --accent: #99cc00;
-  --accent-foreground: #050505;
-  --destructive: #ff4444;
-  --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.08);
-  --ring: #99cc00;
-  --chart-1: #99cc00;
-  --chart-2: #00b3a4;
-  --chart-3: #cc0099;
-  --chart-4: #0099cc;
-  --chart-5: #cc9900;
+  --background:    #0A0A0A;
+  --foreground:    #F0F0F0;
+  --card:          #111111;
+  --card-foreground: #F0F0F0;
+  --popover:       #111111;
+  --popover-foreground: #F0F0F0;
+  --primary:       #A2E635;
+  --primary-foreground: #0A0A0A;
+  --secondary:     #1A1A1A;
+  --secondary-foreground: #F0F0F0;
+  --muted:         #1A1A1A;
+  --muted-foreground: rgba(240,240,240,0.5);
+  --accent: #A2E635;
+  --accent-foreground: #0A0A0A;
+  --accent-ai:     #00D4FF;
+  --destructive:   #FF3B3B;
+  --destructive-foreground: #F0F0F0;
+  --border:        rgba(255,255,255,0.06);
+  --input:         rgba(255,255,255,0.06);
+  --ring: #A2E635;
+  --chart-1: #A2E635;
+  --chart-2: #00D4FF;
+  --chart-3: #FF6B35;
+  --chart-4: #8B5CF6;
+  --chart-5: #F59E0B;
   --radius: 0rem;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #050505;
-  --sidebar-primary: #99cc00;
-  --sidebar-primary-foreground: #050505;
-  --sidebar-accent: #f0f0f0;
-  --sidebar-accent-foreground: #050505;
-  --sidebar-border: rgba(0, 0, 0, 0.08);
-  --sidebar-ring: #99cc00;
+  --sidebar:       #0A0A0A;
+  --sidebar-foreground: #F0F0F0;
+  --sidebar-primary: #A2E635;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #1A1A1A;
+  --sidebar-accent-foreground: #F0F0F0;
+  --sidebar-border: rgba(255,255,255,0.06);
+  --sidebar-ring: #A2E635;
   
   /* Custom ZVISION tokens */
-  --lime: #99cc00;
-  --lime-glow: rgba(153, 204, 0, 0.4);
-  --surface: rgba(0, 0, 0, 0.02);
-  --surface-hover: rgba(0, 0, 0, 0.05);
-  --glass: rgba(255, 255, 255, 0.8);
-  
-  /* ZVISION Aliases */
-  --surface-page: var(--background);
-  --surface-card: var(--card);
+  --lime: #A2E635;
+  --lime-glow: rgba(162,230,53,0.35);
+  --surface:       rgba(255,255,255,0.02);
+  --surface-hover: rgba(255,255,255,0.04);
+  --surface-page:  #0A0A0A;
+  --surface-card:  #111111;
+  --surface-elevated: #1A1A1A;
+  --glass:         rgba(10,10,10,0.85);
+  --ai-glow:       rgba(0,212,255,0.35);
+  --lime-glow-sm:  rgba(162,230,53,0.20);
+  --accent-ai:     #00D4FF;
   --accent-primary: var(--accent);
   --text-primary: var(--foreground);
   --text-secondary: var(--muted-foreground);
@@ -58,41 +61,41 @@
 
 .dark {
   --background: #050505;
-  --foreground: #ffffff;
-  --card: #0a0a0a;
-  --card-foreground: #ffffff;
-  --popover: #0a0a0a;
-  --popover-foreground: #ffffff;
+  --foreground:    #F0F0F0;
+  --card:          #111111;
+  --card-foreground: #F0F0F0;
+  --popover:       #111111;
+  --popover-foreground: #F0F0F0;
   --primary: #ffffff;
   --primary-foreground: #050505;
   --secondary: #1a1a1a;
   --secondary-foreground: #ffffff;
   --muted: #1a1a1a;
-  --muted-foreground: #737373;
-  --accent: #CCFF00;
+  --muted-foreground: rgba(240,240,240,0.5);
+  --accent: #A2E635;
   --accent-foreground: #050505;
   --destructive: #ff4444;
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.05);
   --input: rgba(255, 255, 255, 0.05);
-  --ring: #CCFF00;
-  --chart-1: #CCFF00;
+  --ring: #A2E635;
+  --chart-1: #A2E635;
   --chart-2: #00ffcc;
   --chart-3: #ff00cc;
   --chart-4: #00ccff;
   --chart-5: #ffcc00;
   --sidebar: #050505;
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #CCFF00;
+  --sidebar-primary: #A2E635;
   --sidebar-primary-foreground: #050505;
   --sidebar-accent: #1a1a1a;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.05);
-  --sidebar-ring: #CCFF00;
+  --sidebar-ring: #A2E635;
   
   /* Custom ZVISION tokens - Dark */
-  --lime: #CCFF00;
-  --lime-glow: rgba(204, 255, 0, 0.4);
+  --lime: #A2E635;
+  --lime-glow: rgba(162,230,53,0.35);
   --surface: rgba(255, 255, 255, 0.02);
   --surface-hover: rgba(255, 255, 255, 0.05);
   --glass: rgba(10, 10, 10, 0.8);
@@ -108,8 +111,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: 'Space Grotesk', 'Space Grotesk Fallback', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', 'Courier New', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -146,20 +149,33 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-accent-ai: var(--accent-ai);
   --color-lime: var(--lime);
   --color-lime-glow: var(--lime-glow);
+  --color-ai-glow: var(--ai-glow);
   --color-surface: var(--surface);
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
   --color-surface-hover: var(--surface-hover);
   --color-glass: var(--glass);
 }
 
 @layer base {
+  html {
+    color-scheme: dark;
+  }
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
+    background-image:
+      linear-gradient(rgba(162,230,53,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(162,230,53,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-color: #0A0A0A;
   }
 }
 
@@ -230,5 +246,72 @@
     50% {
       opacity: 0.5;
     }
+  }
+
+  /* Scanlines overlay sutil */
+  .scanlines { position: relative; }
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Noise overlay */
+  .noise-overlay { position: relative; }
+  .noise-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.015;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 0;
+  }
+
+  /* Scrollbar tatico */
+  .tactical-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(162,230,53,0.3) transparent;
+  }
+  .tactical-scroll::-webkit-scrollbar { width: 4px; }
+  .tactical-scroll::-webkit-scrollbar-track { background: transparent; }
+  .tactical-scroll::-webkit-scrollbar-thumb { background: rgba(162,230,53,0.3); }
+
+  /* Ornamentos de canto */
+  .corner-brackets { position: relative; }
+  .corner-brackets::before,
+  .corner-brackets::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--lime);
+    border-style: solid;
+    opacity: 0.6;
+  }
+  .corner-brackets::before { top: 0; left: 0; border-width: 1px 0 0 1px; }
+  .corner-brackets::after  { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+  /* Tipografia tatica */
+  .font-tactical {
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Glow IA */
+  .ai-glow {
+    box-shadow: 0 0 20px var(--ai-glow), 0 0 40px rgba(0,212,255,0.15);
+  }
+
+  /* Texto gradiente */
+  .text-gradient-lime {
+    background: linear-gradient(135deg, #A2E635 0%, #F0F0F0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }

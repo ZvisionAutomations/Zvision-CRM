@@ -3,7 +3,23 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import type { Lead, PipelineStage } from '@/src/types/database'
+import type { Lead, PipelineStage } from '@/types/database'
+
+import { createServerClient } from '@supabase/ssr'
+
+// Helper para bypass de RLS apenas na leitura do profile inicial
+async function getAdminClient() {
+    return createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+            cookies: {
+                getAll() { return [] },
+                setAll() { },
+            },
+        }
+    )
+}
 
 // Helper: busca company_id do usuário autenticado
 async function getAuthContext() {
@@ -11,13 +27,15 @@ async function getAuthContext() {
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) throw new Error('Não autorizado')
 
-    const { data: profile, error: profileError } = await supabase
+    // Lemos o profile ignorando RLS para evitar o erro de loop "Perfil não encontrado"
+    const supabaseAdmin = await getAdminClient()
+    const { data: profile, error: profileError } = await supabaseAdmin
         .from('users')
         .select('company_id, role')
         .eq('id', user.id)
         .single()
 
-    if (profileError || !profile) throw new Error('Perfil não encontrado')
+    if (profileError || !profile) throw new Error('Perfil não encontrado no banco de dados')
 
     return { supabase, user, company_id: profile.company_id, role: profile.role }
 }
@@ -29,7 +47,7 @@ const createLeadSchema = z.object({
     phone: z.string().optional(),
     company_website: z.string().url().optional().or(z.literal('')),
     company_linkedin: z.string().optional(),
-    estimated_value: z.number().positive().optional(),
+    estimated_value: z.number().min(0).optional(),
     pipeline_stage: z.enum([
         'NOVO_LEAD', 'QUALIFICACAO', 'REUNIAO_BRIEFING',
         'REUNIAO_PROPOSTA', 'FECHAMENTO', 'KIA'
@@ -46,7 +64,7 @@ export async function getLeads(filters?: {
     try {
         const { supabase, company_id } = await getAuthContext()
         const page = filters?.page ?? 1
-        const limit = Math.min(filters?.limit ?? 50, 100)
+        const limit = Math.min(filters?.limit ?? 50, 1000)
         const from = (page - 1) * limit
 
         let query = supabase
@@ -114,6 +132,63 @@ export async function createLead(rawData: unknown) {
     } catch (error) {
         console.error('[createLead] Falha:', error)
         throw error
+    }
+}
+
+export async function importLeadsBatch(leadsRawData: unknown[]) {
+    try {
+        const { supabase, company_id, user } = await getAuthContext()
+
+        const errors: any[] = []
+        // Valida e filtra os dados crus para garantir que estão seguros
+        const validLeads = leadsRawData.reduce<any[]>((acc, raw, index) => {
+            const result = createLeadSchema.safeParse(raw)
+            if (result.success) {
+                acc.push({ ...result.data, company_id })
+            } else {
+                errors.push(`Row ${index + 1}: ${result.error.errors[0]?.message}`)
+            }
+            return acc
+        }, [])
+
+        if (validLeads.length === 0) {
+            console.error('All rows failed schema validation. Errors:', errors.slice(0, 5))
+            return { error: `Nenhum registro aprovado pelo validador. Erro na 1ª linha: ${errors[0] || 'Desconhecido'}` }
+        }
+
+        // Inserting in batches of 100 to avoid payload limits
+        const BATCH_SIZE = 100
+        let firstInsertedId = null
+
+        for (let i = 0; i < validLeads.length; i += BATCH_SIZE) {
+            const batch = validLeads.slice(i, i + BATCH_SIZE)
+            const { data, error } = await supabase
+                .from('leads')
+                .insert(batch)
+                .select('id')
+
+            if (error) throw error
+            if (i === 0 && data?.[0]) firstInsertedId = data[0].id
+        }
+
+        // Opcional: Registrar a atividade de importação na trilha de auditoria
+        if (firstInsertedId) {
+            await supabase.from('activities').insert({
+                company_id,
+                lead_id: firstInsertedId, // Amarra a atividade ao primeiro lead (ou cria log no sistema geral)
+                user_id: user.id,
+                type: 'NOTE',
+                title: `Ingestão Massiva CCT concluída`,
+                description: `Importação de ${validLeads.length} alvos para o radar.`,
+            }).select().single() // Ignore error on activity for now if fails
+        }
+
+        revalidatePath('/missoes')
+        revalidatePath('/dashboard')
+        return { success: true, count: validLeads.length }
+    } catch (error: any) {
+        console.error('[importLeadsBatch] Falha:', error)
+        return { error: 'Erro crítico ao processar lote no Supabase.' }
     }
 }
 

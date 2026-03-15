@@ -1,145 +1,128 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { createClient } from "@/lib/supabase/client"
+import type { User } from "@supabase/supabase-js"
 import {
   Activity,
+  GitBranch,
   BarChart3,
-  Calendar,
-  ImageIcon,
   Users,
-  Wallet,
   Settings,
-  Search,
-  Command,
-  X,
+  Zap,
+  Database,
 } from "lucide-react"
-import { ThemeToggle } from "./theme-toggle"
 
+// Navegacao principal — icones apenas (rail 56px)
+// Tooltip com label aparece no hover via CSS
 const navItems = [
-  { href: "/", label: "COMANDO", icon: Activity, description: "Central" },
-  { href: "/missoes", label: "MISSÕES", icon: Calendar, description: "Pipeline" },
-  { href: "/analytics", label: "ANÁLISE", icon: BarChart3, description: "Métricas" },
-  { href: "/assets", label: "ARQUIVOS", icon: ImageIcon, description: "Docs" },
-  { href: "/intel", label: "INTEL", icon: Users, description: "Briefings" },
-  { href: "/budget", label: "ORÇAMENTO", icon: Wallet, description: "Budget" },
+  { href: "/",          label: "COMANDO",  icon: Activity,   description: "Central de Comando" },
+  { href: "/missoes",   label: "MISSOES",  icon: GitBranch,  description: "Pipeline de Missoes" },
+  { href: "/intel",     label: "INTEL",    icon: Users,      description: "Inteligencia de Alvos" },
+  { href: "/ingestao",  label: "INGESTAO", icon: Database,   description: "Ingestao de Dados" },
+  { href: "/flows",     label: "FLUXOS",   icon: Zap,        description: "Automacoes" },
+  { href: "/analytics", label: "ANALISE",  icon: BarChart3,  description: "Metricas" },
 ]
 
-interface SidebarProps {
-  onOpenCommand?: () => void
-  isOpen?: boolean
-  onClose?: () => void
-}
-
-export function Sidebar({ onOpenCommand, isOpen, onClose }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname()
+  const [user, setUser] = useState<User | null>(null)
+
+  // Carrega usuario autenticado do Supabase
+  useEffect(() => {
+    const supabase = createClient()
+    if (!supabase) return
+    supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => {
+      if (data.user) setUser(data.user)
+    })
+  }, [])
+
+  // Iniciais do usuario para o avatar
+  const initials = user?.user_metadata?.name
+    ? (user.user_metadata.name as string).split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+    : user?.email?.slice(0, 2).toUpperCase() ?? "??"
 
   return (
-    <>
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-          onClick={onClose}
+    <aside className="fixed left-0 top-0 h-screen w-14 flex flex-col items-center border-r border-border bg-background z-50 py-3">
+      {/* Logo — real Zvision Z mark */}
+      <Link
+        href="/"
+        className="w-8 h-8 flex items-center justify-center mb-6 transition-all hover:scale-110"
+        style={{ filter: "drop-shadow(0 0 4px rgba(162,230,53,0.2))" }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.filter = "drop-shadow(0 0 8px rgba(162,230,53,0.5))"
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.filter = "drop-shadow(0 0 4px rgba(162,230,53,0.2))"
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/zvision-logo.svg"
+          alt="Zvision"
+          width={32}
+          height={32}
+          className="w-8 h-8"
         />
-      )}
+      </Link>
 
-      <aside className={cn(
-        "fixed left-0 top-0 h-screen w-64 flex flex-col border-r border-border bg-background z-50 transition-transform duration-300",
-        "lg:translate-x-0",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        {/* Logo & Theme Toggle */}
-        <div className="p-6 border-b border-border">
-          <div className="flex items-center justify-between mb-4">
-            <Link href="/" className="flex items-center gap-3 group" onClick={onClose}>
-              <div className="w-8 h-8 bg-lime flex items-center justify-center">
-                <span className="text-background font-mono text-sm font-bold">Z</span>
-              </div>
-              <span className="text-lg font-semibold tracking-tight">ZVISION</span>
-            </Link>
-            <button
-              onClick={onClose}
-              className="lg:hidden p-1 hover:bg-surface-hover transition-colors"
+      {/* Navegacao */}
+      <nav className="flex-1 flex flex-col items-center gap-1 w-full px-1">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              title={item.description}
+              className={cn(
+                "relative group w-10 h-10 flex items-center justify-center transition-all",
+                isActive
+                  ? "bg-lime text-background"
+                  : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
+              )}
             >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          <ThemeToggle />
-        </div>
+              {/* Indicador ativo na borda esquerda */}
+              {isActive && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-lime lime-glow-sm" />
+              )}
+              <item.icon className="w-4 h-4" />
+              {/* Tooltip label */}
+              <span className="
+                absolute left-14 bg-surface-elevated border border-border px-2 py-1
+                text-xs font-mono whitespace-nowrap
+                opacity-0 group-hover:opacity-100 pointer-events-none
+                transition-opacity duration-150 z-50
+              ">
+                {item.label}
+              </span>
+            </Link>
+          )
+        })}
+      </nav>
 
-        {/* Search Trigger */}
-        <div className="p-4">
-          <button
-            onClick={onOpenCommand}
-            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-muted-foreground bg-surface border border-border hover:bg-surface-hover transition-colors"
-          >
-            <Search className="w-4 h-4" />
-            <span className="flex-1 text-left">Search...</span>
-            <kbd className="flex items-center gap-1 text-xs font-mono bg-background px-1.5 py-0.5 border border-border">
-              <Command className="w-3 h-3" />K
-            </kbd>
-          </button>
-        </div>
+      {/* Rodape: settings + avatar */}
+      <div className="flex flex-col items-center gap-2 mt-auto">
+        <Link
+          href="/settings"
+          title="Configuracoes"
+          className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-all"
+        >
+          <Settings className="w-4 h-4" />
+        </Link>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 text-sm transition-all group relative",
-                  isActive
-                    ? "text-accent-foreground bg-accent"
-                    : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
-                )}
-              >
-                {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-lime lime-glow-sm" />
-                )}
-                <item.icon
-                  className={cn(
-                    "w-4 h-4 transition-all",
-                    isActive ? "text-accent-foreground" : ""
-                  )}
-                />
-                <span className="font-medium">{item.label}</span>
-                <span className="ml-auto text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                  {item.description}
-                </span>
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* Bottom Section */}
-        <div className="p-4 border-t border-border">
-          <Link
-            href="/settings"
-            onClick={onClose}
-            className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
-          >
-            <Settings className="w-4 h-4" />
-            <span>Settings</span>
-          </Link>
-
-          {/* User */}
-          <div className="mt-4 flex items-center gap-3 px-3">
-            <div className="w-8 h-8 bg-surface border border-border flex items-center justify-center">
-              <span className="text-xs font-mono text-muted-foreground">JD</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">John Doe</p>
-              <p className="text-xs text-muted-foreground truncate">Marketing Lead</p>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </>
+        {/* Avatar do usuario real */}
+        <Link
+          href="/settings"
+          title={user?.user_metadata?.name ?? user?.email ?? "Operador"}
+          className="w-8 h-8 border border-border flex items-center justify-center text-xs font-mono text-muted-foreground hover:border-lime hover:text-lime transition-all"
+        >
+          {initials}
+        </Link>
+      </div>
+    </aside>
   )
 }

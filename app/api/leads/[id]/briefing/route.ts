@@ -3,9 +3,10 @@ import { NextResponse } from 'next/server'
 
 export async function POST(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const resolvedParams = await params
         const supabase = await createClient()
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
@@ -18,7 +19,7 @@ export async function POST(
         const { data: lead, error: leadError } = await supabase
             .from('leads')
             .select('*')
-            .eq('id', params.id)
+            .eq('id', resolvedParams.id)
             .eq('company_id', profile.company_id)
             .is('deleted_at', null)
             .single()
@@ -97,12 +98,12 @@ Seja direto, tático e específico. Sem introduções genéricas.`
                 ai_briefing: briefing,
                 ai_briefing_generated_at: new Date().toISOString(),
             })
-            .eq('id', params.id)
+            .eq('id', resolvedParams.id)
 
         // Registra activity
         await supabase.from('activities').insert({
             company_id: profile.company_id,
-            lead_id: params.id,
+            lead_id: resolvedParams.id,
             user_id: user.id,
             type: 'AI_BRIEFING',
             title: 'Briefing de IA gerado',
@@ -111,7 +112,7 @@ Seja direto, tático e específico. Sem introduções genéricas.`
 
         return NextResponse.json({ briefing, generated_at: new Date().toISOString() })
     } catch (error) {
-        console.error('[briefing/route] Falha:', { id: params.id, error })
+        console.error('[briefing/route] Falha:', { error })
         return NextResponse.json(
             { error: 'Falha ao gerar briefing. Tente novamente.' },
             { status: 500 }

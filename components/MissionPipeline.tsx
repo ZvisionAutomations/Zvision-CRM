@@ -3,10 +3,13 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd"
 import { MoreHorizontal, Target, Shield, Clock, Loader2 } from "lucide-react"
-import type { Lead, PipelineStage } from '@/src/types/database'
+import type { Lead, PipelineStage } from '@/types/database'
 import { getLeads, updateLeadStage } from "@/lib/actions/leads"
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { NewLeadDialog } from "@/components/dashboard/new-lead-dialog"
+import { ImportLeadsDialog } from "@/components/dashboard/import-leads-dialog"
+import LeadIntelPanel from "@/components/LeadIntelPanel"
 
 const COLUMNS: PipelineStage[] = [
     'NOVO_LEAD',
@@ -29,13 +32,14 @@ const columnLabels: Record<PipelineStage, string> = {
 export default function MissionPipeline() {
     const [leads, setLeads] = useState<Lead[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [selectedLead, setSelectedLead] = useState<{ id: string; name: string } | null>(null)
 
     // Para evitar render issues com Droppable em strict mode
     const [isBrowser, setIsBrowser] = useState(false)
 
     const fetchLeads = useCallback(async () => {
         try {
-            const { leads: data } = await getLeads({ limit: 100 })
+            const { leads: data } = await getLeads({ limit: 1000 })
             setLeads(data)
         } catch (error) {
             console.error("Failed to load leads:", error)
@@ -116,7 +120,7 @@ export default function MissionPipeline() {
         <div className="flex-1 flex flex-col min-w-0 h-full p-6">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-widest text-slate-100 uppercase">Mission Pipeline</h2>
+                    <h2 className="text-2xl font-bold tracking-widest text-foreground uppercase">Mission Pipeline</h2>
                     <p className="text-[10px] font-mono text-primary flex items-center gap-2 mt-1 uppercase">
                         <Target className="w-3 h-3" />
                         Engajamento Tático Ativo
@@ -125,12 +129,11 @@ export default function MissionPipeline() {
 
                 <div className="flex items-center gap-4">
                     <div className="px-3 py-1.5 bg-[#0d0d10] border border-white/10 rounded-lg flex items-center gap-3">
-                        <span className="text-[10px] font-mono text-slate-500 uppercase">Valuation Total</span>
+                        <span className="text-[10px] font-mono text-muted-foreground uppercase">Valuation Total</span>
                         <span className="font-mono text-primary font-bold">{formatCurrency(totalValuation)}</span>
                     </div>
-                    <button className="bg-primary hover:bg-primary/90 text-background-dark px-4 py-2 flex items-center gap-2 rounded text-xs font-bold font-mono tracking-widest uppercase transition-colors">
-                        + INJETAR LEAD
-                    </button>
+                    <ImportLeadsDialog onSuccess={fetchLeads} />
+                    <NewLeadDialog onSuccess={fetchLeads} />
                 </div>
             </div>
 
@@ -165,31 +168,40 @@ export default function MissionPipeline() {
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
+                                                                onClick={() => {
+                                                                    // Only open panel on click, not on drag end
+                                                                    if (!snapshot.isDragging) {
+                                                                        setSelectedLead({ id: lead.id, name: lead.name })
+                                                                    }
+                                                                }}
                                                                 className={`
-                                  group relative p-4 mb-3 rounded-lg border 
-                                  ${snapshot.isDragging ? 'bg-[#141418] border-primary/50 shadow-neon scale-105' : 'bg-[#141418]/80 border-white/10 hover:border-primary/30'}
-                                  transition-all
+                                  group relative p-4 mb-3 rounded-[4px] border cursor-pointer
+                                  ${snapshot.isDragging ? 'bg-[#141418] border-primary/50 shadow-neon scale-105' : 'bg-[#141418]/80 border-white/10 hover:border-primary/30 hover:-translate-y-[1px]'}
+                                  transition-all duration-200
                                 `}
                                                             >
                                                                 {snapshot.isDragging && (
-                                                                    <div className="absolute inset-0 bg-primary/5 rounded-lg active-glow pointer-events-none"></div>
+                                                                    <div className="absolute inset-0 bg-primary/5 rounded-[4px] active-glow pointer-events-none"></div>
                                                                 )}
                                                                 <div className="flex justify-between items-start mb-3">
                                                                     <div className="flex items-center gap-2">
                                                                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                                                                        <span className="text-[10px] font-mono text-slate-500">{lead.id}</span>
+                                                                        <span className="text-[10px] font-mono text-muted-foreground">#{lead.id.slice(0, 8).toUpperCase()}</span>
                                                                     </div>
-                                                                    <button className="text-slate-500 hover:text-primary transition-colors">
+                                                                    <button
+                                                                        className="text-muted-foreground hover:text-primary transition-colors"
+                                                                        onClick={(e) => e.stopPropagation()}
+                                                                    >
                                                                         <MoreHorizontal className="w-4 h-4" />
                                                                     </button>
                                                                 </div>
 
-                                                                <h4 className="font-bold text-slate-100 text-sm mb-1">{lead.company_name}</h4>
-                                                                <p className="text-xs text-slate-400 mb-4">{lead.name}</p>
+                                                                <h4 className="font-bold text-foreground text-sm mb-1">{lead.company_name}</h4>
+                                                                <p className="text-xs text-muted-foreground mb-4">{lead.name}</p>
 
                                                                 <div className="flex flex-col gap-2">
                                                                     <div className="flex justify-between items-center text-[10px] font-mono">
-                                                                        <span className="text-slate-500 uppercase">Valuation</span>
+                                                                        <span className="text-muted-foreground uppercase">Valuation</span>
                                                                         <span className="text-primary font-bold">{formatCurrency(lead.estimated_value)}</span>
                                                                     </div>
 
@@ -198,11 +210,11 @@ export default function MissionPipeline() {
                                                                     </div>
 
                                                                     <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5">
-                                                                        <div className="flex items-center gap-1.5 text-slate-500">
+                                                                        <div className="flex items-center gap-1.5 text-muted-foreground">
                                                                             <Shield className="w-3 h-3" />
                                                                             <span className="text-[9px] font-mono uppercase">{lead.win_probability}% Conv.</span>
                                                                         </div>
-                                                                        <div className="flex items-center gap-1 text-slate-500">
+                                                                        <div className="flex items-center gap-1 text-muted-foreground">
                                                                             <Clock className="w-3 h-3" />
                                                                             <span className="text-[9px] font-mono whitespace-nowrap overflow-hidden text-ellipsis max-w-16">
                                                                                 {formatDistanceToNow(new Date(lead.updated_at), { locale: ptBR, addSuffix: false })}
@@ -224,6 +236,14 @@ export default function MissionPipeline() {
                     })}
                 </DragDropContext>
             </div>
+
+            {/* Lead Intel Panel — slide-over from right */}
+            <LeadIntelPanel
+                isOpen={!!selectedLead}
+                onClose={() => setSelectedLead(null)}
+                leadId={selectedLead?.id ?? ""}
+                leadName={selectedLead?.name ?? ""}
+            />
         </div>
     )
 }

@@ -41,8 +41,8 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     const isAuthRoute = request.nextUrl.pathname.startsWith('/auth/')
-    const isApiAuthRoute = request.nextUrl.pathname.startsWith('/api/auth/callback')
-    const isPublicRoute = request.nextUrl.pathname === '/' || isAuthRoute || isApiAuthRoute
+    const isApiAuthRoute = request.nextUrl.pathname.startsWith('/api/')
+    const isPublicRoute = isAuthRoute || isApiAuthRoute
 
     // Redirect unauthenticated users to login, except public routes
     if (!user && !isPublicRoute) {
@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
     // Redirect authenticated users away from auth pages to dashboard
     if (user && isAuthRoute) {
         const url = request.nextUrl.clone()
-        url.pathname = '/dashboard'
+        url.pathname = '/'
         return NextResponse.redirect(url)
     }
 
