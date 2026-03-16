@@ -98,14 +98,13 @@ export default function AnalyticsPage() {
       <div className="p-4 md:p-6 lg:p-8">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <BarChart3 className="w-4 h-4 text-lime" />
-            <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-              Analise de Pipeline
-            </span>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Metricas Taticas</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mb-1">
+            // ANALISE DE PIPELINE
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            Métricas Táticas
+          </h1>
+          <p className="font-mono text-xs text-muted-foreground mt-1">
             Performance do CRM com dados reais do Supabase
           </p>
         </div>
@@ -154,7 +153,7 @@ export default function AnalyticsPage() {
 
               <div className="bg-card border border-border p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Zap className="w-3.5 h-3.5 text-blue-400" />
+                  <Zap className="w-3.5 h-3.5 text-[var(--accent-ai)]" />
                   <span className="text-xs font-mono text-muted-foreground uppercase">Adocao IA</span>
                 </div>
                 <p className="text-2xl font-mono font-semibold">{iaAdoption}%</p>
@@ -169,7 +168,7 @@ export default function AnalyticsPage() {
                 <div className="flex items-center gap-2 mb-6">
                   <BarChart3 className="w-3.5 h-3.5 text-lime" />
                   <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                    Funil de Pipeline
+                    // FUNIL DE PIPELINE
                   </span>
                 </div>
                 <div className="h-48">
@@ -210,14 +209,14 @@ export default function AnalyticsPage() {
                 <div className="flex items-center gap-2 mb-6">
                   <AlertTriangle className="w-3.5 h-3.5 text-lime" />
                   <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                    Forca de Sinal
+                    // FORCA DE SINAL
                   </span>
                 </div>
                 <div className="space-y-4">
                   {[
-                    { label: "ALTO", count: signalDist.ALTO, color: "bg-lime" },
-                    { label: "MEDIO", count: signalDist.MEDIO, color: "bg-yellow-400" },
-                    { label: "BAIXO", count: signalDist.BAIXO, color: "bg-red-500" },
+                    { label: "ALTO", count: signalDist.ALTO, color: "bg-[var(--accent-primary)]" },
+                    { label: "MEDIO", count: signalDist.MEDIO, color: "bg-[#f59e0b]" },
+                    { label: "BAIXO", count: signalDist.BAIXO, color: "bg-[var(--destructive)]" },
                   ].map(({ label, count, color }) => {
                     const pct = leads.length > 0 ? (count / leads.length) * 100 : 0
                     return (

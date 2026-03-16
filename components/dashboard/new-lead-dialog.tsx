@@ -95,10 +95,10 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-[#0d0d10] border-lime/20 text-slate-100">
+            <DialogContent className="sm:max-w-[425px] bg-[#0d0d10] border-lime/20 text-foreground">
                 <DialogHeader>
                     <DialogTitle className="font-mono text-lime uppercase tracking-widest text-lg">Injetar Novo Lead</DialogTitle>
-                    <DialogDescription className="text-slate-400 text-xs">
+                    <DialogDescription className="text-muted-foreground text-xs">
                         Adicione um novo alvo ao radar tático. Leads recém injetados aparecerão primeiro na coluna "NOVO LEAD".
                     </DialogDescription>
                 </DialogHeader>
@@ -111,7 +111,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                             name="company_name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-slate-300">Organização Alvo (Empresa) *</FormLabel>
+                                    <FormLabel className="text-foreground/70">Organização Alvo (Empresa) *</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Ex: Zvision, Corp." className="bg-[#141418] border-white/10" {...field} />
                                     </FormControl>
@@ -125,7 +125,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-slate-300">Contato Chave (Pessoa) *</FormLabel>
+                                    <FormLabel className="text-foreground/70">Contato Chave (Pessoa) *</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Ex: Maria Silva" className="bg-[#141418] border-white/10" {...field} />
                                     </FormControl>
@@ -140,7 +140,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-slate-300">E-mail (Recomendado)</FormLabel>
+                                        <FormLabel className="text-foreground/70">E-mail (Recomendado)</FormLabel>
                                         <FormControl>
                                             <Input placeholder="contato@empresa.com" type="email" className="bg-[#141418] border-white/10" {...field} />
                                         </FormControl>
@@ -154,7 +154,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                                 name="estimated_value"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-slate-300">Valuation (R$)</FormLabel>
+                                        <FormLabel className="text-foreground/70">Valuation (R$)</FormLabel>
                                         <FormControl>
                                             <Input type="number" min="0" step="1000" placeholder="Ex: 5000" className="bg-[#141418] border-white/10" {...field} />
                                         </FormControl>
@@ -165,7 +165,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                         </div>
 
                         <div className="pt-4 flex justify-end gap-3">
-                            <Button type="button" variant="outline" className="border-white/10 text-slate-300 hover:text-white bg-transparent hover:bg-white/5" onClick={() => setOpen(false)}>
+                            <Button type="button" variant="outline" className="border-white/10 text-foreground/70 hover:text-white bg-transparent hover:bg-white/5" onClick={() => setOpen(false)}>
                                 CANCELAR
                             </Button>
                             <Button type="submit" disabled={isLoading} className="bg-lime hover:bg-lime/90 text-black font-bold">

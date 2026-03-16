@@ -178,7 +178,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                     <Input
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        className="font-mono text-sm max-w-sm"
+                        className="font-mono text-sm max-w-sm bg-[var(--surface-elevated)] border-[var(--border-default)]"
                         style={{
                             background: '#0A0A0A',
                             border: '1px solid rgba(255,255,255,0.1)',
@@ -345,7 +345,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                         onChange={e => setNewKeyLabel(e.target.value)}
                         onKeyDown={e => { if (e.key === 'Enter') handleCreateKey() }}
                         placeholder="Label da nova chave..."
-                        className="font-mono text-xs"
+                        className="font-mono text-xs bg-[var(--surface-elevated)] border-[var(--border-default)]"
                         style={{
                             background: '#0A0A0A',
                             border: '1px solid rgba(255,255,255,0.1)',
@@ -357,7 +357,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                         size="sm"
                         onClick={handleCreateKey}
                         disabled={isCreating || !newKeyLabel.trim()}
-                        className="font-mono text-xs gap-1.5 border-white/10 text-slate-300 hover:text-white shrink-0"
+                        className="font-mono text-xs gap-1.5 border-[var(--border-default)] bg-[var(--surface-elevated)] text-foreground/70 hover:text-white shrink-0"
                     >
                         <Plus className="w-3.5 h-3.5" />
                         {isCreating ? 'CRIANDO...' : 'NOVA CHAVE'}

@@ -87,11 +87,11 @@ export function RecentUploads({ refreshKey }: RecentUploadsProps) {
                 className="flex items-center justify-between px-4 py-3 border-b"
                 style={{ borderColor: 'rgba(255,255,255,0.06)' }}
             >
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                     // HISTÓRICO DE INGESTÕES
                 </span>
                 {!isLoading && (
-                    <span className="font-mono text-[10px] text-slate-600">
+                    <span className="font-mono text-[10px] text-muted-foreground/60">
                         {imports.length} registros
                     </span>
                 )}
@@ -99,7 +99,7 @@ export function RecentUploads({ refreshKey }: RecentUploadsProps) {
 
             {/* Table header */}
             <div
-                className="grid grid-cols-[1fr_80px_120px_96px] gap-4 px-4 py-2 border-b font-mono text-[10px] uppercase tracking-widest text-slate-600"
+                className="grid grid-cols-[1fr_80px_120px_96px] gap-4 px-4 py-2 border-b font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60"
                 style={{ borderColor: 'rgba(255,255,255,0.04)', background: '#0A0A0A' }}
             >
                 <span>Arquivo</span>
@@ -117,11 +117,11 @@ export function RecentUploads({ refreshKey }: RecentUploadsProps) {
                         <SkeletonRow />
                     </>
                 ) : fetchError ? (
-                    <div className="px-4 py-6 text-center font-mono text-[11px] text-slate-600">
+                    <div className="px-4 py-6 text-center font-mono text-[11px] text-muted-foreground/60">
                         // ERRO AO CARREGAR HISTÓRICO
                     </div>
                 ) : imports.length === 0 ? (
-                    <div className="px-4 py-8 text-center font-mono text-[11px] text-slate-600">
+                    <div className="px-4 py-8 text-center font-mono text-[11px] text-muted-foreground/60">
                         // NENHUMA INGESTÃO REGISTRADA
                     </div>
                 ) : (
@@ -135,7 +135,7 @@ export function RecentUploads({ refreshKey }: RecentUploadsProps) {
                                 className="grid grid-cols-[1fr_80px_120px_96px] gap-4 px-4 py-3 border-b border-white/5 last:border-0 items-center hover:bg-white/[0.02] transition-colors"
                             >
                                 <span
-                                    className="font-mono text-xs text-slate-300 truncate"
+                                    className="font-mono text-xs text-foreground/70 truncate"
                                     title={item.filename}
                                 >
                                     {item.filename}
@@ -143,7 +143,7 @@ export function RecentUploads({ refreshKey }: RecentUploadsProps) {
                                 <span className="font-mono text-xs text-right" style={{ color: 'var(--accent-primary)' }}>
                                     {item.processed_rows ?? item.total_rows ?? '—'}
                                 </span>
-                                <span className="font-mono text-[11px] text-slate-500">
+                                <span className="font-mono text-[11px] text-muted-foreground">
                                     {formatDistanceToNow(new Date(item.created_at), {
                                         addSuffix: true,
                                         locale: ptBR,

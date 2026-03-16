@@ -131,9 +131,14 @@ export function PulseDashboardClient({ leads, total }: { leads: Lead[], total: n
 
           {activeLeads.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <Target className="w-8 h-8 text-muted-foreground mb-3 opacity-40" />
-              <p className="text-sm text-muted-foreground font-mono">// RADAR LIMPO</p>
-              <p className="text-xs text-muted-foreground mt-1">Nenhum alvo ativo no momento</p>
+              <div className="relative corner-brackets border border-[var(--border-default)] px-8 py-6">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                  // RADAR_VAZIO
+                </p>
+                <p className="font-mono text-[11px] text-muted-foreground opacity-60 mt-1">
+                  Nenhum alvo ativo no momento
+                </p>
+              </div>
             </div>
           ) : (
             <div className="divide-y divide-border">
@@ -141,7 +146,7 @@ export function PulseDashboardClient({ leads, total }: { leads: Lead[], total: n
                 <button
                   key={lead.id}
                   onClick={() => setSelectedLead({ id: lead.id, name: lead.name })}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-hover transition-colors text-left group"
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--surface-hover)] transition-all duration-150 text-left group"
                 >
                   <div className={cn(
                     "w-1.5 h-1.5 shrink-0",
@@ -166,7 +171,7 @@ export function PulseDashboardClient({ leads, total }: { leads: Lead[], total: n
                       R$ {lead.estimated_value.toLocaleString("pt-BR")}
                     </span>
                   ) : null}
-                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 translate-x-[-4px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 shrink-0" />
                 </button>
               ))}
             </div>

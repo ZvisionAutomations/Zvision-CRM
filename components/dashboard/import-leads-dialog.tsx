@@ -163,19 +163,19 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
         }}>
             <DialogTrigger asChild>
                 {children || (
-                    <Button variant="outline" className="border-white/10 hover:bg-white/5 text-slate-300 font-mono text-xs gap-2">
+                    <Button variant="outline" className="border-white/10 hover:bg-white/5 text-foreground/70 font-mono text-xs gap-2">
                         <FileSpreadsheet className="w-4 h-4" />
                         IMPORTAR LOTE
                     </Button>
                 )}
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[600px] bg-[#0d0d10] border-lime/20 text-slate-100">
+            <DialogContent className="sm:max-w-[600px] bg-[#0d0d10] border-lime/20 text-foreground">
                 <DialogHeader>
                     <DialogTitle className="font-mono text-lime uppercase tracking-widest text-lg flex items-center gap-2">
                         <FileSpreadsheet className="w-5 h-5" /> Ingestão Massiva de Dados
                     </DialogTitle>
-                    <DialogDescription className="text-slate-400 text-xs">
+                    <DialogDescription className="text-muted-foreground text-xs">
                         Arraste planilhas Excel (.xlsx) ou CSV para injetar múltiplos alvos simultaneamente no radar.
                     </DialogDescription>
                 </DialogHeader>
@@ -197,10 +197,10 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                             onChange={handleFileSelect}
                         />
                         <div className="w-16 h-16 rounded-full bg-black border border-white/5 flex items-center justify-center mb-4">
-                            <UploadCloud className={`w-8 h-8 ${isDragging ? 'text-lime animate-bounce' : 'text-slate-400'}`} />
+                            <UploadCloud className={`w-8 h-8 ${isDragging ? 'text-lime animate-bounce' : 'text-muted-foreground'}`} />
                         </div>
                         <h3 className="font-bold text-lg mb-1">Arraste a Planilha Aqui</h3>
-                        <p className="text-xs text-slate-500 font-mono tracking-wide">Ou clique para procurar (CSV, XLSX)</p>
+                        <p className="text-xs text-muted-foreground font-mono tracking-wide">Ou clique para procurar (CSV, XLSX)</p>
                     </div>
                 ) : (
                     <div className="mt-4 space-y-4">
@@ -209,7 +209,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                                 <FileSpreadsheet className="w-8 h-8 text-lime" />
                                 <div>
                                     <p className="font-bold text-sm truncate max-w-[300px]">{fileName}</p>
-                                    <p className="text-xs font-mono text-slate-500">{parsedData.length} registros rastreados</p>
+                                    <p className="text-xs font-mono text-muted-foreground">{parsedData.length} registros rastreados</p>
                                 </div>
                             </div>
                             <Button variant="ghost" size="sm" onClick={resetState} className="text-destructive hover:text-destructive/80 text-xs font-mono">
@@ -221,7 +221,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                             <div className="border border-white/5 rounded-lg overflow-hidden bg-black/50">
                                 <div className="max-h-[200px] overflow-y-auto custom-scrollbar text-xs">
                                     <table className="w-full text-left">
-                                        <thead className="bg-[#141418] sticky top-0 border-b border-white/5 font-mono text-slate-500 uppercase">
+                                        <thead className="bg-[#141418] sticky top-0 border-b border-white/5 font-mono text-muted-foreground uppercase">
                                             <tr>
                                                 <th className="p-2 font-normal">Empresa</th>
                                                 <th className="p-2 font-normal">Contato</th>
@@ -232,7 +232,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                                             {parsedData.slice(0, 10).map((row, i) => (
                                                 <tr key={i} className="hover:bg-white/5 transition-colors">
                                                     <td className="p-2 font-medium">{row.company_name}</td>
-                                                    <td className="p-2 text-slate-400">{row.name}</td>
+                                                    <td className="p-2 text-muted-foreground">{row.name}</td>
                                                     <td className="p-2 text-right text-lime font-mono">
                                                         {row.estimated_value ? `R$ ${row.estimated_value}` : '-'}
                                                     </td>
@@ -242,7 +242,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                                     </table>
                                 </div>
                                 {parsedData.length > 10 && (
-                                    <div className="p-2 text-center text-[10px] font-mono text-slate-500 bg-[#141418] border-t border-white/5">
+                                    <div className="p-2 text-center text-[10px] font-mono text-muted-foreground bg-[#141418] border-t border-white/5">
                                         + {parsedData.length - 10} registros ocultos na pré-visualização
                                     </div>
                                 )}
@@ -252,11 +252,11 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                 )}
 
                 <div className="pt-4 flex justify-between items-center border-t border-white/5 mt-4">
-                    <p className="text-[10px] font-mono text-slate-500 max-w-[200px]">
+                    <p className="text-[10px] font-mono text-muted-foreground max-w-[200px]">
                         O sistema tentará inferir automaticamente as colunas Nome, Empresa e Valuation.
                     </p>
                     <div className="flex gap-3">
-                        <Button variant="outline" className="border-white/10 text-slate-300 hover:text-white bg-transparent hover:bg-white/5" onClick={() => setOpen(false)}>
+                        <Button variant="outline" className="border-white/10 text-foreground/70 hover:text-white bg-transparent hover:bg-white/5" onClick={() => setOpen(false)}>
                             CANCELAR
                         </Button>
                         <Button

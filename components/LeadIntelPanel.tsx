@@ -251,10 +251,13 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
 
                     {/* Slide-over panel — 520px wide */}
                     <motion.div
-                        initial={{ x: "100%" }}
-                        animate={{ x: 0 }}
-                        exit={{ x: "100%" }}
-                        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                        initial={{ x: 520, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: 520, opacity: 0 }}
+                        transition={{
+                            x:       { duration: 0.3,  ease: [0.4, 0, 0.2, 1] },
+                            opacity: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+                        }}
                         className="fixed top-0 right-0 h-full z-50 flex flex-col border-l bg-[#0d0d10]"
                         style={{
                             width: "520px",
@@ -275,9 +278,9 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                             />
 
                             <div className="flex items-center gap-3 min-w-0">
-                                {/* Live status dot */}
+                                {/* Live status dot — pulse-live: opacity 1→0.4→1, 2s infinite */}
                                 <span
-                                    className="w-2 h-2 rounded-full shrink-0 animate-pulse"
+                                    className="w-2 h-2 rounded-full shrink-0 pulse-live"
                                     style={{ background: "var(--accent-primary)" }}
                                 />
                                 <div className="min-w-0">
@@ -568,7 +571,7 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                                         }}
                                     >
                                         <span
-                                            className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse"
+                                            className="w-1.5 h-1.5 rounded-full shrink-0 pulse-live"
                                             style={{ background: "var(--accent-ai)" }}
                                         />
                                         <span

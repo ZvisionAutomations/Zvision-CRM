@@ -91,3 +91,25 @@ export interface ApiKey {
     last_used_at: string | null
     created_at: string
 }
+
+export type FlowType = 'internal' | 'client'
+export type FlowStatus = 'active' | 'paused' | 'error'
+
+export interface FlowMetrics {
+    execucoes?: number
+    taxa_sucesso?: number
+    leads_processados?: number
+    [key: string]: number | undefined
+}
+
+export interface Flow {
+    id: string
+    company_id: string
+    name: string
+    type: FlowType
+    status: FlowStatus
+    metrics: FlowMetrics
+    execution_history: number[]
+    last_run_at: string
+    created_at: string
+}

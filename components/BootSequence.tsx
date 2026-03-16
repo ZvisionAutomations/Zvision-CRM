@@ -348,7 +348,7 @@ export default function BootSequence({
               >
                 {line.prefix}
               </span>{" "}
-              <span style={{ color: "var(--text-muted, #4b5563)" }}>
+              <span style={{ color: "var(--muted-foreground)" }}>
                 {line.label}
               </span>
             </span>
@@ -375,7 +375,7 @@ export default function BootSequence({
           left: 32,
           fontFamily: "var(--font-mono)",
           fontSize: 9,
-          color: "var(--text-muted, #4b5563)",
+          color: "var(--muted-foreground)",
           letterSpacing: 1,
           opacity: cornersVisible ? 1 : 0,
           transition: "opacity 0.6s ease",
@@ -392,7 +392,7 @@ export default function BootSequence({
           right: 32,
           fontFamily: "var(--font-mono)",
           fontSize: 9,
-          color: "var(--text-muted, #4b5563)",
+          color: "var(--muted-foreground)",
           letterSpacing: 1,
           opacity: cornersVisible ? 1 : 0,
           transition: "opacity 0.6s ease",
@@ -409,7 +409,7 @@ export default function BootSequence({
           right: 32,
           fontFamily: "var(--font-mono)",
           fontSize: 9,
-          color: "var(--text-muted, #4b5563)",
+          color: "var(--muted-foreground)",
           letterSpacing: 1,
           opacity: cornersVisible ? 1 : 0,
           transition: "opacity 0.6s ease",

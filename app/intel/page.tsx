@@ -18,9 +18,9 @@ const STAGE_LABELS: Record<PipelineStage, string> = {
 }
 
 const SIGNAL_COLORS: Record<SignalStrength, string> = {
-  ALTO:  "bg-lime text-background",
-  MEDIO: "bg-amber-500 text-background",
-  BAIXO: "bg-red-500 text-white",
+  ALTO:  "bg-[var(--accent-primary)] text-background",
+  MEDIO: "bg-[#f59e0b] text-background",
+  BAIXO: "bg-[var(--destructive)] text-white",
 }
 
 const STAGE_FILTER_OPTIONS: Array<{ value: PipelineStage | "ALL"; label: string }> = [
@@ -67,16 +67,15 @@ export default function IntelPage() {
       <div className="p-4 md:p-6 lg:p-8">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Target className="w-4 h-4 text-lime" />
-            <span className="text-xs font-mono text-muted-foreground uppercase tracking-[2px]">
-              Base de Alvos
-            </span>
-          </div>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mb-1">
+            // BASE DE ALVOS
+          </p>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[3px]">Intel de Alvos</h1>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                Intel de Alvos
+              </h1>
+              <p className="font-mono text-xs text-muted-foreground mt-1">
                 {total} alvos no radar
               </p>
             </div>
@@ -123,7 +122,7 @@ export default function IntelPage() {
             <div className="flex items-center gap-2">
               <Filter className="w-3.5 h-3.5 text-lime" />
               <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">
-                Alvos Identificados
+                // ALVOS IDENTIFICADOS
               </span>
             </div>
             <span className="text-xs font-mono text-muted-foreground">{leads.length} exibidos</span>
@@ -136,9 +135,14 @@ export default function IntelPage() {
             </div>
           ) : leads.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <Target className="w-8 h-8 text-muted-foreground mb-3 opacity-40" />
-              <p className="text-sm text-muted-foreground font-mono">// SEM RESULTADOS</p>
-              <p className="text-xs text-muted-foreground mt-1">Nenhum alvo encontrado com os filtros atuais</p>
+              <div className="relative corner-brackets border border-[var(--border-default)] px-8 py-6">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                  // INTEL_VAZIO
+                </p>
+                <p className="font-mono text-[11px] text-muted-foreground opacity-60 mt-1">
+                  Nenhum alvo encontrado com os filtros atuais
+                </p>
+              </div>
             </div>
           ) : (
             <>

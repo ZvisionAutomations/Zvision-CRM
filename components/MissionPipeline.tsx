@@ -120,7 +120,7 @@ export default function MissionPipeline() {
         <div className="flex-1 flex flex-col min-w-0 h-full p-6">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-widest text-foreground uppercase">Mission Pipeline</h2>
+                    <h2 className="text-2xl font-bold tracking-widest text-foreground uppercase">// Mission Pipeline</h2>
                     <p className="text-[10px] font-mono text-primary flex items-center gap-2 mt-1 uppercase">
                         <Target className="w-3 h-3" />
                         Engajamento Tático Ativo
@@ -164,6 +164,8 @@ export default function MissionPipeline() {
                                                 {columnLeads.filter(l => l.pipeline_stage === columnId).map((lead, index) => (
                                                     <Draggable key={lead.id} draggableId={lead.id} index={index}>
                                                         {(provided, snapshot) => (
+                                                            // CSS-only hover/tap for DnD cards — motion.div conflicts with @hello-pangea/dnd
+                                                            // onDragStart signature. CSS transitions are equally fast (<200ms) for this use case.
                                                             <div
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
@@ -176,16 +178,18 @@ export default function MissionPipeline() {
                                                                 }}
                                                                 className={`
                                   group relative p-4 mb-3 rounded-[4px] border cursor-pointer
-                                  ${snapshot.isDragging ? 'bg-[#141418] border-primary/50 shadow-neon scale-105' : 'bg-[#141418]/80 border-white/10 hover:border-primary/30 hover:-translate-y-[1px]'}
                                   transition-all duration-200
+                                  ${snapshot.isDragging
+                                    ? 'bg-[#141418] border-[rgba(162,230,53,0.5)] shadow-[0_0_8px_rgba(162,230,53,0.25),0_0_16px_rgba(162,230,53,0.10)] scale-105'
+                                    : 'bg-[#141418]/80 border-white/10 hover:-translate-y-0.5 hover:border-[rgba(162,230,53,0.35)] hover:shadow-[0_0_8px_rgba(162,230,53,0.25),0_0_16px_rgba(162,230,53,0.10)] active:scale-[0.99] active:translate-y-0'}
                                 `}
                                                             >
                                                                 {snapshot.isDragging && (
-                                                                    <div className="absolute inset-0 bg-primary/5 rounded-[4px] active-glow pointer-events-none"></div>
+                                                                    <div className="absolute inset-0 bg-[rgba(162,230,53,0.03)] rounded-[4px] pointer-events-none"></div>
                                                                 )}
                                                                 <div className="flex justify-between items-start mb-3">
                                                                     <div className="flex items-center gap-2">
-                                                                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                                                                        <div className="w-2 h-2 rounded-full bg-[var(--accent-primary)] pulse-live"></div>
                                                                         <span className="text-[10px] font-mono text-muted-foreground">#{lead.id.slice(0, 8).toUpperCase()}</span>
                                                                     </div>
                                                                     <button

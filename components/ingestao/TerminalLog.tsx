@@ -80,10 +80,10 @@ export function TerminalLog({ entries }: TerminalLogProps) {
                     <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
                     <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-slate-500 ml-1">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
                     // TERMINAL — INGESTÃO LOG
                 </span>
-                <span className="ml-auto font-mono text-[10px] text-slate-600">
+                <span className="ml-auto font-mono text-[10px] text-muted-foreground/60">
                     {entries.length} linhas
                 </span>
             </div>

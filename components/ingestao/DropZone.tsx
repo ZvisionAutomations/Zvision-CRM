@@ -74,7 +74,7 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                     variant="outline"
                     size="sm"
                     onClick={onReset}
-                    className="mt-2 font-mono text-xs gap-2 border-white/10 text-slate-300 hover:text-white hover:bg-white/5"
+                    className="mt-2 font-mono text-xs gap-2 border-white/10 text-foreground/70 hover:text-white hover:bg-white/5"
                 >
                     <RefreshCw className="w-3.5 h-3.5" />
                     NOVA INGESTÃO
@@ -115,7 +115,7 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                         </span>
                     </div>
                     {fileName && (
-                        <span className="font-mono text-[10px] text-slate-500 truncate max-w-xs">{fileName}</span>
+                        <span className="font-mono text-[10px] text-muted-foreground truncate max-w-xs">{fileName}</span>
                     )}
                 </div>
             </motion.div>
@@ -137,7 +137,7 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                     variant="outline"
                     size="sm"
                     onClick={onReset}
-                    className="font-mono text-xs gap-2 border-white/10 text-slate-300 hover:text-white hover:bg-white/5"
+                    className="font-mono text-xs gap-2 border-white/10 text-foreground/70 hover:text-white hover:bg-white/5"
                 >
                     <RefreshCw className="w-3.5 h-3.5" />
                     TENTAR NOVAMENTE

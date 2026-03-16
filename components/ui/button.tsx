@@ -1,19 +1,24 @@
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { motion } from 'framer-motion'
 
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
+  // Base — transition-all handles color/shadow changes; Framer Motion handles scale/tap
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        // Primary: hover adds neon glow + scale 1.02 via CSS, whileTap scale 0.97 via Framer
+        default:
+          'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[var(--shadow-neon)] hover:scale-[1.02]',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+        // Outline: hover border animates to border-bright via CSS
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground hover:border-[var(--border-bright)] dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
@@ -36,6 +41,7 @@ const buttonVariants = cva(
   },
 )
 
+// Standard Button — uses CSS transitions for hover, no Framer Motion overhead
 function Button({
   className,
   variant,
@@ -57,4 +63,29 @@ function Button({
   )
 }
 
-export { Button, buttonVariants }
+// MotionButton — wraps Button with Framer Motion whileTap scale(0.97)
+// Use this when tactile press feedback is important (CTA buttons, form submits)
+const MotionButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<'button'> &
+    VariantProps<typeof buttonVariants> & {
+      asChild?: boolean
+    }
+>(function MotionButton({ className, variant, size, asChild = false, ...props }, ref) {
+  // asChild incompatible with motion.button — fall back to standard Button
+  if (asChild) {
+    return <Button ref={ref} className={className} variant={variant} size={size} asChild {...props} />
+  }
+
+  return (
+    <motion.button
+      ref={ref}
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+      {...(props as React.ComponentProps<typeof motion.button>)}
+    />
+  )
+})
+
+export { Button, MotionButton, buttonVariants }

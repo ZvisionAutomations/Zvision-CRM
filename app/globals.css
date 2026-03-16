@@ -56,7 +56,11 @@
   --text-primary: var(--foreground);
   --text-secondary: var(--muted-foreground);
   --border-default: var(--border);
+  --border-bright: rgba(162,230,53,0.5);
   --shadow-neon: var(--lime-glow);
+  --shadow-neon-sm: 0 0 8px rgba(162,230,53,0.35), 0 0 20px rgba(162,230,53,0.15);
+  --shadow-neon-lg: 0 0 20px rgba(162,230,53,0.35), 0 0 40px rgba(162,230,53,0.20);
+  --status-error: #ef4444;
 }
 
 .dark {
@@ -313,5 +317,27 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  /* animate-shine — used by ShineBorder (magicui) */
+  @keyframes shine {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+  .animate-shine {
+    animation: shine var(--duration, 14s) linear infinite;
+  }
+
+  /* prefers-reduced-motion: disable all animations */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-shine,
+    .pulse-live,
+    .border-chase::after {
+      animation: none !important;
+    }
+    * {
+      transition-duration: 0.01ms !important;
+    }
   }
 }

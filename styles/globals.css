@@ -117,8 +117,60 @@
 
 /* ─── Zvision brand tokens ─────────────────────────────────────────────── */
 :root {
-  --accent-primary: #A2E635;   /* tactical green — actions, CTAs, live data */
-  --accent-ai:      #00D4FF;   /* electric blue  — AI states, insights       */
+  --accent-primary:    #A2E635;               /* tactical green — actions, CTAs, live data */
+  --accent-ai:         #00D4FF;               /* electric blue  — AI states, insights       */
+
+  /* ─── Surface tokens ────────────────────────────────────── */
+  --surface-page:      #0A0A0A;
+  --surface-card:      #111111;
+  --surface-elevated:  #1A1A1A;
+  --surface-hover:     rgba(255,255,255,0.04);
+  --border-bright:     rgba(162,230,53,0.35);
+
+  /* ─── Neon shadow tokens ─────────────────────────────────── */
+  --shadow-neon-sm: 0 0 8px rgba(162,230,53,0.25), 0 0 16px rgba(162,230,53,0.10);
+  --shadow-neon:    0 0 12px rgba(162,230,53,0.35), 0 0 24px rgba(162,230,53,0.15);
+
+  /* ─── Transition tokens ──────────────────────────────────── */
+  --ease-tactical: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+}
+
+/* ─── Keyframes ────────────────────────────────────────────────────────── */
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes pulse-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Utility classes ──────────────────────────────────────────────────── */
+.pulse-live {
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+.shadow-neon-sm {
+  box-shadow: var(--shadow-neon-sm);
+}
+
+.shadow-neon {
+  box-shadow: var(--shadow-neon);
+}
+
+/* ─── Reduced-motion overrides ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @layer base {

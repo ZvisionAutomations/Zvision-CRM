@@ -48,7 +48,7 @@ export default function IngestaoPage() {
                             className="font-mono font-bold text-xl uppercase tracking-[0.2em]"
                             style={{ color: 'var(--accent-primary)' }}
                         >
-                            INGESTÃO DE DADOS
+                            // INGESTÃO DE DADOS
                         </h1>
                     </div>
                     <p className="font-mono text-xs text-muted-foreground ml-[18px] tracking-wide">
