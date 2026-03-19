@@ -1,16 +1,17 @@
 "use client"
 
-import React, { useEffect, useState, useCallback, useRef } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
     X, Target, Clock, TrendingUp, Activity,
-    Terminal, Database, Zap, ChevronRight,
+    Terminal, Database, Zap, ChevronRight, RefreshCw,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import type { RealtimePostgresInsertPayload } from "@supabase/supabase-js"
 import { formatDistanceToNow, format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import type { Lead, Activity as ActivityType, PipelineStage, ActivityType as ActivityKind } from "@/types/database"
+import { useLeadBriefing } from "@/hooks/useLeadBriefing"
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface LeadIntelPanelProps {
@@ -88,47 +89,23 @@ function SkeletonRow() {
     )
 }
 
-// ─── Typewriter hook (30ms/char, cursor disappears 1s after completion) ───────
-function useTypewriter(text: string, speed = 30) {
-    const [displayed, setDisplayed] = useState("")
-    const [isTyping, setIsTyping] = useState(false)
-    const [showCursor, setShowCursor] = useState(false)
-    const timers = useRef<NodeJS.Timeout[]>([])
-
-    useEffect(() => {
-        timers.current.forEach(clearTimeout)
-        timers.current = []
-        setDisplayed("")
-
-        if (!text) {
-            setIsTyping(false)
-            setShowCursor(false)
-            return
-        }
-
-        setIsTyping(true)
-        setShowCursor(true)
-        let i = 0
-
-        const tick = () => {
-            if (i < text.length) {
-                i++
-                setDisplayed(text.substring(0, i))
-                const id = setTimeout(tick, speed)
-                timers.current.push(id)
-            } else {
-                setIsTyping(false)
-                // Cursor lingers 1s then disappears
-                const id = setTimeout(() => setShowCursor(false), 1000)
-                timers.current.push(id)
-            }
-        }
-        tick()
-
-        return () => timers.current.forEach(clearTimeout)
-    }, [text, speed])
-
-    return { displayed, isTyping, showCursor }
+// ─── Corner Brackets ornament ─────────────────────────────────────────────────
+function CornerBrackets({ children, className }: { children: React.ReactNode; className?: string }) {
+    const bracketStyle = "absolute w-3 h-3 pointer-events-none"
+    const borderColor = "rgba(0,212,255,0.25)"
+    return (
+        <div className={`relative ${className ?? ""}`}>
+            {/* top-left */}
+            <div className={`${bracketStyle} top-0 left-0`} style={{ borderTop: `1px solid ${borderColor}`, borderLeft: `1px solid ${borderColor}` }} />
+            {/* top-right */}
+            <div className={`${bracketStyle} top-0 right-0`} style={{ borderTop: `1px solid ${borderColor}`, borderRight: `1px solid ${borderColor}` }} />
+            {/* bottom-left */}
+            <div className={`${bracketStyle} bottom-0 left-0`} style={{ borderBottom: `1px solid ${borderColor}`, borderLeft: `1px solid ${borderColor}` }} />
+            {/* bottom-right */}
+            <div className={`${bracketStyle} bottom-0 right-0`} style={{ borderBottom: `1px solid ${borderColor}`, borderRight: `1px solid ${borderColor}` }} />
+            {children}
+        </div>
+    )
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -138,12 +115,18 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
     const [activityCount, setActivityCount] = useState<number>(0)
     const [loadingLead, setLoadingLead] = useState(false)
     const [loadingActs, setLoadingActs] = useState(false)
-    const [shouldType, setShouldType]   = useState(false)
 
-    const { displayed, isTyping, showCursor } = useTypewriter(
-        shouldType ? (lead?.ai_briefing ?? "") : "",
-        30
-    )
+    // AI Briefing hook — only active when panel is open
+    const {
+        briefing,
+        isGenerating,
+        error: briefingError,
+        generatedAt,
+        regenerate,
+    } = useLeadBriefing(isOpen ? leadId : null)
+
+    // Determine if lead has insufficient data (no company_name)
+    const hasInsufficientData = lead !== null && (!lead.company_name || lead.company_name.trim() === "")
 
     // ── Escape key ──────────────────────────────────────────────────────────
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -167,7 +150,6 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
             setLead(null)
             setActivities([])
             setActivityCount(0)
-            setShouldType(false)
             return
         }
 
@@ -184,11 +166,6 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                     .single()
                 if (error) throw error
                 setLead(data as Lead)
-                // Start typewriter only after lead data arrives
-                if ((data as Lead).ai_briefing) {
-                    const id = setTimeout(() => setShouldType(true), 200)
-                    return () => clearTimeout(id)
-                }
             } finally {
                 setLoadingLead(false)
             }
@@ -429,8 +406,196 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                         {/* ── SCROLLABLE BODY ──────────────────────────────────────────────── */}
                         <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(162,230,53,0.2) transparent" }}>
 
-                            {/* ── ACTIVITY LOG ──────────────────────────────────────────────── */}
+                            {/* ── AI BRIEFING SECTION ───────────────────────────────────────── */}
                             <section className="p-4 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Zap className="w-3 h-3" style={{ color: "var(--accent-ai)" }} />
+                                    <span
+                                        className="text-[10px] font-mono uppercase tracking-widest"
+                                        style={{ color: "var(--accent-ai)", opacity: 0.8 }}
+                                    >
+                                        // BRIEFING IA
+                                    </span>
+                                    {generatedAt && !isGenerating && (
+                                        <span
+                                            className="text-[9px] font-mono ml-auto"
+                                            style={{ color: "rgba(240,240,240,0.25)" }}
+                                        >
+                                            {relativeTime(generatedAt)}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* STATE 5: Insufficient data */}
+                                {hasInsufficientData ? (
+                                    <div
+                                        className="rounded border p-4 flex items-center gap-3"
+                                        style={{
+                                            borderColor: "rgba(0,212,255,0.12)",
+                                            background: "rgba(0,212,255,0.02)",
+                                        }}
+                                    >
+                                        <span
+                                            className="text-[10px] font-mono"
+                                            style={{ color: "rgba(240,240,240,0.35)" }}
+                                        >
+                                            // DADOS INSUFICIENTES PARA ANÁLISE
+                                        </span>
+                                    </div>
+
+                                /* STATE 4: Error */
+                                ) : briefingError ? (
+                                    <div
+                                        className="rounded border p-4 space-y-3"
+                                        style={{
+                                            borderColor: "rgba(239,68,68,0.15)",
+                                            background: "rgba(239,68,68,0.03)",
+                                        }}
+                                    >
+                                        <span
+                                            className="text-[10px] font-mono block"
+                                            style={{ color: "rgba(240,240,240,0.35)" }}
+                                        >
+                                            {briefingError}
+                                        </span>
+                                        <button
+                                            onClick={regenerate}
+                                            className="text-[9px] font-mono uppercase tracking-widest px-3 py-1.5 rounded border transition-colors hover:opacity-80"
+                                            style={{
+                                                color: "var(--accent-ai)",
+                                                borderColor: "rgba(0,212,255,0.2)",
+                                                background: "rgba(0,212,255,0.05)",
+                                            }}
+                                        >
+                                            // TENTAR NOVAMENTE
+                                        </button>
+                                    </div>
+
+                                /* STATE 1: Loading (generating started, no content yet) */
+                                ) : isGenerating && !briefing ? (
+                                    <CornerBrackets>
+                                        <div
+                                            className="rounded p-4 space-y-3"
+                                            style={{ background: "rgba(0,212,255,0.03)" }}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className="w-1.5 h-1.5 rounded-full shrink-0 pulse-live"
+                                                    style={{ background: "var(--accent-ai)" }}
+                                                />
+                                                <span
+                                                    className="text-[11px] font-mono"
+                                                    style={{ color: "var(--accent-ai)" }}
+                                                >
+                                                    // IA PROCESSANDO ALVO
+                                                </span>
+                                            </div>
+                                            {/* Shimmer bar */}
+                                            <div className="h-1 w-full rounded-full overflow-hidden" style={{ background: "rgba(0,212,255,0.1)" }}>
+                                                <div
+                                                    className="h-full rounded-full"
+                                                    style={{
+                                                        width: "40%",
+                                                        background: "var(--accent-ai)",
+                                                        animation: "shimmer 1.5s ease-in-out infinite",
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </CornerBrackets>
+
+                                /* STATE 2: Streaming (generating, content arriving) */
+                                ) : isGenerating && briefing ? (
+                                    <CornerBrackets>
+                                        <div
+                                            className="rounded p-4 relative overflow-hidden"
+                                            style={{ background: "rgba(0,212,255,0.03)" }}
+                                        >
+                                            <div
+                                                className="absolute top-0 right-0 w-24 h-24 pointer-events-none"
+                                                style={{ background: "radial-gradient(circle at top right, rgba(0,212,255,0.06) 0%, transparent 70%)" }}
+                                            />
+                                            <p
+                                                className="text-[12px] font-mono leading-relaxed whitespace-pre-wrap relative z-10"
+                                                style={{ color: "var(--text-secondary)" }}
+                                            >
+                                                {briefing}
+                                                <span
+                                                    className="inline-block w-1.5 h-3.5 ml-0.5 align-middle animate-pulse"
+                                                    style={{ background: "var(--accent-ai)" }}
+                                                />
+                                            </p>
+                                        </div>
+                                    </CornerBrackets>
+
+                                /* STATE 3: Complete (briefing ready) */
+                                ) : briefing ? (
+                                    <CornerBrackets>
+                                        <div
+                                            className="rounded p-4 relative overflow-hidden"
+                                            style={{ background: "rgba(0,212,255,0.03)" }}
+                                        >
+                                            <div
+                                                className="absolute top-0 right-0 w-24 h-24 pointer-events-none"
+                                                style={{ background: "radial-gradient(circle at top right, rgba(0,212,255,0.06) 0%, transparent 70%)" }}
+                                            />
+                                            <p
+                                                className="text-[12px] font-mono leading-relaxed whitespace-pre-wrap relative z-10"
+                                                style={{ color: "var(--text-secondary)" }}
+                                            >
+                                                {briefing}
+                                            </p>
+                                            {/* Footer: regenerate + timestamp */}
+                                            <div className="flex items-center justify-between mt-4 pt-3 relative z-10" style={{ borderTop: "1px solid rgba(0,212,255,0.08)" }}>
+                                                <button
+                                                    onClick={regenerate}
+                                                    className="text-[10px] font-mono uppercase tracking-widest flex items-center gap-1.5 px-3 py-1.5 rounded border transition-colors hover:opacity-80"
+                                                    style={{
+                                                        color: "var(--accent-ai)",
+                                                        borderColor: "rgba(0,212,255,0.15)",
+                                                        background: "transparent",
+                                                    }}
+                                                >
+                                                    <RefreshCw className="w-3 h-3" />
+                                                    // REGENERAR
+                                                </button>
+                                                {generatedAt && (
+                                                    <span
+                                                        className="text-[10px] font-mono"
+                                                        style={{ color: "rgba(240,240,240,0.25)" }}
+                                                    >
+                                                        Gerado {relativeTime(generatedAt)}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </CornerBrackets>
+
+                                /* Default: waiting / initial state */
+                                ) : (
+                                    <div
+                                        className="rounded border p-4 flex items-center gap-3"
+                                        style={{
+                                            borderColor: "rgba(0,212,255,0.12)",
+                                            background: "rgba(0,212,255,0.02)",
+                                        }}
+                                    >
+                                        <span
+                                            className="w-1.5 h-1.5 rounded-full shrink-0 pulse-live"
+                                            style={{ background: "var(--accent-ai)" }}
+                                        />
+                                        <span
+                                            className="text-[10px] font-mono"
+                                            style={{ color: "rgba(0,212,255,0.5)" }}
+                                        >
+                                            // AGUARDANDO ANÁLISE
+                                        </span>
+                                    </div>
+                                )}
+                            </section>
+
+                            {/* ── ACTIVITY LOG ──────────────────────────────────────────────── */}
+                            <section className="p-4">
                                 <div className="flex items-center gap-2 mb-3">
                                     <ChevronRight className="w-3 h-3" style={{ color: "var(--accent-primary)" }} />
                                     <span
@@ -500,89 +665,6 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                                     </div>
                                 )}
                             </section>
-
-                            {/* ── AI BRIEFING SECTION ───────────────────────────────────────── */}
-                            <section className="p-4">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <Zap className="w-3 h-3" style={{ color: "var(--accent-ai)" }} />
-                                    <span
-                                        className="text-[10px] font-mono uppercase tracking-widest"
-                                        style={{ color: "var(--accent-ai)", opacity: 0.8 }}
-                                    >
-                                        // BRIEFING IA
-                                    </span>
-                                    {lead?.ai_briefing_generated_at && (
-                                        <span
-                                            className="text-[9px] font-mono ml-auto"
-                                            style={{ color: "rgba(240,240,240,0.25)" }}
-                                        >
-                                            {relativeTime(lead.ai_briefing_generated_at)}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {loadingLead ? (
-                                    <div
-                                        className="rounded border p-4 space-y-2 animate-pulse"
-                                        style={{ borderColor: "rgba(0,212,255,0.12)", background: "rgba(0,212,255,0.03)" }}
-                                    >
-                                        <div className="h-3 bg-white/10 rounded w-full" />
-                                        <div className="h-3 bg-white/10 rounded w-4/5" />
-                                        <div className="h-3 bg-white/10 rounded w-3/4" />
-                                    </div>
-                                ) : lead?.ai_briefing ? (
-                                    <div
-                                        className="rounded border p-4 relative overflow-hidden"
-                                        style={{
-                                            borderColor: "rgba(0,212,255,0.15)",
-                                            background: "rgba(0,212,255,0.03)",
-                                        }}
-                                    >
-                                        {/* subtle corner accent */}
-                                        <div
-                                            className="absolute top-0 right-0 w-24 h-24 pointer-events-none"
-                                            style={{ background: "radial-gradient(circle at top right, rgba(0,212,255,0.06) 0%, transparent 70%)" }}
-                                        />
-                                        <p
-                                            className="text-[11px] font-mono leading-relaxed whitespace-pre-wrap relative z-10"
-                                            style={{ color: "rgba(240,240,240,0.75)" }}
-                                        >
-                                            {displayed}
-                                            {showCursor && (
-                                                <span
-                                                    className="inline-block w-1.5 h-3.5 ml-0.5 align-middle"
-                                                    style={{
-                                                        background: "var(--accent-ai)",
-                                                        animation: isTyping ? "pulse 0.8s ease-in-out infinite" : "none",
-                                                        opacity: isTyping ? 1 : 0,
-                                                        transition: "opacity 0.3s",
-                                                    }}
-                                                />
-                                            )}
-                                        </p>
-                                    </div>
-                                ) : (
-                                    /* No briefing placeholder */
-                                    <div
-                                        className="rounded border p-4 flex items-center gap-3"
-                                        style={{
-                                            borderColor: "rgba(0,212,255,0.12)",
-                                            background: "rgba(0,212,255,0.02)",
-                                        }}
-                                    >
-                                        <span
-                                            className="w-1.5 h-1.5 rounded-full shrink-0 pulse-live"
-                                            style={{ background: "var(--accent-ai)" }}
-                                        />
-                                        <span
-                                            className="text-[10px] font-mono"
-                                            style={{ color: "rgba(0,212,255,0.5)" }}
-                                        >
-                                            // AGUARDANDO ANÁLISE
-                                        </span>
-                                    </div>
-                                )}
-                            </section>
                         </div>
 
                         {/* ── FOOTER ACTIONS ───────────────────────────────────────────────── */}
@@ -597,8 +679,8 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                                     color: "#0A0A0A",
                                 }}
                                 onClick={() => {
-                                    if (lead?.ai_briefing) {
-                                        navigator.clipboard.writeText(lead.ai_briefing).catch(() => null)
+                                    if (briefing) {
+                                        navigator.clipboard.writeText(briefing).catch(() => null)
                                     }
                                 }}
                             >

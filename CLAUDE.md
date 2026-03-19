@@ -57,6 +57,25 @@ Tone: tactical — "Target" not "Client", "Intel" not "Notes", ">>" not "→"
 - `use context7` → fetch live docs for Next.js, Supabase, shadcn
 - `use audit skill` → load `skills/UI_AUDIT.md` to review a finished screen
 
+## SKILL GRAPH — DOMINIO COMPLETO
+
+O Zvision tem um Skill Graph em `.claude/skills/zvision-graph/`.
+
+**Antes de qualquer tarefa, SEMPRE:**
+1. Leia o index: `.claude/skills/zvision-graph/index.md`
+2. Identifique os MOCs e nodes relevantes
+3. Navegue os wikilinks necessarios
+4. So entao formule a resposta
+
+**MOCs disponíveis:**
+- `moc-design-system` — cores, tipografia, componentes, identidade visual
+- `moc-screens` — status e specs de cada tela
+- `moc-arquitetura` — stack, padroes, estrutura de pastas, regras
+- `moc-sprints` — o que foi feito, o que esta pendente
+- `moc-ai-features` — Gemini API, briefings, agentes, flows
+
+Nao responda com conhecimento generico se existe um node especifico no grafo sobre o tema.
+
 ## SESSION HYGIENE
 - Long session mid-task → run `/compact`
 - Starting unrelated task → run `/clear`  

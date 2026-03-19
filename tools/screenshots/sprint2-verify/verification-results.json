@@ -1,0 +1,132 @@
+{
+  "results": [
+    {
+      "screen": "dashboard",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "dashboard",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "5 section header(s) with // prefix: // VISÃO GERAL EM TEMPO REAL, // ALVOS ATIVOS, // RADAR_VAZIO, // PIPELINE"
+    },
+    {
+      "screen": "dashboard",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    },
+    {
+      "screen": "missoes",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "missoes",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "1 section header(s) with // prefix: // Mission Pipeline"
+    },
+    {
+      "screen": "missoes",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    },
+    {
+      "screen": "intel",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "intel",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "3 section header(s) with // prefix: // BASE DE ALVOS, // ALVOS IDENTIFICADOS, // INTEL_VAZIO"
+    },
+    {
+      "screen": "intel",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    },
+    {
+      "screen": "ingestao",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "ingestao",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "5 section header(s) with // prefix: // INGESTÃO DE DADOS, // Importe leads em massa via planilha — CSV ou XLSX, // MAPEAMENTO DE COLUNAS SUPORTADAS, // DROP EXCEL OR CSV FILE"
+    },
+    {
+      "screen": "ingestao",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    },
+    {
+      "screen": "flows",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "flows",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "3 section header(s) with // prefix: // AUTOMATION_FLOWS, // FLUXOS INTERNOS, // FLUXOS DE CLIENTES"
+    },
+    {
+      "screen": "flows",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    },
+    {
+      "screen": "analytics",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "analytics",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "3 section header(s) with // prefix: // ANALISE DE PIPELINE, // FUNIL DE PIPELINE, // FORCA DE SINAL"
+    },
+    {
+      "screen": "analytics",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    },
+    {
+      "screen": "settings",
+      "rule": "GRID",
+      "status": "PASS",
+      "desc": "Tactical grid present (40px spacing, accent green gradient)"
+    },
+    {
+      "screen": "settings",
+      "rule": "HEADERS",
+      "status": "PASS",
+      "desc": "4 section header(s) with // prefix: // OPERATOR_CONFIG, // OPERADOR, // CHAVES DE API, // SEM CHAVES CADASTRADAS"
+    },
+    {
+      "screen": "settings",
+      "rule": "COLORS",
+      "status": "PASS",
+      "desc": "No raw colors detected — all using CSS variables / design tokens"
+    }
+  ],
+  "totalPassed": 21,
+  "totalFailed": 0
+}
