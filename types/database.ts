@@ -95,6 +95,34 @@ export interface ApiKey {
 export type FlowType = 'internal' | 'client'
 export type FlowStatus = 'active' | 'paused' | 'error'
 
+// ─── Agent types (CA-4 — Agent Command Center) ────────────────────────────────
+
+export type AgentType = 'sdr' | 'atendente' | 'qualificador' | 'whatsapp' | 'n8n'
+export type AgentPlatform = 'interno' | 'whatsapp' | 'n8n'
+export type AgentStatus = 'active' | 'paused' | 'error'
+
+export interface AgentMetrics {
+    mensagens?: number
+    taxa_resposta?: number
+    leads_qualificados?: number
+    [key: string]: number | undefined
+}
+
+export interface Agent {
+    id: string
+    company_id: string
+    name: string
+    type: AgentType
+    platform: AgentPlatform
+    status: AgentStatus
+    client_name: string | null
+    is_internal: boolean
+    metrics: AgentMetrics
+    activity_history: number[]
+    last_active_at: string
+    created_at: string
+}
+
 export interface FlowMetrics {
     execucoes?: number
     taxa_sucesso?: number
