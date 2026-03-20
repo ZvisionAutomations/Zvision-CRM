@@ -123,6 +123,36 @@ export interface Agent {
     created_at: string
 }
 
+// ─── Financial types (CA-3 — Financial Command Center) ───────────────────────
+
+export type ExpenseCategory = 'ferramenta' | 'operacao' | 'pessoal' | 'marketing'
+
+export interface Expense {
+    id: string
+    company_id: string
+    name: string
+    amount: number
+    category: ExpenseCategory
+    month: string
+    created_at: string
+}
+
+export type SubscriptionBillingCycle = 'mensal' | 'anual'
+export type SubscriptionCategory = 'ia' | 'infra' | 'marketing' | 'vendas'
+export type SubscriptionStatus = 'active' | 'cancelled'
+
+export interface Subscription {
+    id: string
+    company_id: string
+    name: string
+    amount: number
+    billing_cycle: SubscriptionBillingCycle
+    category: SubscriptionCategory
+    status: SubscriptionStatus
+    next_billing_date: string | null
+    created_at: string
+}
+
 export interface FlowMetrics {
     execucoes?: number
     taxa_sucesso?: number

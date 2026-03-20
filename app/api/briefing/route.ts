@@ -223,9 +223,16 @@ export async function POST(request: NextRequest) {
             },
         })
     } catch (err) {
-        return NextResponse.json(
-            { error: '// FALHA NA CONEXÃO — TENTE NOVAMENTE' },
-            { status: 502 }
+        console.error('Gemini error:', err)
+        const message = err instanceof Error ? err.message : String(err)
+        const status = (err as { status?: number }).status
+
+        return new Response(
+            JSON.stringify({
+                error: message,
+                status: status ?? 'unknown',
+            }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
         )
     }
 }
