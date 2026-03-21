@@ -2,11 +2,26 @@
 
 import React, { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
+import { Download } from "lucide-react"
 import { useIngestao } from "@/hooks/useIngestao"
 import { DropZone } from "@/components/ingestao/DropZone"
 import { TerminalLog } from "@/components/ingestao/TerminalLog"
 import { RecentUploads } from "@/components/ingestao/RecentUploads"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
+
+function downloadSampleCSV() {
+    const csv = `nome,empresa,email,telefone,website
+João Silva,TechCorp Brasil,joao@techcorp.com.br,11999887766,techcorp.com.br
+Maria Santos,Grupo Meridian,maria@meridian.com,11988776655,meridian.com.br
+Carlos Oliveira,Nexus Digital,carlos@nexus.io,21977665544,nexus.io`
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'modelo_leads_zvision.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+}
 
 export default function IngestaoPage() {
     const { state, log, importedCount, fileName, processFile, resetToIdle } = useIngestao()
@@ -90,6 +105,19 @@ export default function IngestaoPage() {
                                 <span style={{ color: 'var(--accent-primary)' }}>{db}</span>
                             </div>
                         ))}
+                        <div className="col-span-2 mt-3 pt-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                            <button
+                                onClick={downloadSampleCSV}
+                                className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded border transition-colors hover:bg-white/5"
+                                style={{
+                                    color: 'var(--accent-primary)',
+                                    borderColor: 'rgba(162,230,53,0.3)',
+                                }}
+                            >
+                                <Download className="w-3 h-3" />
+                                // BAIXAR MODELO CSV
+                            </button>
+                        </div>
                     </div>
                 </motion.details>
 

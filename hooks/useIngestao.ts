@@ -28,10 +28,16 @@ interface RawRow {
     company_linkedin: string
     estimated_value: number | null
     pipeline_stage: PipelineStage
+    // Google Places extras
+    street: string
+    city: string
+    state: string
+    category: string
 }
 
 // ── Validated lead payload ready for insert ──────────────────────────────────
 interface LeadPayload {
+    company_id: string
     name: string
     company_name: string
     email: string | null
@@ -40,6 +46,7 @@ interface LeadPayload {
     company_linkedin: string | null
     estimated_value: number | null
     pipeline_stage: PipelineStage
+    ai_briefing: string | null
 }
 
 const BATCH_SIZE = 50
@@ -76,31 +83,88 @@ function mapRow(raw: Record<string, string>): RawRow {
         ? stageRaw
         : 'NOVO_LEAD') as PipelineStage
 
+    // 'title' is the Google Places business name — maps to both name and company_name
+    const businessName = pickField(raw, 'nome', 'name', 'contato', 'title')
+    const companyName = pickField(raw, 'empresa', 'company', 'organizacao', 'organization', 'title')
+
+    // Google Places: 'categories/0' column header is normalized to 'categories0' by normalizeKey
+    const category = pickField(raw, 'categories0', 'categoryname', 'categoria', 'category')
+
     return {
-        name: pickField(raw, 'nome', 'name', 'contato'),
-        company_name: pickField(raw, 'empresa', 'company', 'organizacao', 'organization'),
-        email: pickField(raw, 'email', 'e-mail', 'email'),
-        phone: pickField(raw, 'telefone', 'phone', 'tel', 'celular'),
-        company_website: pickField(raw, 'website', 'site', 'url'),
+        name: businessName,
+        company_name: companyName,
+        email: pickField(raw, 'email', 'e-mail'),
+        phone: pickField(raw, 'telefone', 'phone', 'tel', 'celular', 'fone'),
+        company_website: pickField(raw, 'website', 'site'),
         company_linkedin: pickField(raw, 'linkedin'),
         estimated_value: numericValue,
         pipeline_stage,
+        // Google Places address fields
+        street: pickField(raw, 'street', 'rua', 'endereco', 'logradouro'),
+        city: pickField(raw, 'city', 'cidade'),
+        state: pickField(raw, 'state', 'estado'),
+        category,
     }
 }
 
-function validateRow(row: RawRow): LeadPayload | null {
-    // Skip rows where both name AND company_name are empty
-    if (!row.name && !row.company_name) return null
+// ── Normalization helpers ─────────────────────────────────────────────────────
+function normalizePhone(phone: string): string {
+    const digits = phone.replace(/\D/g, '')
+    // Brazilian number: 10 or 11 digits → add +55
+    if (digits.length === 10 || digits.length === 11) {
+        return `+55${digits}`
+    }
+    // Already has country code (12-13 digits starting with 55)
+    if ((digits.length === 12 || digits.length === 13) && digits.startsWith('55')) {
+        return `+${digits}`
+    }
+    // Return cleaned digits if can't determine format
+    return digits || phone
+}
+
+function normalizeEmail(email: string): string {
+    return email.toLowerCase().trim()
+}
+
+// ── Deduplication key ────────────────────────────────────────────────────────
+function dedupeKey(row: { name: string; company_name: string; email: string | null; phone: string | null }): string {
+    if (row.email) return `email:${row.email}`
+    // Use normalized phone as dedup key (Google Places rows often have no email)
+    if (row.phone) return `phone:${row.phone.replace(/\D/g, '')}`
+    return `name_company:${row.name.toLowerCase()}|${row.company_name.toLowerCase()}`
+}
+
+// ── Build ai_briefing from Google Places address + category ───────────────────
+function buildPlacesBriefing(row: RawRow): string | null {
+    const parts: string[] = []
+    const addressParts = [row.street, row.city, row.state].filter(Boolean)
+    if (addressParts.length > 0) {
+        parts.push(`Endereço: ${addressParts.join(', ')}`)
+    }
+    if (row.category) {
+        parts.push(`Categoria: ${row.category}`)
+    }
+    return parts.length > 0 ? parts.join(' | ') : null
+}
+
+function validateRow(row: RawRow, companyId: string): LeadPayload | null {
+    const normalizedPhone = row.phone ? normalizePhone(row.phone) : null
+
+    // Accept if has: name/company (standard) OR phone (Google Places — no email)
+    const hasIdentifier = row.name || row.company_name || normalizedPhone
+    if (!hasIdentifier) return null
 
     return {
-        name: row.name || '(sem nome)',
-        company_name: row.company_name || '(sem empresa)',
-        email: row.email || null,
-        phone: row.phone || null,
+        company_id: companyId,
+        name: row.name || row.company_name || '(sem nome)',
+        company_name: row.company_name || row.name || '(sem empresa)',
+        email: row.email ? normalizeEmail(row.email) : null,
+        phone: normalizedPhone,
         company_website: row.company_website || null,
         company_linkedin: row.company_linkedin || null,
         estimated_value: row.estimated_value,
         pipeline_stage: row.pipeline_stage,
+        ai_briefing: buildPlacesBriefing(row),
     }
 }
 
@@ -129,14 +193,50 @@ export function useIngestao() {
         logIdRef.current = 0
     }
 
+    // ── Fetch company_id from authenticated user ──────────────────────────────
+    async function fetchCompanyId(): Promise<string | null> {
+        const supabase = createClient()
+        if (!supabase) return null
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+        if (authError || !user) return null
+
+        const { data: profile, error: profileError } = await supabase
+            .from('users')
+            .select('company_id')
+            .eq('id', user.id)
+            .single()
+
+        if (profileError || !profile) return null
+        return profile.company_id as string
+    }
+
     // ── Parse raw rows asynchronously in chunks ───────────────────────────────
     async function processRawRows(rawRows: Record<string, string>[], filename: string) {
         setState('parsing')
         setFileName(filename)
+        addLog('info', `// Arquivo recebido: ${filename}`)
         addLog('info', `// Iniciando parsing de ${rawRows.length} linhas...`)
 
+        // Resolve company_id before processing
+        const companyId = await fetchCompanyId()
+        if (!companyId) {
+            addLog('err', 'Sessão expirada ou perfil não encontrado. Faça login novamente.')
+            setState('error')
+            return
+        }
+
+        // Detect mapped columns from first row headers
+        if (rawRows.length > 0) {
+            const headers = Object.keys(rawRows[0])
+            addLog('info', `// Detectando colunas...`)
+            addLog('info', `// Colunas encontradas: ${headers.join(', ')}`)
+        }
+
         const validLeads: LeadPayload[] = []
+        const seen = new Set<string>()
         let skipped = 0
+        let duplicates = 0
 
         // Process in chunks to keep UI alive
         for (let i = 0; i < rawRows.length; i += BATCH_SIZE) {
@@ -145,16 +245,26 @@ export function useIngestao() {
             for (let j = 0; j < chunk.length; j++) {
                 const rowIndex = i + j + 1
                 const mapped = mapRow(chunk[j])
-                const validated = validateRow(mapped)
+                const validated = validateRow(mapped, companyId)
 
-                if (validated) {
-                    validLeads.push(validated)
-                    if (rowIndex <= 5 || rowIndex % 50 === 0) {
-                        addLog('ok', `Row ${rowIndex} — "${validated.company_name}" queued`)
-                    }
-                } else {
+                if (!validated) {
                     skipped++
-                    addLog('skip', `Row ${rowIndex} — sem nome/empresa, ignorado`)
+                    addLog('skip', `Row ${rowIndex} — sem identificador (nome/empresa/telefone), ignorado`)
+                    continue
+                }
+
+                // In-memory deduplication
+                const key = dedupeKey(validated)
+                if (seen.has(key)) {
+                    duplicates++
+                    addLog('skip', `Row ${rowIndex} — duplicata: ${validated.email || validated.name}`)
+                    continue
+                }
+                seen.add(key)
+
+                validLeads.push(validated)
+                if (rowIndex <= 5 || rowIndex % 50 === 0) {
+                    addLog('ok', `Row ${rowIndex} — "${validated.company_name}" queued`)
                 }
             }
 
@@ -166,12 +276,12 @@ export function useIngestao() {
         }
 
         if (validLeads.length === 0) {
-            addLog('err', `Nenhum registro válido encontrado. Certifique-se de ter colunas Nome e Empresa.`)
+            addLog('err', `Nenhum registro válido encontrado. Certifique-se de ter pelo menos: nome, empresa ou telefone.`)
             setState('error')
             return
         }
 
-        addLog('info', `>> Parsing concluído — ${validLeads.length} válidos, ${skipped} ignorados`)
+        addLog('info', `>> Parsing concluído — ${validLeads.length} válidos, ${skipped} ignorados, ${duplicates} duplicatas`)
         await uploadLeads(validLeads, filename)
     }
 
@@ -245,7 +355,7 @@ export function useIngestao() {
             return
         }
 
-        addLog('done', `[DONE] ${totalInserted} leads importados — mission ready`)
+        addLog('done', `INGESTÃO CONCLUÍDA: ${totalInserted} importados — mission ready`)
         setImportedCount(totalInserted)
         setState('complete')
     }
