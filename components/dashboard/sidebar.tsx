@@ -16,6 +16,7 @@ import {
   Zap,
   Database,
   Wallet,
+  Megaphone,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/intel",     label: "INTEL",     icon: Users,      description: "Inteligencia de Alvos" },
   { href: "/ingestao",  label: "INGESTÃO",  icon: Database,   description: "Ingestao de Dados" },
   { href: "/flows",     label: "AGENTES",   icon: Zap,        description: "Automacoes" },
+  { href: "/assets",    label: "ANÚNCIOS",   icon: Megaphone,  description: "Central de Anúncios" },
   { href: "/budget",    label: "FINANCEIRO", icon: Wallet,     description: "Comando Financeiro" },
   { href: "/analytics", label: "ANALYTICS", icon: BarChart3,  description: "Metricas" },
 ] as const

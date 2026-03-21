@@ -153,6 +153,36 @@ export interface Subscription {
     created_at: string
 }
 
+// ─── Campaign types (CA-2 — Central de Anúncios) ────────────────────────────
+
+export type CampaignPlatform = 'meta' | 'google'
+export type CampaignPlatformSubtype = 'feed' | 'stories' | 'reels' | 'search' | 'display' | 'youtube'
+export type CampaignStatus = 'active' | 'paused' | 'ended'
+
+export interface Campaign {
+    id: string
+    company_id: string
+    name: string
+    platform: CampaignPlatform
+    platform_subtype: CampaignPlatformSubtype | null
+    status: CampaignStatus
+    utm_source: string | null
+    utm_medium: string | null
+    utm_campaign: string | null
+    budget: number | null
+    spend: number
+    impressions: number
+    clicks: number
+    leads: number
+    qualified_leads: number
+    conversions: number
+    revenue: number
+    daily_spend: number[]
+    period_start: string | null
+    period_end: string | null
+    created_at: string
+}
+
 export interface FlowMetrics {
     execucoes?: number
     taxa_sucesso?: number
