@@ -71,6 +71,25 @@ export async function createActivity(
             .single()
 
         if (error) throw error
+
+        // Update lead's last_contact_at and increment interactions_count
+        const { data: currentLead } = await supabase
+            .from('leads')
+            .select('interactions_count')
+            .eq('id', leadId)
+            .single()
+
+        const currentCount = (currentLead?.interactions_count as number | null) ?? 0
+
+        await supabase
+            .from('leads')
+            .update({
+                last_contact_at: new Date().toISOString(),
+                interactions_count: currentCount + 1,
+            })
+            .eq('id', leadId)
+            .eq('company_id', company_id)
+
         return data as Activity
     } catch (error) {
         console.error('[createActivity] Falha:', { leadId, type, error })

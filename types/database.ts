@@ -49,6 +49,9 @@ export interface Lead {
     win_probability: number
     ai_briefing: string | null
     ai_briefing_generated_at: string | null
+    status: 'active' | 'won' | 'lost'
+    last_contact_at: string | null
+    interactions_count: number
     assigned_to: string | null
     deleted_at: string | null
     created_at: string

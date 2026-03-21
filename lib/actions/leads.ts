@@ -259,6 +259,50 @@ export async function updateLead(id: string, rawData: unknown) {
     }
 }
 
+export async function markLeadStatus(id: string, status: 'won' | 'lost') {
+    try {
+        const { supabase, company_id, user } = await getAuthContext()
+
+        const updatePayload: Record<string, string> = { status }
+        // Won leads move to FECHAMENTO stage
+        if (status === 'won') {
+            updatePayload.pipeline_stage = 'FECHAMENTO'
+        }
+
+        const { data: lead, error } = await supabase
+            .from('leads')
+            .update(updatePayload)
+            .eq('id', id)
+            .eq('company_id', company_id)
+            .select()
+            .single()
+
+        if (error) throw error
+
+        // Register activity
+        const activityType = status === 'won' ? 'NOTE' : 'NOTE'
+        const activityTitle = status === 'won'
+            ? 'Missão cumprida — deal fechado'
+            : 'Missão abandonada'
+
+        await supabase.from('activities').insert({
+            company_id,
+            lead_id: id,
+            user_id: user.id,
+            type: activityType,
+            title: activityTitle,
+            metadata: { status },
+        })
+
+        revalidatePath('/missoes')
+        revalidatePath('/dashboard')
+        return lead as Lead
+    } catch (error) {
+        console.error('[markLeadStatus] Falha:', { id, status, error })
+        throw new Error('Falha ao atualizar status do lead')
+    }
+}
+
 export async function deleteLead(id: string) {
     try {
         const { supabase, company_id } = await getAuthContext()
