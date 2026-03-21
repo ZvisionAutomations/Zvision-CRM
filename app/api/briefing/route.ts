@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
@@ -69,14 +69,17 @@ async function getAuthContext() {
 }
 
 // ─── Prompt builder (from [[lead-briefing-prompt]]) ─────────────────────────
+const SYSTEM_PROMPT = `Você é um analista de inteligência de vendas de elite.
+Gere briefings táticos concisos. Seja específico, direto, sem rodeios.
+Máximo 300 palavras. Linguagem de operações táticas.`
+
 function buildPrompt(lead: {
     name: string
     company_name: string
     company_website: string | null
     pipeline_stage: string
 }): string {
-    return `Você é um analista de inteligência de vendas de elite.
-Analise o seguinte lead e gere um briefing tático conciso.
+    return `Analise o seguinte lead e gere um briefing tático conciso.
 
 Empresa: ${lead.company_name}
 Nome do contato: ${lead.name}
@@ -100,18 +103,15 @@ RECOMENDAÇÃO TÁTICA
 [Próximo movimento concreto — o que dizer, qual ângulo, o que evitar]
 
 NÍVEL DE PRIORIDADE: [CRÍTICO / ALTO / MÉDIO / BAIXO]
-Justificativa: [uma frase]
-
-Seja específico, direto, sem rodeios.
-Máximo 300 palavras. Linguagem de operações táticas.`
+Justificativa: [uma frase]`
 }
 
 // ─── POST /api/briefing ─────────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
-    const apiKey = process.env.GEMINI_API_KEY
-    if (!apiKey || apiKey === 'your_key_here') {
+    const apiKey = process.env.GROQ_API_KEY
+    if (!apiKey || apiKey === 'your_groq_api_key') {
         return NextResponse.json(
-            { error: 'GEMINI_API_KEY não configurada' },
+            { error: '// CONFIGURAÇÃO NECESSÁRIA: GROQ_API_KEY' },
             { status: 500 }
         )
     }
@@ -174,30 +174,34 @@ export async function POST(request: NextRequest) {
     // Record rate limit hit
     recordRateLimitHit(company_id)
 
-    // Stream from Gemini
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({
-        model: 'gemini-2.0-flash',
-        generationConfig: {
-            maxOutputTokens: 400,
-            temperature: 0.7,
-        },
-    })
-
-    const prompt = buildPrompt(lead)
+    // Stream from Groq
+    const groq = new Groq({ apiKey })
+    const userPrompt = buildPrompt(lead)
 
     try {
-        const streamResult = await model.generateContentStream(prompt)
+        const stream = await groq.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'user', content: userPrompt },
+            ],
+            max_tokens: 400,
+            temperature: 0.7,
+            stream: true,
+        })
+
+        const encoder = new TextEncoder()
         let fullText = ''
 
-        const stream = new ReadableStream({
+        const readable = new ReadableStream({
             async start(controller) {
-                const encoder = new TextEncoder()
                 try {
-                    for await (const chunk of streamResult.stream) {
-                        const chunkText = chunk.text()
-                        fullText += chunkText
-                        controller.enqueue(encoder.encode(chunkText))
+                    for await (const chunk of stream) {
+                        const text = chunk.choices[0]?.delta?.content ?? ''
+                        if (text) {
+                            fullText += text
+                            controller.enqueue(encoder.encode(text))
+                        }
                     }
                     controller.close()
 
@@ -215,7 +219,7 @@ export async function POST(request: NextRequest) {
             },
         })
 
-        return new Response(stream, {
+        return new Response(readable, {
             headers: {
                 'Content-Type': 'text/plain; charset=utf-8',
                 'Transfer-Encoding': 'chunked',
@@ -223,15 +227,19 @@ export async function POST(request: NextRequest) {
             },
         })
     } catch (err) {
-        console.error('Gemini error:', err)
+        console.error('Groq error:', err)
         const message = err instanceof Error ? err.message : String(err)
         const status = (err as { status?: number }).status
 
+        if (status === 429) {
+            return new Response(
+                JSON.stringify({ error: '// AGUARDANDO SLOT DE ANÁLISE' }),
+                { status: 429, headers: { 'Content-Type': 'application/json' } }
+            )
+        }
+
         return new Response(
-            JSON.stringify({
-                error: message,
-                status: status ?? 'unknown',
-            }),
+            JSON.stringify({ error: '// FALHA NA CONEXÃO — TENTE NOVAMENTE' }),
             { status: 500, headers: { 'Content-Type': 'application/json' } }
         )
     }
