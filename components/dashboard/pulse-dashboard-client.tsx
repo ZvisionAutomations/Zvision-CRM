@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { GlanceCard } from "@/components/dashboard/glance-card"
 import LeadIntelPanel from "@/components/LeadIntelPanel"
 import type { Lead, PipelineStage } from "@/types/database"
+import type { LeadSparklines } from "@/lib/actions/leads"
 
 // Mapeamento de stage para label tatico
 const STAGE_LABELS: Record<PipelineStage, string> = {
@@ -24,7 +25,17 @@ const SIGNAL_COLORS: Record<string, string> = {
   BAIXO: "bg-red-500",
 }
 
-export function PulseDashboardClient({ leads, total }: { leads: Lead[], total: number }) {
+const ZERO_12 = (): number[] => Array(12).fill(0)
+
+export function PulseDashboardClient({
+  leads,
+  total,
+  sparklines,
+}: {
+  leads: Lead[]
+  total: number
+  sparklines?: LeadSparklines
+}) {
   const [selectedLead, setSelectedLead] = useState<{ id: string; name: string } | null>(null)
 
   // Metricas calculadas dos dados reais do Supabase
@@ -60,7 +71,7 @@ export function PulseDashboardClient({ leads, total }: { leads: Lead[], total: n
       prefix: "R$ ",
       suffix: "",
       change: 0,
-      sparklineData: [30, 45, 38, 52, 48, 60, 55, 72, 68, 85, 78, 92],
+      sparklineData: sparklines?.valuationByWeek ?? ZERO_12(),
     },
     {
       title: "Alvos no Radar",
@@ -68,20 +79,20 @@ export function PulseDashboardClient({ leads, total }: { leads: Lead[], total: n
       prefix: "",
       suffix: "",
       change: newLeadsToday,
-      sparklineData: [2, 5, 3, 8, 6, 9, 7, 11, 10, 12, 11, total],
+      sparklineData: sparklines?.leadsByWeek ?? ZERO_12(),
     },
     {
       title: "Briefings IA Gerados",
       value: total > 0 ? Number(((iaBriefingsScanned / total) * 100).toFixed(1)) : 0,
       suffix: "%",
       change: 0,
-      sparklineData: [10, 15, 20, 28, 35, 42, 50, 55, 60, 65, 70, 0],
+      sparklineData: sparklines?.briefingsByWeek ?? ZERO_12(),
     },
     {
       title: "Missoes Fechadas",
       value: wonLeads,
       change: 0,
-      sparklineData: [0, 0, 1, 0, 2, 1, 3, 2, 4, 3, 0, wonLeads],
+      sparklineData: sparklines?.wonByWeek ?? ZERO_12(),
     },
   ]
 

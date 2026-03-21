@@ -303,6 +303,96 @@ export async function markLeadStatus(id: string, status: 'won' | 'lost') {
     }
 }
 
+// ─── Sparkline helpers ────────────────────────────────────────────────────────
+
+/** Generates an array of the last 12 week-start timestamps (Monday), oldest first */
+function buildWeekBuckets(): string[] {
+    const buckets: string[] = []
+    const now = new Date()
+    // Align to Monday of current week
+    const dayOfWeek = now.getUTCDay() // 0 = Sunday
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+    const currentWeekMonday = new Date(now)
+    currentWeekMonday.setUTCHours(0, 0, 0, 0)
+    currentWeekMonday.setUTCDate(currentWeekMonday.getUTCDate() - daysToMonday)
+
+    for (let i = 11; i >= 0; i--) {
+        const weekStart = new Date(currentWeekMonday)
+        weekStart.setUTCDate(currentWeekMonday.getUTCDate() - i * 7)
+        buckets.push(weekStart.toISOString().slice(0, 10)) // 'YYYY-MM-DD'
+    }
+    return buckets
+}
+
+/**
+ * Maps Supabase row results (week + value) into a fixed 12-element array
+ * aligned to the week buckets, padding missing weeks with 0.
+ */
+function mapToBuckets(
+    buckets: string[],
+    rows: Array<{ week: string; value: number }>
+): number[] {
+    const lookup = new Map(rows.map((r) => [r.week.slice(0, 10), r.value]))
+    return buckets.map((b) => lookup.get(b) ?? 0)
+}
+
+export interface LeadSparklines {
+    valuationByWeek: number[]
+    leadsByWeek: number[]
+    briefingsByWeek: number[]
+    wonByWeek: number[]
+}
+
+const ZERO_12 = (): number[] => Array(12).fill(0)
+
+export async function getLeadSparklines(): Promise<LeadSparklines> {
+    try {
+        const { supabase, company_id } = await getAuthContext()
+        const buckets = buildWeekBuckets()
+        const since = buckets[0] // oldest bucket start
+
+        // Run all 4 aggregations in parallel
+        const [leadsRes, wonRes, briefingsRes, valuationRes] = await Promise.all([
+            // Leads created per week
+            supabase.rpc('leads_by_week', { p_company_id: company_id, p_since: since }),
+            // Won leads per week
+            supabase.rpc('won_leads_by_week', { p_company_id: company_id, p_since: since }),
+            // Briefings generated per week
+            supabase.rpc('briefings_by_week', { p_company_id: company_id, p_since: since }),
+            // Valuation sum per week
+            supabase.rpc('valuation_by_week', { p_company_id: company_id, p_since: since }),
+        ])
+
+        // Log errors but don't throw — degrade gracefully
+        if (leadsRes.error) console.error('[getLeadSparklines] leads_by_week:', leadsRes.error)
+        if (wonRes.error) console.error('[getLeadSparklines] won_leads_by_week:', wonRes.error)
+        if (briefingsRes.error) console.error('[getLeadSparklines] briefings_by_week:', briefingsRes.error)
+        if (valuationRes.error) console.error('[getLeadSparklines] valuation_by_week:', valuationRes.error)
+
+        type WeekRow = { week: string; value: number }
+
+        const leads = (leadsRes.data ?? []) as WeekRow[]
+        const won = (wonRes.data ?? []) as WeekRow[]
+        const briefings = (briefingsRes.data ?? []) as WeekRow[]
+        const valuation = (valuationRes.data ?? []) as WeekRow[]
+
+        return {
+            leadsByWeek: mapToBuckets(buckets, leads),
+            wonByWeek: mapToBuckets(buckets, won),
+            briefingsByWeek: mapToBuckets(buckets, briefings),
+            valuationByWeek: mapToBuckets(buckets, valuation),
+        }
+    } catch (error) {
+        console.error('[getLeadSparklines] Falha:', error)
+        return {
+            leadsByWeek: ZERO_12(),
+            wonByWeek: ZERO_12(),
+            briefingsByWeek: ZERO_12(),
+            valuationByWeek: ZERO_12(),
+        }
+    }
+}
+
 export async function deleteLead(id: string) {
     try {
         const { supabase, company_id } = await getAuthContext()
