@@ -67,7 +67,7 @@ export interface UpdateImportInput {
 
 export async function updateImportRecord(input: UpdateImportInput): Promise<{ error?: string }> {
     try {
-        const { supabase } = await getAuthContext()
+        const { supabase, company_id } = await getAuthContext()
 
         const { error } = await supabase
             .from('imports')
@@ -77,6 +77,7 @@ export async function updateImportRecord(input: UpdateImportInput): Promise<{ er
                 error_log: input.error_log ?? null,
             })
             .eq('id', input.id)
+            .eq('company_id', company_id)
 
         if (error) throw error
         return {}

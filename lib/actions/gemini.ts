@@ -20,6 +20,25 @@ export async function clearBriefingCache(leadId: string) {
         }
     )
 
+    // Fetch company_id for ownership verification
+    const { data: profile } = await adminClient
+        .from('users')
+        .select('company_id')
+        .eq('id', user.id)
+        .single()
+
+    if (!profile?.company_id) throw new Error('Perfil não encontrado')
+
+    // Verify lead belongs to user's company before clearing cache
+    const { data: lead } = await adminClient
+        .from('leads')
+        .select('id')
+        .eq('id', leadId)
+        .eq('company_id', profile.company_id)
+        .single()
+
+    if (!lead) throw new Error('Lead não encontrado ou sem permissão')
+
     await adminClient
         .from('leads')
         .update({
@@ -27,4 +46,5 @@ export async function clearBriefingCache(leadId: string) {
             ai_briefing_generated_at: null,
         })
         .eq('id', leadId)
+        .eq('company_id', profile.company_id)
 }

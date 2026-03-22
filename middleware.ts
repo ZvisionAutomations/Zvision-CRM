@@ -41,8 +41,9 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     const isAuthRoute = request.nextUrl.pathname.startsWith('/auth/')
-    const isApiAuthRoute = request.nextUrl.pathname.startsWith('/api/')
-    const isPublicRoute = isAuthRoute || isApiAuthRoute
+    // Only exempt the OAuth callback — all other API routes require auth
+    const isApiAuthCallback = request.nextUrl.pathname === '/api/auth/callback'
+    const isPublicRoute = isAuthRoute || isApiAuthCallback
 
     // Redirect unauthenticated users to login, except public routes
     if (!user && !isPublicRoute) {

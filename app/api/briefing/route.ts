@@ -2,25 +2,7 @@ import Groq from 'groq-sdk'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
-
-// ─── Rate Limiter (in-memory) ────────────────────────────────────────────────
-const rateLimitMap = new Map<string, number[]>()
-const RATE_LIMIT_MAX = 10
-const RATE_LIMIT_WINDOW_MS = 60_000
-
-function checkRateLimit(companyId: string): boolean {
-    const now = Date.now()
-    const timestamps = rateLimitMap.get(companyId) ?? []
-    const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
-    rateLimitMap.set(companyId, recent)
-    return recent.length < RATE_LIMIT_MAX
-}
-
-function recordRateLimitHit(companyId: string): void {
-    const timestamps = rateLimitMap.get(companyId) ?? []
-    timestamps.push(Date.now())
-    rateLimitMap.set(companyId, timestamps)
-}
+import { checkRateLimit, recordRateLimitHit } from '@/lib/rate-limit'
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 async function getAuthContext() {
@@ -130,8 +112,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'leadId obrigatório' }, { status: 400 })
     }
 
-    // Rate limit check
-    if (!checkRateLimit(company_id)) {
+    // Rate limit check — 10 requests per minute per company
+    const rateCheck = await checkRateLimit(company_id as string, 'briefing', 10, 60)
+    if (!rateCheck.allowed) {
         return NextResponse.json(
             { error: '// AGUARDANDO SLOT DE ANÁLISE' },
             { status: 429 }
@@ -172,7 +155,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Record rate limit hit
-    recordRateLimitHit(company_id)
+    await recordRateLimitHit(company_id as string, 'briefing')
 
     // Stream from Groq
     const groq = new Groq({ apiKey })

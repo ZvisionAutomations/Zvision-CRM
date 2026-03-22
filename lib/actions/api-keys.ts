@@ -61,7 +61,7 @@ export async function getApiKeys(): Promise<{ keys: ApiKey[]; error?: string }> 
 
         const { data, error } = await supabase
             .from('api_keys')
-            .select('*')
+            .select('id, label, key_preview, is_active, created_at, last_used_at, expires_at, company_id, user_id')
             .eq('company_id', company_id)
             .order('created_at', { ascending: false })
 
