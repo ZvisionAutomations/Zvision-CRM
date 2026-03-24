@@ -139,9 +139,10 @@ export async function importLeadsBatch(leadsRawData: unknown[]) {
     try {
         const { supabase, company_id, user } = await getAuthContext()
 
-        const errors: any[] = []
+        const errors: string[] = []
         // Valida e filtra os dados crus para garantir que estão seguros
-        const validLeads = leadsRawData.reduce<any[]>((acc, raw, index) => {
+        type LeadInsert = z.infer<typeof createLeadSchema> & { company_id: string }
+        const validLeads = leadsRawData.reduce<LeadInsert[]>((acc, raw, index) => {
             const result = createLeadSchema.safeParse(raw)
             if (result.success) {
                 acc.push({ ...result.data, company_id })
@@ -186,7 +187,7 @@ export async function importLeadsBatch(leadsRawData: unknown[]) {
         revalidatePath('/missoes')
         revalidatePath('/dashboard')
         return { success: true, count: validLeads.length }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[importLeadsBatch] Falha:', error)
         return { error: 'Erro crítico ao processar lote no Supabase.' }
     }

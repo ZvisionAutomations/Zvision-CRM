@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd"
 import { MoreHorizontal, Target, Shield, Clock, Loader2 } from "lucide-react"
 import type { Lead, PipelineStage } from '@/types/database'
@@ -10,6 +10,7 @@ import { ptBR } from 'date-fns/locale'
 import { NewLeadDialog } from "@/components/dashboard/new-lead-dialog"
 import { ImportLeadsDialog } from "@/components/dashboard/import-leads-dialog"
 import LeadIntelPanel from "@/components/LeadIntelPanel"
+import { formatCompactCurrency } from "@/lib/formatters"
 
 const COLUMNS: PipelineStage[] = [
     'NOVO_LEAD',
@@ -107,14 +108,18 @@ export default function MissionPipeline() {
         )
     }
 
-    const formatCurrency = (val: number | null) => {
-        if (!val) return 'N/A'
-        if (val >= 1000000) return `R$ ${(val / 1000000).toFixed(1)}M`
-        if (val >= 1000) return `R$ ${(val / 1000).toFixed(0)}K`
-        return `R$ ${val}`
-    }
+    const formatCurrency = formatCompactCurrency
 
-    const totalValuation = leads.reduce((sum, lead) => sum + (lead.estimated_value || 0), 0)
+    const { totalValuation, leadsByStage } = useMemo(() => {
+        const totalValuation = leads.reduce((sum, lead) => sum + (lead.estimated_value || 0), 0)
+        const leadsByStage = leads.reduce<Record<string, Lead[]>>((acc, lead) => {
+            const stage = lead.pipeline_stage
+            if (!acc[stage]) acc[stage] = []
+            acc[stage].push(lead)
+            return acc
+        }, {})
+        return { totalValuation, leadsByStage }
+    }, [leads])
 
     return (
         <div className="flex-1 flex flex-col min-w-0 h-full p-6">
@@ -140,7 +145,7 @@ export default function MissionPipeline() {
             <div className="flex-1 flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
                 <DragDropContext onDragEnd={onDragEnd}>
                     {COLUMNS.map((columnId) => {
-                        const columnLeads = leads.filter(l => l.pipeline_stage === columnId)
+                        const columnLeads = leadsByStage[columnId] ?? []
 
                         return (
                             <div key={columnId} className="flex-shrink-0 w-80 flex flex-col bg-[#0d0d10]/40 border border-white/5 rounded-lg backdrop-blur-sm overflow-hidden h-full">

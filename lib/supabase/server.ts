@@ -5,8 +5,7 @@ export async function createClient() {
     const cookieStore = await cookies()
 
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        console.warn('Supabase URL or Anon Key is missing. Returning null/dummy client or ignoring.')
-        return null as any // Type assertion to avoid massive refactoring just for the build, but consumer must check
+        throw new Error('Supabase URL or Anon Key is missing — cannot create server client')
     }
 
     return createServerClient(

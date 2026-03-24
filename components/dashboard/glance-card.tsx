@@ -20,35 +20,10 @@ interface GlanceCardProps {
   useNumberTicker?: boolean
 }
 
-function formatCompactNumber(num: number): string {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(num >= 10000000 ? 1 : 2).replace(/\.?0+$/, "") + "M"
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(num >= 10000 ? 1 : 2).replace(/\.?0+$/, "") + "K"
-  }
-  return num.toLocaleString()
-}
+import { formatCompactNumber } from "@/lib/formatters"
+import { glanceCardContainerVariants, glanceCardItemVariants } from "@/lib/motion-presets"
 
-// ─── Stagger variants (used by parent container in pulse-dashboard-client) ────
-export const glanceCardContainerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.05,
-    },
-  },
-}
-
-export const glanceCardItemVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] },
-  },
-}
+export { glanceCardContainerVariants, glanceCardItemVariants }
 
 export function GlanceCard({
   title,

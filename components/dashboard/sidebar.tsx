@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -75,12 +76,12 @@ export function Sidebar() {
         className="flex items-center mb-6 shrink-0"
         style={{ paddingLeft: expanded ? "12px" : "0px", justifyContent: expanded ? "flex-start" : "center", transition: "padding-left 0.2s ease" }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/zvision-logo.svg"
+        <Image
+          src="/zvision-logo-new.svg"
           alt="Zvision"
           width={32}
           height={32}
+          priority
           className="w-8 h-8"
         />
         {expanded && (

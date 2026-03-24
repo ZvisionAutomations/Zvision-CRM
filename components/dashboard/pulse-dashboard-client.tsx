@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { TrendingUp, Target, Zap, CheckCircle2, Clock, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { GlanceCard } from "@/components/dashboard/glance-card"
@@ -38,31 +38,35 @@ export function PulseDashboardClient({
 }) {
   const [selectedLead, setSelectedLead] = useState<{ id: string; name: string } | null>(null)
 
-  // Metricas calculadas dos dados reais do Supabase
-  const totalValuation = leads.reduce((sum, l) => sum + (l.estimated_value || 0), 0)
-  const iaBriefingsScanned = leads.filter((l) => l.ai_briefing !== null).length
-  const wonLeads = leads.filter((l) => l.pipeline_stage === "FECHAMENTO").length
-  const newLeadsToday = leads.filter((l) => {
-    const created = new Date(l.created_at)
-    const today = new Date()
-    return created.toDateString() === today.toDateString()
-  }).length
+  // Metricas calculadas dos dados reais do Supabase — memoized to avoid re-computing on every render
+  const { totalValuation, iaBriefingsScanned, wonLeads, newLeadsToday, activeLeads, pipelineSnapshot } = useMemo(() => {
+    const totalValuation = leads.reduce((sum, l) => sum + (l.estimated_value || 0), 0)
+    const iaBriefingsScanned = leads.filter((l) => l.ai_briefing !== null).length
+    const wonLeads = leads.filter((l) => l.pipeline_stage === "FECHAMENTO").length
+    const newLeadsToday = leads.filter((l) => {
+      const created = new Date(l.created_at)
+      const today = new Date()
+      return created.toDateString() === today.toDateString()
+    }).length
 
-  // Alvos ativos ordenados por signal_strength (ALTO primeiro)
-  const activeLeads = leads
-    .filter((l) => l.pipeline_stage !== "KIA" && l.pipeline_stage !== "FECHAMENTO")
-    .sort((a, b) => {
-      const order: Record<string, number> = { ALTO: 0, MEDIO: 1, BAIXO: 2 }
-      return (order[a.signal_strength] ?? 1) - (order[b.signal_strength] ?? 1)
-    })
-    .slice(0, 8)
+    // Alvos ativos ordenados por signal_strength (ALTO primeiro)
+    const activeLeads = leads
+      .filter((l) => l.pipeline_stage !== "KIA" && l.pipeline_stage !== "FECHAMENTO")
+      .sort((a, b) => {
+        const order: Record<string, number> = { ALTO: 0, MEDIO: 1, BAIXO: 2 }
+        return (order[a.signal_strength] ?? 1) - (order[b.signal_strength] ?? 1)
+      })
+      .slice(0, 8)
 
-  // Snapshot do pipeline por estagio
-  const pipelineSnapshot = (Object.keys(STAGE_LABELS) as PipelineStage[]).reduce(
-    (acc, stage) => ({ ...acc, [stage]: 0 }),
-    {} as Record<PipelineStage, number>
-  )
-  leads.forEach((l) => { pipelineSnapshot[l.pipeline_stage]++ })
+    // Snapshot do pipeline por estagio
+    const pipelineSnapshot = (Object.keys(STAGE_LABELS) as PipelineStage[]).reduce(
+      (acc, stage) => ({ ...acc, [stage]: 0 }),
+      {} as Record<PipelineStage, number>
+    )
+    leads.forEach((l) => { pipelineSnapshot[l.pipeline_stage]++ })
+
+    return { totalValuation, iaBriefingsScanned, wonLeads, newLeadsToday, activeLeads, pipelineSnapshot }
+  }, [leads])
 
   const glanceCards = [
     {

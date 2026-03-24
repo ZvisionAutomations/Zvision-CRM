@@ -39,9 +39,10 @@ export async function getProfile() {
     try {
         const { profile } = await getAuthContext()
         return { data: profile }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[getProfile] Erro:', error)
-        return { error: error.message }
+        const message = error instanceof Error ? error.message : String(error)
+        return { error: message }
     }
 }
 
@@ -72,7 +73,7 @@ export async function updateProfile(rawData: unknown) {
         revalidatePath('/')
 
         return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[updateProfile] Erro:', error)
         if (error instanceof z.ZodError) {
             return { error: error.errors[0].message }

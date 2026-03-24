@@ -93,10 +93,11 @@ export async function registerUser(rawData: unknown) {
 
         return { success: true }
 
-    } catch (e: any) {
+    } catch (e: unknown) {
         if (e instanceof z.ZodError) {
             return { error: e.errors[0].message }
         }
-        return { error: e.message || 'Erro desconhecido ao cadastrar usuário' }
+        const message = e instanceof Error ? e.message : 'Erro desconhecido ao cadastrar usuário'
+        return { error: message }
     }
 }

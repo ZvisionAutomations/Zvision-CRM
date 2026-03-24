@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import type { Subscription, SubscriptionCategory } from "@/types/database"
-import { formatCurrency } from "./kpi-card"
+import { formatCurrency } from "@/lib/formatters"
 
 // ─── Category labels ─────────────────────────────────────────────────────────
 const categoryLabels: Record<SubscriptionCategory, string> = {

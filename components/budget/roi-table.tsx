@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { formatCurrency } from "./kpi-card"
+import { formatCurrency } from "@/lib/formatters"
 
 interface ClientROI {
     name: string

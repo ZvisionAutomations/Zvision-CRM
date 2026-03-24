@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { Eye, Pause, Play } from "lucide-react"
 import type { Campaign } from "@/types/database"
-import { formatCurrency } from "./kpi-bar"
+import { formatCurrency } from "@/lib/formatters"
 
 // ─── Corner brackets for burning-money rows (ROAS < 1) ──────────────────────
 function CornerBrackets() {

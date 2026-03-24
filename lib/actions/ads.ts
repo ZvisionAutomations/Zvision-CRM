@@ -48,10 +48,11 @@ export async function getCampaigns(): Promise<{ campaigns: Campaign[]; error: st
 
         const { data, error } = await supabase
             .from('campaigns')
-            .select('*')
+            .select('id, company_id, name, platform, platform_subtype, status, utm_source, utm_medium, utm_campaign, budget, spend, impressions, clicks, leads, qualified_leads, conversions, revenue, daily_spend, period_start, period_end, created_at')
             .eq('company_id', company_id)
             .order('status', { ascending: true })
             .order('spend', { ascending: false })
+            .limit(100)
 
         if (error) {
             if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {

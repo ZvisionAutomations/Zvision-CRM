@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { Cloud, Monitor, Users, Megaphone } from "lucide-react"
 import type { Expense, ExpenseCategory } from "@/types/database"
-import { formatCurrency } from "./kpi-card"
+import { formatCurrency } from "@/lib/formatters"
 
 // ─── Category config ─────────────────────────────────────────────────────────
 const categoryConfig: Record<ExpenseCategory, {

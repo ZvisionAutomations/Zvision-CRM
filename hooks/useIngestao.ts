@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react"
 import Papa from "papaparse"
-import * as XLSX from "xlsx"
+// xlsx loaded dynamically in processFile to reduce initial bundle size
 import { createClient } from "@/lib/supabase/client"
 import { createImportRecord, updateImportRecord } from "@/lib/actions/imports"
 import type { PipelineStage } from "@/types/database"
@@ -384,8 +384,9 @@ export function useIngestao() {
             })
         } else if (ext === 'xlsx' || ext === 'xls') {
             const reader = new FileReader()
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
+                    const XLSX = await import('xlsx')
                     const data = e.target?.result
                     const workbook = XLSX.read(data, { type: 'array' })
                     const sheetName = workbook.SheetNames[0]

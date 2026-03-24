@@ -2,26 +2,7 @@
 
 import { motion } from "framer-motion"
 import { NumberTicker } from "@/components/ui/number-ticker"
-
-// Stagger for the 4 stat cards
-const statsContainerVariants = {
-    hidden: {},
-    visible: {
-        transition: {
-            staggerChildren: 0.08,
-            delayChildren: 0.05,
-        },
-    },
-}
-
-const statsItemVariants = {
-    hidden: { opacity: 0, y: 8 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] },
-    },
-}
+import { statsContainerVariants, statsItemVariants } from "@/lib/motion-presets"
 
 interface AgentCommandHeaderProps {
     totalAgents: number

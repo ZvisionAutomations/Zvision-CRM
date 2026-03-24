@@ -42,9 +42,10 @@ export async function getAgents(): Promise<{ agents: Agent[]; error: string | nu
 
         const { data, error } = await supabase
             .from('agents')
-            .select('*')
+            .select('id, company_id, name, type, platform, status, client_name, is_internal, metrics, activity_history, last_active_at, created_at')
             .eq('company_id', company_id)
             .order('created_at', { ascending: true })
+            .limit(100)
 
         if (error) {
             if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {

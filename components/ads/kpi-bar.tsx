@@ -3,40 +3,10 @@
 import { motion } from "framer-motion"
 import { ArrowUp, ArrowDown } from "lucide-react"
 import { NumberTicker } from "@/components/ui/number-ticker"
+import { formatCurrency, formatRoas } from "@/lib/formatters"
+import { kpiContainerVariants, kpiItemVariants } from "@/lib/motion-presets"
 
-// ─── Stagger variants (matches budget/kpi-card pattern) ──────────────────────
-export const kpiContainerVariants = {
-    hidden: {},
-    visible: {
-        transition: {
-            staggerChildren: 0.08,
-            delayChildren: 0.05,
-        },
-    },
-}
-
-export const kpiItemVariants = {
-    hidden: { opacity: 0, y: 8 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] },
-    },
-}
-
-// ─── Currency formatter (pt-BR) ──────────────────────────────────────────────
-export function formatCurrency(value: number): string {
-    return value.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-        minimumFractionDigits: 2,
-    })
-}
-
-// ─── ROAS formatter ──────────────────────────────────────────────────────────
-export function formatRoas(value: number): string {
-    return `${value.toFixed(1)}x`
-}
+export { kpiContainerVariants, kpiItemVariants }
 
 interface KpiCardProps {
     label: string

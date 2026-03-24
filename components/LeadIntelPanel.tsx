@@ -27,6 +27,7 @@ import {
     AlertDialogAction,
     AlertDialogCancel,
 } from "@/components/ui/alert-dialog"
+import { formatCompactCurrency } from "@/lib/formatters"
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface LeadIntelPanelProps {
@@ -82,14 +83,6 @@ const NOTE_TYPE_MAP: { label: string; activityType: ActivityKind }[] = [
     { label: "PROPOSTA", activityType: "EMAIL" },
     { label: "NOTA",     activityType: "NOTE" },
 ]
-
-// ─── Formatting helpers ───────────────────────────────────────────────────────
-function formatCurrency(val: number | null): string {
-    if (val === null) return "N/A"
-    if (val >= 1_000_000) return `R$ ${(val / 1_000_000).toFixed(1)}M`
-    if (val >= 1_000)     return `R$ ${(val / 1_000).toFixed(0)}K`
-    return `R$ ${val.toLocaleString("pt-BR")}`
-}
 
 function relativeTime(date: string): string {
     return formatDistanceToNow(new Date(date), { locale: ptBR, addSuffix: true })
@@ -762,7 +755,7 @@ export default function LeadIntelPanel({ isOpen, onClose, leadId, leadName }: Le
                                             className="text-[22px] font-mono font-bold"
                                             style={{ color: "var(--accent-primary)", fontFamily: "JetBrains Mono, monospace" }}
                                         >
-                                            {formatCurrency(lead.estimated_value)}
+                                            {formatCompactCurrency(lead.estimated_value)}
                                         </span>
                                     )}
                                 </StatCell>

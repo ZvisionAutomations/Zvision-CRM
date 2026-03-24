@@ -42,9 +42,10 @@ export async function getFlows(): Promise<{ flows: Flow[]; error: string | null 
 
         const { data, error } = await supabase
             .from('flows')
-            .select('*')
+            .select('id, company_id, name, type, status, metrics, execution_history, last_run_at, created_at')
             .eq('company_id', company_id)
             .order('created_at', { ascending: true })
+            .limit(100)
 
         if (error) {
             if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {

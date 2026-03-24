@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react"
 import { UploadCloud, FileSpreadsheet, Loader2, AlertCircle, CheckCircle2 } from "lucide-react"
-import * as XLSX from "xlsx"
+// xlsx loaded dynamically in processFile to reduce initial bundle size
 import Papa from "papaparse"
 
 import {
@@ -41,7 +41,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                 header: true,
                 skipEmptyLines: true,
                 complete: (results) => {
-                    mapAndSetData(results.data as any[])
+                    mapAndSetData(results.data as Record<string, string>[])
                 },
                 error: (error) => {
                     console.error(error)
@@ -50,14 +50,15 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
             })
         } else if (fileExt === 'xlsx' || fileExt === 'xls') {
             const reader = new FileReader()
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
+                    const XLSX = await import('xlsx')
                     const data = e.target?.result
                     const workbook = XLSX.read(data, { type: 'binary' })
                     const firstSheetName = workbook.SheetNames[0]
                     const worksheet = workbook.Sheets[firstSheetName]
                     const json = XLSX.utils.sheet_to_json(worksheet)
-                    mapAndSetData(json as any[])
+                    mapAndSetData(json as Record<string, string>[])
                 } catch (error) {
                     console.error(error)
                     toast.error("Erro ao processar arquivo Excel")
@@ -71,7 +72,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
     }
 
     // Mapeia as colunas comuns do mercado para o nosso formato tático
-    const mapAndSetData = (rawData: any[]) => {
+    const mapAndSetData = (rawData: Record<string, string>[]) => {
         const mappedLeads: Partial<Lead>[] = rawData.map(row => {
             // Normalização de chaves para facilitar o match (tudo minúsculo sem espaços)
             const normalizedRow: Record<string, string> = {}
@@ -142,9 +143,10 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
             setOpen(false)
             resetState()
             if (onSuccess) onSuccess()
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error)
-            toast.error("Falha ao injetar em massa: " + error.message)
+            const message = error instanceof Error ? error.message : String(error)
+            toast.error("Falha ao injetar em massa: " + message)
         } finally {
             setIsLoading(false)
         }

@@ -207,14 +207,14 @@ const initialCampaigns: Campaign[] = [
 ]
 
 const initialAssets: Asset[] = [
-  { id: "ast-001", name: "Hero Banner - Spring Launch", type: "image", thumbnail: "/assets/campaign-hero-1.jpg", impressions: 892000, engagement: 8.5, ctr: 4.2, campaign: "Q1 Brand Awareness", size: "large" },
-  { id: "ast-002", name: "Fashion Lifestyle Shoot", type: "video", thumbnail: "/assets/campaign-hero-2.jpg", impressions: 456000, engagement: 12.3, ctr: 6.8, campaign: "Product Launch", size: "medium" },
-  { id: "ast-003", name: "Abstract Brand Visual", type: "image", thumbnail: "/assets/campaign-hero-3.jpg", impressions: 234000, engagement: 6.2, ctr: 3.1, campaign: "Retargeting", size: "small" },
-  { id: "ast-004", name: "Skincare Product Flat Lay", type: "image", thumbnail: "/assets/campaign-hero-4.jpg", impressions: 678000, engagement: 9.8, ctr: 5.5, campaign: "Spring Sale", size: "small" },
-  { id: "ast-005", name: "Fitness Campaign Video", type: "video", thumbnail: "/assets/campaign-hero-5.jpg", impressions: 312000, engagement: 15.2, ctr: 7.9, campaign: "Influencer Wave 2", size: "medium" },
-  { id: "ast-006", name: "Luxury Watch Product Shot", type: "image", thumbnail: "/assets/campaign-hero-6.jpg", impressions: 189000, engagement: 5.4, ctr: 2.8, campaign: "Email Nurture", size: "small" },
-  { id: "ast-007", name: "Interior Design Showcase", type: "image", thumbnail: "/assets/campaign-hero-7.jpg", impressions: 245000, engagement: 11.7, ctr: 6.2, campaign: "Social Proof", size: "small" },
-  { id: "ast-008", name: "Coffee Brand Story", type: "video", thumbnail: "/assets/campaign-hero-8.jpg", impressions: 523000, engagement: 18.9, ctr: 8.4, campaign: "Brand Awareness", size: "large" },
+  { id: "ast-001", name: "Hero Banner - Spring Launch", type: "image", thumbnail: "", impressions: 892000, engagement: 8.5, ctr: 4.2, campaign: "Q1 Brand Awareness", size: "large" },
+  { id: "ast-002", name: "Fashion Lifestyle Shoot", type: "video", thumbnail: "", impressions: 456000, engagement: 12.3, ctr: 6.8, campaign: "Product Launch", size: "medium" },
+  { id: "ast-003", name: "Abstract Brand Visual", type: "image", thumbnail: "", impressions: 234000, engagement: 6.2, ctr: 3.1, campaign: "Retargeting", size: "small" },
+  { id: "ast-004", name: "Skincare Product Flat Lay", type: "image", thumbnail: "", impressions: 678000, engagement: 9.8, ctr: 5.5, campaign: "Spring Sale", size: "small" },
+  { id: "ast-005", name: "Fitness Campaign Video", type: "video", thumbnail: "", impressions: 312000, engagement: 15.2, ctr: 7.9, campaign: "Influencer Wave 2", size: "medium" },
+  { id: "ast-006", name: "Luxury Watch Product Shot", type: "image", thumbnail: "", impressions: 189000, engagement: 5.4, ctr: 2.8, campaign: "Email Nurture", size: "small" },
+  { id: "ast-007", name: "Interior Design Showcase", type: "image", thumbnail: "", impressions: 245000, engagement: 11.7, ctr: 6.2, campaign: "Social Proof", size: "small" },
+  { id: "ast-008", name: "Coffee Brand Story", type: "video", thumbnail: "", impressions: 523000, engagement: 18.9, ctr: 8.4, campaign: "Brand Awareness", size: "large" },
 ]
 
 const initialChannelBudgets: BudgetItem[] = [

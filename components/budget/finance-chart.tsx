@@ -42,20 +42,7 @@ function formatMonthLabel(month: string): string {
     return monthLabels[m] ?? m
 }
 
-function formatCurrencyShort(value: number): string {
-    if (value >= 1000) {
-        return `R$${(value / 1000).toFixed(1)}K`
-    }
-    return `R$${value.toFixed(0)}`
-}
-
-function formatCurrencyFull(value: number): string {
-    return value.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-        minimumFractionDigits: 2,
-    })
-}
+import { formatCurrencyShort, formatCurrency as formatCurrencyFull } from "@/lib/formatters"
 
 // Custom tooltip for dark theme
 interface TooltipPayload {
