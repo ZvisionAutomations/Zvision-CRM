@@ -4,6 +4,8 @@ import { AgentCommandHeader } from "@/components/agents/agent-command-header"
 import { getAgents } from "@/lib/actions/agents"
 import type { Agent } from "@/types/database"
 
+export const dynamic = 'force-dynamic'
+
 // Server component — fetches agents, renders the Agent Command Center
 export default async function AgentsPage() {
     const { agents, error } = await getAgents()

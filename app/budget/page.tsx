@@ -1,6 +1,8 @@
 import { getExpensesByMonth, getExpensesLast6Months, getSubscriptions, getWonDeals } from "@/lib/actions/budget"
 import { FinancialCommandClient } from "./financial-command-client"
 
+export const dynamic = 'force-dynamic'
+
 // ─── Server Component: fetches all financial data ────────────────────────────
 
 export default async function FinancialCommandCenter() {

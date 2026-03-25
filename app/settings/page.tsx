@@ -2,6 +2,8 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { getProfile } from "@/lib/actions/profile"
 import { SettingsClient } from "@/app/settings/settings-client"
 
+export const dynamic = 'force-dynamic'
+
 export default async function SettingsPage() {
     const { data: profile, error } = await getProfile()
 

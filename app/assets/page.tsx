@@ -1,6 +1,8 @@
 import { getCampaigns } from "@/lib/actions/ads"
 import { AdsCommandClient } from "./ads-command-client"
 
+export const dynamic = 'force-dynamic'
+
 // ─── Server Component: fetches all campaign data ─────────────────────────────
 
 export default async function CentralDeAnuncios() {

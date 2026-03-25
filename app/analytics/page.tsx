@@ -2,6 +2,8 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { getLeads } from "@/lib/actions/leads"
 import { AnalyticsClient } from "./analytics-client"
 
+export const dynamic = 'force-dynamic'
+
 export default async function AnalyticsPage() {
   const { leads } = await getLeads({ limit: 1000 })
 
