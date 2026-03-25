@@ -90,9 +90,22 @@ export default function MissionPipeline() {
         }
     }
 
+    // All hooks must be called before conditional returns (Rules of Hooks)
+    const formatCurrency = formatCompactCurrency
+
+    const { totalValuation, leadsByStage } = useMemo(() => {
+        const totalValuation = leads.reduce((sum, lead) => sum + (lead.estimated_value || 0), 0)
+        const leadsByStage = leads.reduce<Record<string, Lead[]>>((acc, lead) => {
+            const stage = lead.pipeline_stage
+            if (!acc[stage]) acc[stage] = []
+            acc[stage].push(lead)
+            return acc
+        }, {})
+        return { totalValuation, leadsByStage }
+    }, [leads])
+
     if (!isBrowser) return null
 
-    // Função para renderizar Loading Skeleton
     if (isLoading) {
         return (
             <div className="flex-1 flex flex-col min-w-0 h-full p-6">
@@ -107,19 +120,6 @@ export default function MissionPipeline() {
             </div>
         )
     }
-
-    const formatCurrency = formatCompactCurrency
-
-    const { totalValuation, leadsByStage } = useMemo(() => {
-        const totalValuation = leads.reduce((sum, lead) => sum + (lead.estimated_value || 0), 0)
-        const leadsByStage = leads.reduce<Record<string, Lead[]>>((acc, lead) => {
-            const stage = lead.pipeline_stage
-            if (!acc[stage]) acc[stage] = []
-            acc[stage].push(lead)
-            return acc
-        }, {})
-        return { totalValuation, leadsByStage }
-    }, [leads])
 
     return (
         <div className="flex-1 flex flex-col min-w-0 h-full p-6">
