@@ -165,7 +165,7 @@ export function AnalyticsClient({ leads }: AnalyticsClientProps) {
                   {chartData.map((entry, index) => (
                     <Cell
                       key={index}
-                      fill={entry.isLast ? "#A2E635" : "rgba(162,230,53,0.25)"}
+                      fill={entry.isLast ? "var(--accent-primary)" : "rgba(162,230,53,0.25)"}
                     />
                   ))}
                 </Bar>
@@ -185,7 +185,7 @@ export function AnalyticsClient({ leads }: AnalyticsClientProps) {
           <div className="space-y-4">
             {[
               { label: "ALTO", count: signalDist.ALTO, color: "bg-[var(--accent-primary)]" },
-              { label: "MEDIO", count: signalDist.MEDIO, color: "bg-[#f59e0b]" },
+              { label: "MEDIO", count: signalDist.MEDIO, color: "bg-[var(--status-warning)]" },
               { label: "BAIXO", count: signalDist.BAIXO, color: "bg-[var(--destructive)]" },
             ].map(({ label, count, color }) => {
               const pct = leads.length > 0 ? (count / leads.length) * 100 : 0

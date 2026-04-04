@@ -19,10 +19,10 @@ const STAGE_LABELS: Record<PipelineStage, string> = {
 }
 
 // Cor do indicador de sinal
-const SIGNAL_COLORS: Record<string, string> = {
-  ALTO:  "bg-lime",
-  MEDIO: "bg-amber-500",
-  BAIXO: "bg-red-500",
+const SIGNAL_BG: Record<string, string> = {
+  ALTO:  'var(--accent-primary)',
+  MEDIO: 'var(--status-warning)',
+  BAIXO: 'var(--status-error)',
 }
 
 const ZERO_12 = (): number[] => Array(12).fill(0)
@@ -70,7 +70,7 @@ export function PulseDashboardClient({
 
   const glanceCards = [
     {
-      title: "Valuation em Pipeline",
+      title: "PIPELINE ATIVO",
       value: totalValuation,
       prefix: "R$ ",
       suffix: "",
@@ -78,7 +78,7 @@ export function PulseDashboardClient({
       sparklineData: sparklines?.valuationByWeek ?? ZERO_12(),
     },
     {
-      title: "Alvos no Radar",
+      title: "ALVOS NO RADAR",
       value: total,
       prefix: "",
       suffix: "",
@@ -86,14 +86,14 @@ export function PulseDashboardClient({
       sparklineData: sparklines?.leadsByWeek ?? ZERO_12(),
     },
     {
-      title: "Briefings IA Gerados",
+      title: "INTEL IA ATIVA",
       value: total > 0 ? Number(((iaBriefingsScanned / total) * 100).toFixed(1)) : 0,
       suffix: "%",
       change: 0,
       sparklineData: sparklines?.briefingsByWeek ?? ZERO_12(),
     },
     {
-      title: "Missoes Fechadas",
+      title: "MISSÕES FECHADAS",
       value: wonLeads,
       change: 0,
       sparklineData: sparklines?.wonByWeek ?? ZERO_12(),
@@ -107,12 +107,14 @@ export function PulseDashboardClient({
         <div className="flex items-center gap-3 mb-2">
           <div className="w-2 h-2 bg-lime pulse-live" />
           <span className="text-xs font-mono text-muted-foreground uppercase tracking-[2px]">
-            Visao Geral em Tempo Real
+            // FEED AO VIVO
           </span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[3px]">Comando Central</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Monitore a operacao e gerencie seus alvos ativos
+        <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[3px]" style={{ fontFamily: 'var(--font-space-grotesk, Space Grotesk, sans-serif)' }}>
+          COMANDO CENTRAL
+        </h1>
+        <p className="font-mono text-xs text-muted-foreground mt-1">
+          // Monitoramento de operação em tempo real
         </p>
       </div>
 
@@ -139,7 +141,7 @@ export function PulseDashboardClient({
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
               <Target className="w-3.5 h-3.5 text-lime" />
-              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">Alvos Ativos</span>
+              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">// ALVOS ATIVOS</span>
             </div>
             <span className="text-xs font-mono text-muted-foreground">{activeLeads.length} de {total}</span>
           </div>
@@ -163,10 +165,10 @@ export function PulseDashboardClient({
                   onClick={() => setSelectedLead({ id: lead.id, name: lead.name })}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--surface-hover)] transition-all duration-150 text-left group"
                 >
-                  <div className={cn(
-                    "w-1.5 h-1.5 shrink-0",
-                    SIGNAL_COLORS[lead.signal_strength] ?? "bg-muted"
-                  )} />
+                  <div
+                    className="w-1.5 h-1.5 shrink-0"
+                    style={{ background: SIGNAL_BG[lead.signal_strength] ?? 'var(--muted-foreground)' }}
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium truncate">{lead.name}</span>
@@ -199,7 +201,7 @@ export function PulseDashboardClient({
           <div className="bg-card border border-border">
             <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
               <TrendingUp className="w-3.5 h-3.5 text-lime" />
-              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">Pipeline</span>
+              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">// PIPELINE</span>
             </div>
             <div className="p-4 space-y-2">
               {(Object.entries(pipelineSnapshot) as [PipelineStage, number][]).map(([stage, count]) => {
@@ -227,25 +229,25 @@ export function PulseDashboardClient({
           <div className="bg-card border border-border p-4 flex-1">
             <div className="flex items-center gap-2 mb-4">
               <Clock className="w-3.5 h-3.5 text-lime" />
-              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">Destaques</span>
+              <span className="text-xs font-mono uppercase tracking-[2px] text-muted-foreground">// DESTAQUES</span>
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Novos hoje</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase">NOVOS HOJE</span>
                 <span className="text-xs font-mono text-lime">{newLeadsToday}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Com briefing IA</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase">INTEL IA ATIVA</span>
                 <span className="text-xs font-mono">{iaBriefingsScanned}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">KIA (perdidos)</span>
+                <span className="text-xs font-mono text-muted-foreground uppercase">KIA — ALVOS PERDIDOS</span>
                 <span className="text-xs font-mono text-destructive">{pipelineSnapshot.KIA}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3 h-3 text-lime" />
-                  <span className="text-xs text-muted-foreground">Missoes fechadas</span>
+                  <span className="text-xs font-mono text-muted-foreground uppercase">MISSÕES FECHADAS</span>
                 </div>
                 <span className="text-xs font-mono text-lime">{wonLeads}</span>
               </div>

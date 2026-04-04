@@ -95,7 +95,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-[#0d0d10] border-lime/20 text-foreground">
+            <DialogContent className="sm:max-w-[425px] bg-surface-card border-lime/20 text-foreground">
                 <DialogHeader>
                     <DialogTitle className="font-mono text-lime uppercase tracking-widest text-lg">Injetar Novo Lead</DialogTitle>
                     <DialogDescription className="text-muted-foreground text-xs">
@@ -113,7 +113,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                                 <FormItem>
                                     <FormLabel className="text-foreground/70">Organização Alvo (Empresa) *</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Ex: Zvision, Corp." className="bg-[#141418] border-white/10" {...field} />
+                                        <Input placeholder="Ex: Zvision, Corp." className="bg-surface-elevated border-white/10" {...field} />
                                     </FormControl>
                                     <FormMessage className="text-destructive/80 text-xs" />
                                 </FormItem>
@@ -127,7 +127,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                                 <FormItem>
                                     <FormLabel className="text-foreground/70">Contato Chave (Pessoa) *</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Ex: Maria Silva" className="bg-[#141418] border-white/10" {...field} />
+                                        <Input placeholder="Ex: Maria Silva" className="bg-surface-elevated border-white/10" {...field} />
                                     </FormControl>
                                     <FormMessage className="text-destructive/80 text-xs" />
                                 </FormItem>
@@ -142,7 +142,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                                     <FormItem>
                                         <FormLabel className="text-foreground/70">E-mail (Recomendado)</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="contato@empresa.com" type="email" className="bg-[#141418] border-white/10" {...field} />
+                                            <Input placeholder="contato@empresa.com" type="email" className="bg-surface-elevated border-white/10" {...field} />
                                         </FormControl>
                                         <FormMessage className="text-destructive/80 text-xs" />
                                     </FormItem>
@@ -156,7 +156,7 @@ export function NewLeadDialog({ children, onSuccess }: NewLeadDialogProps) {
                                     <FormItem>
                                         <FormLabel className="text-foreground/70">Valuation (R$)</FormLabel>
                                         <FormControl>
-                                            <Input type="number" min="0" step="1000" placeholder="Ex: 5000" className="bg-[#141418] border-white/10" {...field} />
+                                            <Input type="number" min="0" step="1000" placeholder="Ex: 5000" className="bg-surface-elevated border-white/10" {...field} />
                                         </FormControl>
                                         <FormMessage className="text-destructive/80 text-xs" />
                                     </FormItem>

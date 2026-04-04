@@ -12,7 +12,7 @@ export default async function SettingsPage() {
             <DashboardLayout>
                 <div
                     className="p-8 font-mono text-sm"
-                    style={{ color: '#FF4444' }}
+                    style={{ color: 'var(--destructive)' }}
                 >
                     // FALHA AO CARREGAR PERFIL — tente fazer login novamente
                 </div>
@@ -24,7 +24,7 @@ export default async function SettingsPage() {
         <DashboardLayout>
             <div
                 className="min-h-screen"
-                style={{ background: '#0A0A0A' }}
+                style={{ background: 'var(--surface-page)' }}
             >
                 {/* Tactical grid */}
                 <div
@@ -48,15 +48,15 @@ export default async function SettingsPage() {
                                 style={{ background: 'var(--accent-primary)' }}
                             />
                             <h1
-                                className="font-sans font-bold text-2xl uppercase tracking-[0.15em]"
-                                style={{ color: 'var(--accent-primary)' }}
+                                className="font-bold text-2xl uppercase tracking-[0.15em]"
+                                style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-space-grotesk, Space Grotesk, sans-serif)' }}
                             >
                                 // OPERATOR_CONFIG
                             </h1>
                         </div>
                         <p
                             className="font-mono text-xs ml-[18px]"
-                            style={{ color: 'rgba(240,240,240,0.35)' }}
+                            style={{ color: 'var(--text-secondary)' }}
                         >
                             Gerencie identidade, acesso e configurações do sistema
                         </p>

@@ -15,11 +15,11 @@ export default async function AnalyticsPage() {
           <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mb-1">
             // ANALISE DE PIPELINE
           </p>
-          <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-            Métricas Táticas
+          <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[3px]" style={{ fontFamily: 'var(--font-space-grotesk, Space Grotesk, sans-serif)' }}>
+            MÉTRICAS TÁTICAS
           </h1>
           <p className="font-mono text-xs text-muted-foreground mt-1">
-            Performance do CRM com dados reais do Supabase
+            // PERFORMANCE DO PIPELINE — DADOS REAIS
           </p>
         </div>
 

@@ -92,34 +92,40 @@ export function GlanceCard({
       {/* Ambient hover gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-primary)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="relative z-10">
-        <p className="text-sm text-muted-foreground mb-2">{title}</p>
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Label — JetBrains Mono uppercase 9px, letter-spacing 2px */}
+        <p
+          className="font-mono uppercase text-[9px] text-muted-foreground mb-3"
+          style={{ letterSpacing: '2px' }}
+        >
+          {title}
+        </p>
 
         <div className="flex items-baseline gap-1 md:gap-2 mb-3 md:mb-4">
-          <span className="text-lg sm:text-2xl md:text-4xl font-mono font-semibold tracking-tighter">
+          {/* Value — JetBrains Mono 700, 28–32px */}
+          <span className="text-[28px] md:text-[32px] font-mono font-bold tracking-tight leading-none">
             {prefix}
             {useNumberTicker ? (
               <NumberTicker
                 value={value}
-                className="text-lg sm:text-2xl md:text-4xl font-mono font-semibold tracking-tighter"
+                className="text-[28px] md:text-[32px] font-mono font-bold tracking-tight"
               />
             ) : (
               formatCompactNumber(value)
             )}
             {suffix}
           </span>
+          {/* Trend arrow */}
           <div
-            className={cn(
-              "flex items-center gap-0.5 text-sm font-medium",
-              isPositive ? "text-[var(--accent-primary)]" : "text-destructive"
-            )}
+            className="flex items-center gap-0.5 text-[11px] font-mono font-medium"
+            style={{ color: isPositive ? 'var(--accent-primary)' : 'var(--status-error)' }}
           >
-            {isPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+            {isPositive ? '↑' : '↓'}
             <span>{Math.abs(change)}%</span>
           </div>
         </div>
 
-        <div className="h-12 -mx-2 mt-2">
+        <div className="h-12 -mx-2 mt-auto mb-2">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
               <defs>
@@ -140,6 +146,15 @@ export function GlanceCard({
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Intensity bar — 2px footer, accent for positive / error for negative */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[2px]"
+        style={{
+          background: isPositive ? 'var(--accent-primary)' : 'var(--status-error)',
+          boxShadow: isPositive ? '0 0 6px rgba(162,230,53,0.5)' : '0 0 6px rgba(239,68,68,0.5)',
+        }}
+      />
     </motion.div>
   )
 }

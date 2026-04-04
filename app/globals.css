@@ -30,7 +30,12 @@
   --chart-3: #FF6B35;
   --chart-4: #8B5CF6;
   --chart-5: #F59E0B;
-  --radius: 0rem;
+  --radius: 2px;
+  --radius-card: 4px;
+  --radius-badge: 999px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
   --sidebar:       #0A0A0A;
   --sidebar-foreground: #F0F0F0;
   --sidebar-primary: #A2E635;
@@ -61,6 +66,8 @@
   --shadow-neon-sm: 0 0 8px rgba(162,230,53,0.35), 0 0 20px rgba(162,230,53,0.15);
   --shadow-neon-lg: 0 0 20px rgba(162,230,53,0.35), 0 0 40px rgba(162,230,53,0.20);
   --status-error: #ef4444;
+  --status-success: #22c55e;
+  --status-warning: #f59e0b;
 }
 
 .dark {
@@ -141,10 +148,10 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: 0rem;
-  --radius-md: 0rem;
-  --radius-lg: 0rem;
-  --radius-xl: 0rem;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -163,6 +170,9 @@
   --color-surface-elevated: var(--surface-elevated);
   --color-surface-hover: var(--surface-hover);
   --color-glass: var(--glass);
+  --color-status-error: var(--status-error);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
 }
 
 @layer base {
@@ -184,7 +194,16 @@
 }
 
 /* ZVISION Custom Utilities */
+/* Touch targets — WCAG 2.5.5 minimum 44x44px */
 @layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .glass-panel {
     @apply bg-glass backdrop-blur-xl border border-border;
   }

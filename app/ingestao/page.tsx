@@ -80,14 +80,14 @@ export default function IngestaoPage() {
                 >
                     <summary
                         className="font-mono text-[11px] uppercase tracking-widest cursor-pointer select-none list-none flex items-center gap-2"
-                        style={{ color: 'rgba(240,240,240,0.35)' }}
+                        style={{ color: 'var(--text-secondary)' }}
                     >
                         <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
                         // MAPEAMENTO DE COLUNAS SUPORTADAS
                     </summary>
                     <div
                         className="mt-3 rounded-lg border p-4 grid grid-cols-2 gap-x-8 gap-y-1"
-                        style={{ borderColor: 'rgba(255,255,255,0.06)', background: '#111111' }}
+                        style={{ borderColor: 'var(--border)', background: 'var(--surface-card)' }}
                     >
                         {[
                             ['nome, name, contato', 'name'],
@@ -105,7 +105,7 @@ export default function IngestaoPage() {
                                 <span style={{ color: 'var(--accent-primary)' }}>{db}</span>
                             </div>
                         ))}
-                        <div className="col-span-2 mt-3 pt-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                        <div className="col-span-2 mt-3 pt-3 border-t border-border">
                             <button
                                 onClick={downloadSampleCSV}
                                 className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded border transition-colors hover:bg-white/5"
@@ -154,10 +154,7 @@ export default function IngestaoPage() {
                 </AnimatePresence>
 
                 {/* Divider */}
-                <div
-                    className="my-8 border-t"
-                    style={{ borderColor: 'rgba(255,255,255,0.06)' }}
-                />
+                <div className="my-8 border-t border-border" />
 
                 {/* Recent uploads */}
                 <RecentUploads refreshKey={refreshKey} />

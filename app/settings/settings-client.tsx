@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "sonner"
-import { Copy, Plus, Trash2, Eye, EyeOff, LogOut, AlertTriangle } from "lucide-react"
+import { Copy, Plus, Trash2, EyeOff, LogOut, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { updateProfile } from "@/lib/actions/profile"
@@ -46,7 +46,7 @@ function SectionNav({ active, onSelect }: { active: SectionId; onSelect: (id: Se
                         onClick={() => onSelect(id)}
                         className="text-left px-3 py-2.5 font-mono text-xs tracking-wider transition-all relative"
                         style={{
-                            color: isActive ? 'var(--accent-primary)' : 'rgba(240,240,240,0.35)',
+                            color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
                             borderLeft: isActive ? '2px solid var(--accent-primary)' : '2px solid transparent',
                         }}
                     >
@@ -134,7 +134,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
             <div>
                 <h2
                     className="font-mono text-[11px] uppercase tracking-[0.2em] mb-4"
-                    style={{ color: 'rgba(240,240,240,0.35)' }}
+                    style={{ color: 'var(--text-secondary)' }}
                 >
                     // OPERADOR
                 </h2>
@@ -145,15 +145,15 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                         className="w-12 h-12 flex items-center justify-center text-sm font-mono font-bold border"
                         style={{
                             background: 'rgba(162,230,53,0.08)',
-                            borderColor: 'rgba(162,230,53,0.25)',
+                            borderColor: 'var(--border-bright)',
                             color: 'var(--accent-primary)',
                         }}
                     >
                         {initials}
                     </div>
                     <div>
-                        <p className="font-mono text-sm text-white">{profile.name ?? '—'}</p>
-                        <p className="font-mono text-xs" style={{ color: 'rgba(240,240,240,0.4)' }}>
+                        <p className="font-mono text-sm text-foreground">{profile.name ?? '—'}</p>
+                        <p className="font-mono text-xs text-muted-foreground">
                             {profile.email}
                         </p>
                     </div>
@@ -161,8 +161,8 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                     <span
                         className="ml-auto font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border"
                         style={{
-                            color: profile.role === 'admin' ? 'var(--accent-primary)' : 'rgba(240,240,240,0.5)',
-                            borderColor: profile.role === 'admin' ? 'rgba(162,230,53,0.4)' : 'rgba(255,255,255,0.1)',
+                            color: profile.role === 'admin' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                            borderColor: profile.role === 'admin' ? 'rgba(162,230,53,0.4)' : 'var(--border)',
                             background: profile.role === 'admin' ? 'rgba(162,230,53,0.06)' : 'transparent',
                         }}
                     >
@@ -172,17 +172,17 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
 
                 {/* Codinome field */}
                 <div className="space-y-1.5 mb-4">
-                    <label className="font-mono text-[11px] uppercase tracking-wider" style={{ color: 'rgba(240,240,240,0.4)' }}>
+                    <label className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                         Codinome
                     </label>
                     <Input
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        className="font-mono text-sm max-w-sm bg-[var(--surface-elevated)] border-[var(--border-default)]"
+                        className="font-mono text-sm max-w-sm"
                         style={{
-                            background: '#0A0A0A',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            color: '#F0F0F0',
+                            background: 'var(--surface-page)',
+                            border: '1px solid var(--border)',
+                            color: 'var(--text-primary)',
                         }}
                         placeholder="Ex: Operador Alpha"
                     />
@@ -190,15 +190,15 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
 
                 {/* Email read-only */}
                 <div className="space-y-1.5 mb-6">
-                    <label className="font-mono text-[11px] uppercase tracking-wider" style={{ color: 'rgba(240,240,240,0.4)' }}>
+                    <label className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                         Email
                     </label>
                     <p
                         className="font-mono text-sm px-3 py-2 border max-w-sm"
                         style={{
-                            background: 'rgba(255,255,255,0.02)',
-                            borderColor: 'rgba(255,255,255,0.06)',
-                            color: 'rgba(240,240,240,0.5)',
+                            background: 'var(--surface)',
+                            borderColor: 'var(--border)',
+                            color: 'var(--text-secondary)',
                         }}
                     >
                         {profile.email}
@@ -211,22 +211,22 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                     className="font-mono text-xs uppercase tracking-wider"
                     style={{
                         background: 'var(--accent-primary)',
-                        color: '#0A0A0A',
+                        color: 'var(--surface-page)',
                         fontWeight: 700,
                     }}
                 >
-                    {isSaving ? '>> SALVANDO...' : 'SALVAR ALTERAÇÕES'}
+                    {isSaving ? '>> SALVANDO...' : 'CONFIRMAR ALTERAÇÕES'}
                 </Button>
             </div>
 
             {/* Divider */}
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />
+            <div className="border-t border-border" />
 
             {/* ── API Keys block ── */}
             <div>
                 <h2
                     className="font-mono text-[11px] uppercase tracking-[0.2em] mb-4"
-                    style={{ color: 'rgba(240,240,240,0.35)' }}
+                    style={{ color: 'var(--text-secondary)' }}
                 >
                     // CHAVES DE API
                 </h2>
@@ -245,7 +245,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                             }}
                         >
                             <span style={{ color: 'var(--accent-primary)' }}>[NOVA CHAVE]</span>
-                            <code className="flex-1 text-white break-all">{revealedRawKey}</code>
+                            <code className="flex-1 text-foreground break-all">{revealedRawKey}</code>
                             <button
                                 onClick={() => {
                                     navigator.clipboard.writeText(revealedRawKey)
@@ -259,7 +259,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                             <button
                                 onClick={() => setRevealedRawKey(null)}
                                 className="shrink-0 font-mono text-[10px]"
-                                style={{ color: 'rgba(240,240,240,0.35)' }}
+                                style={{ color: 'var(--text-secondary)' }}
                             >
                                 [FECHAR]
                             </button>
@@ -269,8 +269,8 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
 
                 {/* Existing keys */}
                 <div
-                    className="border mb-4 divide-y"
-                    style={{ borderColor: 'rgba(255,255,255,0.06)', '--tw-divide-opacity': '1' } as React.CSSProperties}
+                    className="border mb-4 divide-y divide-border"
+                    style={{ borderColor: 'var(--border)' }}
                 >
                     {keysLoading ? (
                         [1, 2].map(i => (
@@ -282,8 +282,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                         ))
                     ) : keys.length === 0 ? (
                         <div
-                            className="px-3 py-6 text-center font-mono text-[11px]"
-                            style={{ color: 'rgba(240,240,240,0.3)' }}
+                            className="px-3 py-6 text-center font-mono text-[11px] text-muted-foreground"
                         >
                             // SEM CHAVES CADASTRADAS
                         </div>
@@ -292,14 +291,10 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                             <div
                                 key={key.id}
                                 className="flex items-center gap-3 px-3 py-3"
-                                style={{ borderColor: 'rgba(255,255,255,0.06)' }}
                             >
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-mono text-xs text-white truncate">{key.label}</p>
-                                    <p
-                                        className="font-mono text-[10px]"
-                                        style={{ color: 'rgba(240,240,240,0.35)' }}
-                                    >
+                                    <p className="font-mono text-xs text-foreground truncate">{key.label}</p>
+                                    <p className="font-mono text-[10px] text-muted-foreground">
                                         {key.key_preview}
                                     </p>
                                 </div>
@@ -307,9 +302,9 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                                 <span
                                     className="font-mono text-[10px] uppercase px-1.5 py-0.5 border shrink-0"
                                     style={{
-                                        color: key.is_active ? 'var(--accent-primary)' : '#FF4444',
-                                        borderColor: key.is_active ? 'rgba(162,230,53,0.3)' : 'rgba(255,68,68,0.3)',
-                                        background: key.is_active ? 'rgba(162,230,53,0.04)' : 'rgba(255,68,68,0.04)',
+                                        color: key.is_active ? 'var(--accent-primary)' : 'var(--destructive)',
+                                        borderColor: key.is_active ? 'rgba(162,230,53,0.3)' : 'rgba(239,68,68,0.3)',
+                                        background: key.is_active ? 'rgba(162,230,53,0.04)' : 'rgba(239,68,68,0.04)',
                                     }}
                                 >
                                     {key.is_active ? 'ATIVA' : 'REVOGADA'}
@@ -319,19 +314,17 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                                     <button
                                         onClick={() => handleRevoke(key.id)}
                                         title="Revogar"
-                                        className="transition-colors"
-                                        style={{ color: 'rgba(240,240,240,0.3)' }}
+                                        className="transition-colors text-muted-foreground hover:text-amber-400"
                                     >
-                                        <EyeOff className="w-4 h-4 hover:text-amber-400" />
+                                        <EyeOff className="w-4 h-4" />
                                     </button>
                                 )}
                                 <button
                                     onClick={() => handleDelete(key.id)}
                                     title="Deletar"
-                                    className="transition-colors"
-                                    style={{ color: 'rgba(240,240,240,0.3)' }}
+                                    className="transition-colors text-muted-foreground hover:text-red-400"
                                 >
-                                    <Trash2 className="w-3.5 h-3.5 hover:text-red-400" />
+                                    <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                         ))
@@ -345,11 +338,11 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                         onChange={e => setNewKeyLabel(e.target.value)}
                         onKeyDown={e => { if (e.key === 'Enter') handleCreateKey() }}
                         placeholder="Label da nova chave..."
-                        className="font-mono text-xs bg-[var(--surface-elevated)] border-[var(--border-default)]"
+                        className="font-mono text-xs"
                         style={{
-                            background: '#0A0A0A',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            color: '#F0F0F0',
+                            background: 'var(--surface-page)',
+                            border: '1px solid var(--border)',
+                            color: 'var(--text-primary)',
                         }}
                     />
                     <Button
@@ -357,7 +350,7 @@ function IdentitySection({ profile }: { profile: ProfileData }) {
                         size="sm"
                         onClick={handleCreateKey}
                         disabled={isCreating || !newKeyLabel.trim()}
-                        className="font-mono text-xs gap-1.5 border-[var(--border-default)] bg-[var(--surface-elevated)] text-foreground/70 hover:text-white shrink-0"
+                        className="font-mono text-xs gap-1.5 border-border text-muted-foreground hover:text-foreground shrink-0"
                     >
                         <Plus className="w-3.5 h-3.5" />
                         {isCreating ? 'CRIANDO...' : 'NOVA CHAVE'}
@@ -374,8 +367,7 @@ function BillingSection() {
     return (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
             <span
-                className="font-mono text-[11px] uppercase tracking-[0.2em]"
-                style={{ color: 'rgba(240,240,240,0.3)' }}
+                className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
             >
                 // MÓDULO EM DESENVOLVIMENTO
             </span>
@@ -398,10 +390,7 @@ function BillingSection() {
 function AuditSection() {
     return (
         <div className="flex items-center justify-center py-20">
-            <span
-                className="font-mono text-[11px] uppercase tracking-[0.2em]"
-                style={{ color: 'rgba(240,240,240,0.3)' }}
-            >
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 // LOGS DE AUDITORIA — EM BREVE
             </span>
         </div>
@@ -427,11 +416,11 @@ function TerminateSection() {
         <div className="flex justify-center py-8">
             <div
                 className="w-full max-w-sm border-2 p-6 space-y-6"
-                style={{ borderColor: 'rgba(255,68,68,0.4)', background: 'rgba(255,68,68,0.03)' }}
+                style={{ borderColor: 'rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.03)' }}
             >
                 <h3
                     className="font-mono text-sm uppercase tracking-[0.2em] text-center"
-                    style={{ color: '#FF4444' }}
+                    style={{ color: 'var(--destructive)' }}
                 >
                     // ZONA DE PERIGO
                 </h3>
@@ -444,23 +433,20 @@ function TerminateSection() {
                         variant="outline"
                         className="w-full font-mono text-xs uppercase tracking-wider gap-2"
                         style={{
-                            borderColor: 'rgba(255,68,68,0.5)',
-                            color: '#FF4444',
+                            borderColor: 'rgba(239,68,68,0.5)',
+                            color: 'var(--destructive)',
                             background: 'transparent',
                         }}
                     >
                         <LogOut className="w-3.5 h-3.5" />
                         {isLoggingOut ? '>> ENCERRANDO...' : 'ENCERRAR SESSÃO'}
                     </Button>
-                    <p
-                        className="font-mono text-[10px] text-center"
-                        style={{ color: 'rgba(240,240,240,0.3)' }}
-                    >
+                    <p className="font-mono text-[10px] text-center text-muted-foreground">
                         Você será redirecionado para o login
                     </p>
                 </div>
 
-                <div style={{ borderTop: '1px solid rgba(255,68,68,0.15)' }} />
+                <div className="border-t" style={{ borderColor: 'rgba(239,68,68,0.15)' }} />
 
                 {/* Excluir conta — disabled */}
                 <div className="space-y-2">
@@ -470,8 +456,8 @@ function TerminateSection() {
                             variant="outline"
                             className="w-full font-mono text-xs uppercase tracking-wider gap-2 cursor-not-allowed"
                             style={{
-                                borderColor: 'rgba(255,68,68,0.25)',
-                                color: 'rgba(255,68,68,0.4)',
+                                borderColor: 'rgba(239,68,68,0.25)',
+                                color: 'rgba(239,68,68,0.4)',
                                 background: 'transparent',
                             }}
                         >
@@ -482,18 +468,15 @@ function TerminateSection() {
                         <div
                             className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap font-mono text-[10px] px-2 py-1 border z-10"
                             style={{
-                                background: '#1A1A1A',
-                                borderColor: 'rgba(255,255,255,0.1)',
-                                color: 'rgba(240,240,240,0.5)',
+                                background: 'var(--surface-elevated)',
+                                borderColor: 'var(--border)',
+                                color: 'var(--text-secondary)',
                             }}
                         >
                             Contate o administrador
                         </div>
                     </div>
-                    <p
-                        className="font-mono text-[10px] text-center"
-                        style={{ color: 'rgba(240,240,240,0.2)' }}
-                    >
+                    <p className="font-mono text-[10px] text-center text-muted-foreground">
                         Ação irreversível — apenas admins podem excluir
                     </p>
                 </div>
@@ -508,25 +491,18 @@ export function SettingsClient({ initialProfile }: SettingsClientProps) {
     const [activeSection, setActiveSection] = useState<SectionId>('IDENTITY_ACCESS')
 
     return (
-        <div
-            className="flex gap-0 min-h-[600px]"
-            // On mobile: column layout
-        >
+        <div className="flex gap-0 min-h-[600px]">
             {/* ── Left nav — 200px fixed, border-right ── */}
             <div
-                className="shrink-0 pt-2 pb-8 hidden md:block"
-                style={{
-                    width: '200px',
-                    borderRight: '1px solid rgba(255,255,255,0.06)',
-                }}
+                className="shrink-0 pt-2 pb-8 hidden md:block border-r border-border"
+                style={{ width: '200px' }}
             >
                 <SectionNav active={activeSection} onSelect={setActiveSection} />
             </div>
 
             {/* ── Mobile: horizontal scrollable tab bar ── */}
             <div
-                className="flex md:hidden overflow-x-auto pb-4 mb-6 w-full gap-0"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                className="flex md:hidden overflow-x-auto pb-4 mb-6 w-full gap-0 border-b border-border"
             >
                 {SECTIONS.map(({ id, label }) => {
                     const isActive = id === activeSection
@@ -536,7 +512,7 @@ export function SettingsClient({ initialProfile }: SettingsClientProps) {
                             onClick={() => setActiveSection(id)}
                             className="shrink-0 px-3 py-2 font-mono text-[10px] tracking-wider whitespace-nowrap transition-all border-b-2"
                             style={{
-                                color: isActive ? 'var(--accent-primary)' : 'rgba(240,240,240,0.35)',
+                                color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
                                 borderBottomColor: isActive ? 'var(--accent-primary)' : 'transparent',
                             }}
                         >

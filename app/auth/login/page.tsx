@@ -66,7 +66,7 @@ export default function LoginPage() {
     return (
         <div className="space-y-6">
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-[3px] text-white font-sans uppercase">
+                <h1 className="text-3xl font-bold tracking-[3px] text-white uppercase" style={{ fontFamily: 'var(--font-space-grotesk, Space Grotesk, sans-serif)' }}>
                     ACESSO AUTORIZADO
                 </h1>
                 <p className="text-zinc-400 font-mono text-sm">
@@ -78,10 +78,10 @@ export default function LoginPage() {
 
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-[#1a1a1a]" />
+                    <span className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-[#050506] px-2 text-zinc-500 font-mono">
+                    <span className="px-2 font-mono text-muted-foreground" style={{ background: 'var(--surface-page)' }}>
                         Ou continue com e-mail
                     </span>
                 </div>
@@ -127,7 +127,8 @@ export default function LoginPage() {
                         type="email"
                         placeholder="operador@zvision.com"
                         autoComplete="email"
-                        className="h-12 bg-[#111] border-[#222] text-white focus:border-[#A2E635] transition-all duration-200 font-mono text-sm"
+                        className="h-12 font-mono text-sm transition-all duration-200"
+                        style={{ background: 'var(--surface-card)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                         disabled={isLoading}
                         aria-invalid={!!errors.email}
                         aria-describedby={errors.email ? "email-error" : undefined}
@@ -157,7 +158,8 @@ export default function LoginPage() {
                         disabled={isLoading}
                         aria-invalid={!!errors.password}
                         aria-describedby={errors.password ? "password-error" : undefined}
-                        className="bg-[#111] border-[#222] text-white focus:border-[#A2E635] font-mono text-sm"
+                        className="font-mono text-sm"
+                        style={{ background: 'var(--surface-card)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                     />
                     {errors.password && (
                         <p id="password-error" className="text-sm text-red-500 font-mono animate-in fade-in slide-in-from-top-1">
@@ -170,7 +172,9 @@ export default function LoginPage() {
                     <Checkbox
                         id="remember"
                         name="remember"
-                        className="border-[#333] data-[state=checked]:bg-[#A2E635] data-[state=checked]:text-black"
+                        className="data-[state=checked]:text-background"
+                        style={{ borderColor: 'var(--border-bright)' }}
+                        // data-[state=checked]:bg-accent applied via globals
                     />
                     <Label htmlFor="remember" className="text-xs font-mono text-zinc-400 cursor-pointer">
                         Manter sessão ativa por 30 dias
@@ -179,7 +183,8 @@ export default function LoginPage() {
 
                 <Button
                     type="submit"
-                    className="w-full h-12 bg-[#A2E635] text-black hover:bg-[#A2E635]/90 font-bold font-mono tracking-wide transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mt-4"
+                    className="w-full h-12 font-bold font-mono tracking-wide transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mt-4"
+                    style={{ background: 'var(--accent-primary)', color: 'var(--surface-page)' }}
                     disabled={isLoading}
                 >
                     {isLoading ? "AUTENTICANDO..." : "ENTRAR NO SISTEMA"}

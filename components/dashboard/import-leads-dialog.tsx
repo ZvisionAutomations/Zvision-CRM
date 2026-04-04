@@ -172,7 +172,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                 )}
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[600px] bg-[#0d0d10] border-lime/20 text-foreground">
+            <DialogContent className="sm:max-w-[600px] bg-surface-card border-lime/20 text-foreground">
                 <DialogHeader>
                     <DialogTitle className="font-mono text-lime uppercase tracking-widest text-lg flex items-center gap-2">
                         <FileSpreadsheet className="w-5 h-5" /> Ingestão Massiva de Dados
@@ -185,7 +185,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                 {!fileName ? (
                     <div
                         className={`mt-4 border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center text-center transition-all cursor-pointer
-              ${isDragging ? 'border-lime bg-lime/5' : 'border-white/10 hover:border-lime/50 bg-[#141418]'}`}
+              ${isDragging ? 'border-lime bg-lime/5' : 'border-white/10 hover:border-lime/50 bg-surface-elevated'}`}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
@@ -198,7 +198,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                             ref={fileInputRef}
                             onChange={handleFileSelect}
                         />
-                        <div className="w-16 h-16 rounded-full bg-black border border-white/5 flex items-center justify-center mb-4">
+                        <div className="w-16 h-16 rounded-full bg-background border border-white/5 flex items-center justify-center mb-4">
                             <UploadCloud className={`w-8 h-8 ${isDragging ? 'text-lime animate-bounce' : 'text-muted-foreground'}`} />
                         </div>
                         <h3 className="font-bold text-lg mb-1">Arraste a Planilha Aqui</h3>
@@ -206,7 +206,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                     </div>
                 ) : (
                     <div className="mt-4 space-y-4">
-                        <div className="p-4 rounded-lg bg-[#141418] border border-white/5 flex items-center justify-between">
+                        <div className="p-4 rounded-lg bg-surface-elevated border border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <FileSpreadsheet className="w-8 h-8 text-lime" />
                                 <div>
@@ -220,10 +220,10 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                         </div>
 
                         {parsedData.length > 0 && (
-                            <div className="border border-white/5 rounded-lg overflow-hidden bg-black/50">
+                            <div className="border border-white/5 rounded-lg overflow-hidden bg-background/50">
                                 <div className="max-h-[200px] overflow-y-auto custom-scrollbar text-xs">
                                     <table className="w-full text-left">
-                                        <thead className="bg-[#141418] sticky top-0 border-b border-white/5 font-mono text-muted-foreground uppercase">
+                                        <thead className="bg-surface-elevated sticky top-0 border-b border-white/5 font-mono text-muted-foreground uppercase">
                                             <tr>
                                                 <th className="p-2 font-normal">Empresa</th>
                                                 <th className="p-2 font-normal">Contato</th>
@@ -244,7 +244,7 @@ export function ImportLeadsDialog({ children, onSuccess }: ImportLeadsDialogProp
                                     </table>
                                 </div>
                                 {parsedData.length > 10 && (
-                                    <div className="p-2 text-center text-[10px] font-mono text-muted-foreground bg-[#141418] border-t border-white/5">
+                                    <div className="p-2 text-center text-[10px] font-mono text-muted-foreground bg-surface-elevated border-t border-white/5">
                                         + {parsedData.length - 10} registros ocultos na pré-visualização
                                     </div>
                                 )}

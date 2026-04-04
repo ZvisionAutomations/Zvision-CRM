@@ -17,10 +17,10 @@ const STAGE_LABELS: Record<PipelineStage, string> = {
   KIA:               "KIA",
 }
 
-const SIGNAL_COLORS: Record<SignalStrength, string> = {
-  ALTO:  "bg-[var(--accent-primary)] text-background",
-  MEDIO: "bg-[#f59e0b] text-background",
-  BAIXO: "bg-[var(--destructive)] text-white",
+const SIGNAL_BG: Record<SignalStrength, string> = {
+  ALTO:  'var(--accent-primary)',
+  MEDIO: 'var(--status-warning)',
+  BAIXO: 'var(--status-error)',
 }
 
 const STAGE_FILTER_OPTIONS: Array<{ value: PipelineStage | "ALL"; label: string }> = [
@@ -72,11 +72,11 @@ export default function IntelPage() {
           </p>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-                Intel de Alvos
+              <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[3px]" style={{ fontFamily: 'var(--font-space-grotesk, Space Grotesk, sans-serif)' }}>
+                INTEL — ALVOS
               </h1>
               <p className="font-mono text-xs text-muted-foreground mt-1">
-                {total} alvos no radar
+                {total} alvos no radar // <span style={{ color: 'var(--accent-primary)' }}>LIVE</span>
               </p>
             </div>
           </div>
@@ -164,10 +164,10 @@ export default function IntelPage() {
                     className="w-full grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_auto_auto_auto] gap-2 md:gap-4 px-4 py-3 hover:bg-surface-hover transition-colors text-left group items-center"
                   >
                     {/* Sinal */}
-                    <span className={cn(
-                      "hidden md:inline-flex items-center justify-center w-5 h-5 text-[9px] font-mono font-bold",
-                      SIGNAL_COLORS[lead.signal_strength]
-                    )}>
+                    <span
+                      className="hidden md:inline-flex items-center justify-center w-5 h-5 text-[9px] font-mono font-bold text-background"
+                      style={{ background: SIGNAL_BG[lead.signal_strength] }}
+                    >
                       {lead.signal_strength[0]}
                     </span>
 

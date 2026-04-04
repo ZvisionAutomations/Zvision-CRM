@@ -54,7 +54,7 @@ const STAGE_COLORS: Record<PipelineStage, string> = {
     REUNIAO_BRIEFING:  "var(--accent-primary)",
     REUNIAO_PROPOSTA:  "var(--accent-primary)",
     FECHAMENTO:        "var(--accent-primary)",
-    KIA:               "#ef4444",
+    KIA:               "var(--status-error)",
 }
 
 // ─── Activity type badges ─────────────────────────────────────────────────────
@@ -71,8 +71,8 @@ const ACTIVITY_COLORS: Record<ActivityKind, string> = {
     STAGE_CHANGE: "var(--accent-primary)",
     NOTE:         "var(--accent-primary)",
     EMAIL:        "var(--accent-ai)",
-    MEETING:      "#f59e0b",
-    CALL:         "#22c55e",
+    MEETING:      "var(--status-warning)",
+    CALL:         "var(--status-success)",
     AI_BRIEFING:  "var(--accent-ai)",
 }
 

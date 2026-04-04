@@ -51,7 +51,7 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                 className="relative flex flex-col items-center justify-center gap-4 rounded-xl border p-12 text-center"
                 style={{
                     background: 'rgba(162,230,53,0.04)',
-                    borderColor: 'rgba(162,230,53,0.3)',
+                    borderColor: 'var(--border-bright)',
                 }}
             >
                 {/* Corner ornaments */}
@@ -67,7 +67,7 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                 >
                     {importedCount}
                 </div>
-                <p className="font-mono text-xs tracking-[0.2em] uppercase" style={{ color: 'rgba(240,240,240,0.5)' }}>
+                <p className="font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground">
                     // INGESTÃO CONCLUÍDA
                 </p>
                 <Button
@@ -130,9 +130,9 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="relative flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-10 text-center"
-                style={{ borderColor: 'rgba(255,68,68,0.5)', background: 'rgba(255,68,68,0.03)' }}
+                style={{ borderColor: 'rgba(239,68,68,0.5)', background: 'rgba(239,68,68,0.03)' }}
             >
-                <span className="font-mono text-xs" style={{ color: '#FF4444' }}>// FALHA NA INGESTÃO — VERIFIQUE O LOG</span>
+                <span className="font-mono text-xs" style={{ color: 'var(--destructive)' }}>// FALHA NA INGESTÃO — VERIFIQUE O LOG</span>
                 <Button
                     variant="outline"
                     size="sm"
@@ -195,12 +195,12 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                     className="w-16 h-16 rounded-full border flex items-center justify-center mb-5 transition-all"
                     style={{
                         borderColor: isDragging ? 'var(--accent-primary)' : 'rgba(255,255,255,0.08)',
-                        background: '#0A0A0A',
+                        background: 'var(--surface-page)',
                     }}
                 >
                     <UploadCloud
                         className={`w-7 h-7 transition-all ${isDragging ? 'scale-110' : ''}`}
-                        style={{ color: isDragging ? 'var(--accent-primary)' : 'rgba(240,240,240,0.4)' }}
+                        style={{ color: isDragging ? 'var(--accent-primary)' : 'var(--text-secondary)' }}
                     />
                 </div>
 
@@ -210,7 +210,7 @@ export function DropZone({ state, fileName, importedCount, onFile, onReset }: Dr
                 >
                     // DROP EXCEL OR CSV FILE
                 </h3>
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: 'rgba(240,240,240,0.3)' }}>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     XLSX · XLS · CSV · MAX 5MB
                 </p>
             </motion.div>
